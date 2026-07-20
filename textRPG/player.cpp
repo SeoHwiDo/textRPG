@@ -86,11 +86,17 @@ public:
 	int getGold() const {//골드 getter
 		return this->gold;
 	}
-	int setLevel(int inputLevel) {//레벨설정
+	void setLevel(int inputLevel) {//레벨설정
 		this->level = inputLevel;
 	}
-	int setExp(int inputExp) {//경험치설정
+	void setExp(int inputExp) {//경험치설정
 		this->exp = inputExp;
 	}
-	int 
+	void addExp(int inputExp) {
+		this->exp += inputExp;
+	}
+	int getExp() {
+		return this->exp;
+	}
+
 };
