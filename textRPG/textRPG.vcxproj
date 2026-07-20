@@ -123,7 +123,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="player.cpp" />
+    <ClCompile Include="Dice.cpp" />
+    <ClCompile Include="Fight.cpp" />
+    <ClCompile Include="Actor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitignore" />
