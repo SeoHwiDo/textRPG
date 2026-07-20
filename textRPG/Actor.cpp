@@ -1,6 +1,7 @@
 #include<string>
 #include<random>
 #include"Dice.cpp"
+#include"Skill.cpp"
 class Actor {
 public:
 	const static int STAT_MAX = 25;
@@ -125,7 +126,9 @@ public:
 			def->addHp(-(dmg-defs>0? dmg - defs:0));//데미지 / 방어도 * 방어자 건강의 역수
 		}
 		return def->isAlive();
-
+	}
+	bool skill_attack(Skill::skill skill) {
+		
 	}
 
 	void checkEquip(equip n_equip) {//장비 확인
