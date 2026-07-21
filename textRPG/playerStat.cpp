@@ -1,7 +1,18 @@
 #include <iostream>
+#include <string>
 
-class player {
-	char* name = '\0';
+class PlayerStat {
+public:
+    explicit PlayerStat(const std::string& name = "무명") : name(name) {}
 
-	player(*char name,)
+    void setName(const std::string& inputName) {
+        name = inputName;
+    }
+
+    std::string getName() const {
+        return name;
+    }
+
+private:
+    std::string name;
 };
