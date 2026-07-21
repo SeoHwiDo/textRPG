@@ -1,8 +1,17 @@
-class SKill {
+#include<string>
+#include<functional>
+#include<map>
+#include<iostream>
+class Skill {
 public:
-	enum skill {
-		slash,
-		fireball,
 
+	struct skill_data {
+		std::string name;
+		int dmg;
+		int useMP;
 	};
+	skill_data skill_select() {
+		
+	}
+	
 };

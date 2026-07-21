@@ -1,5 +1,9 @@
+#include<iostream>
 #include<string>
 #include<random>
+#include <functional>
+#include<vector>
+#include<map>
 #include"Dice.cpp"
 #include"Skill.cpp"
 class Actor {
@@ -43,12 +47,13 @@ private:
 		equip(wep),
 		equip(shd)
 	};
-	Actor(){}
+	
+	
+public:
+	Actor() {}
 	Actor(std::string name) :name(name) {}
 	Actor& operator=(const Actor& p) {}
 	~Actor() {}
-	
-public:
 	//###############################[ 스탯, Getter, Setter ]###############################
 	void setName(std::string inputName) {//이름설정
 		this->name = inputName;
@@ -114,23 +119,109 @@ public:
 		else return true;
 	}
 	//###############################[ 행동 로직 ]###############################
-	bool runOut(Actor* def) {
-		return Dice::check_versus_success(this->playerStat[dex],def->playerStat[dex]);
-	}
-	bool basic_attack(Actor* def) {
-		auto dmg = this->playerStat[str] + this->playerEquip[0].stat;//데미지=공격자의 힘+공격자의 무기능력치
-		auto defs = def->playerEquip[1].stat;//방어도=방어자의 방어구능력치
-		auto miss = def->playerStat[dex]/STAT_MAX;//회피확률=방어자의 민첩*방어자의 건강
-		if (!Dice::check_success(miss)) {
-			//회피 실패시
-			def->addHp(-(dmg-defs>0? dmg - defs:0));//데미지 / 방어도 * 방어자 건강의 역수
-		}
-		return def->isAlive();
-	}
-	bool skill_attack(Skill::skill skill) {
+	enum actions {
+		attack	=1,
+		skiil	,
+		dfense	,
+		run		,
+		item	
+	};
+	struct actionFunc {
+		std::string name;
+		std::function<bool(Actor &def)> func;
+	};
+	std::map<int, actionFunc> actionsWithFunc = {
+			{attack, actionFunc{"공격", [this](Actor def) {
+			// basic_attack이 Actor*를 요구하므로 &def(주소값) 전달
+			return this->basic_attack(def);
+		}}},
+
+		{skiil, actionFunc{"스킬", [this](Actor& def) {
+			// 스킬 사용 로직이 스킬 종류를 요구한다면 인자를 추가로 넘김
+			return this->skill_attack(def);
+		}}},
+
+		{dfense, actionFunc{"방어", [this](Actor def) {
+			// 빈 로직은 true 또는 false 반환으로 처리
+			return true;
+		}}},
+
+		{run, actionFunc{"도망", [this](Actor def) {
+			return this->runOut(def);
+		}}},
+
+		{item, actionFunc{"아이템", [this](Actor def) {
+			return true;
+		}}}
+	};
+	
+	bool choiceAction(Actor& def) {
+		std::cout << "행동을 선택하세요:\n";
 		
+		for (const auto& action : actionsWithFunc) {
+			std::cout << action.first << ". " << action.second.name << "\n";
+		}
+		int selected;
+		while (true) {
+			std::cout << "행동을 선택하세요:\n";
+			for (const auto& action : actionsWithFunc) {
+				std::cout << action.first << ". " << action.second.name << "\n";
+			}
+			std::cout << "입력: ";
+			std::cin >> selected;
+
+			// 1. 문자 입력 시 무한 루프 방지
+			if (std::cin.fail()) {
+				std::cin.clear();
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				std::cout << "숫자만 입력 가능합니다.\n\n";
+				continue;
+			}
+
+			// 2. 정상적인 행동 선택 로직 검증 (맵의 key 존재 여부 확인)
+			auto it = actionsWithFunc.find(selected);
+			if (it != actionsWithFunc.end()) {
+				// 함수가 등록되어 있는지(nullptr이 아닌지) 확인
+				if (it->second.func) {
+					return it->second.func(def); // 함수 실행 후 결과 반환 및 루프 탈출
+				}
+				else {
+					std::cout << "아직 구현되지 않은 행동입니다.\n\n";
+				}
+			}
+			else {
+				std::cout << "잘못된 번호입니다. 다시 선택하세요.\n\n";
+			}
+		}
+
 	}
 
+	bool basic_attack(Actor& def) {
+		auto dmg = this->playerStat[str] + this->playerEquip[0].stat;//데미지=공격자의 힘+공격자의 무기능력치
+		auto defs = def.playerEquip[1].stat;//방어도=방어자의 방어구능력치
+		auto miss = def.playerStat[dex]/STAT_MAX;//회피확률=방어자의 민첩*방어자의 건강
+		if (!Dice::check_success(miss)) {
+			//회피 실패시
+			def.addHp(-(dmg-defs>0? dmg - defs:0));//데미지 / 방어도 * 방어자 건강의 역수
+		}
+		return def.isAlive();
+	}
+	bool skill_attack(Actor& def) {
+		Skill::skill_data=Skill::skill_select(def);
+		auto dmg = this->playerStat[wis] + this->playerEquip[0].stat+;//데미지=공격자의 지혜+공격자의 무기능력치
+		auto defs = def.playerEquip[1].stat;//방어도=방어자의 방어구능력치
+		auto miss = def.playerStat[dex] / STAT_MAX;//회피확률=방어자의 민첩*방어자의 건강
+		if (!Dice::check_success(miss)) {
+			//회피 실패시
+			def.addHp(-(dmg - defs > 0 ? dmg - defs : 0));//데미지 / 방어도 * 방어자 건강의 역수
+		}
+		return def.isAlive();
+	}
+	bool defending(Actor& def) {};
+	bool runOut(Actor& def) {
+		return Dice::check_versus_success(this->playerStat[dex], def.playerStat[dex]);
+	}
+	bool use_item(Actor& def) {};
 	void checkEquip(equip n_equip) {//장비 확인
 		equip* o_equip = &playerEquip[n_equip.et];
 		if (o_equip->name == n_equip.name) { // 동일한 장비일때
