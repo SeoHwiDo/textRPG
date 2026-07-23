@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include<string>
 const int DHP = 1, DPOW = 0, DCRIT = 0, DLV = 0, DEXP = 0;
 class Actor {
