@@ -1,4 +1,4 @@
-#include"Status.h"
+﻿#include"Status.h"
 // 모든 status의 수치 get
 std::vector<int> Status::getStatusData() const {
 	return this->statusData;

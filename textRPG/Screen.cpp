@@ -1,4 +1,4 @@
-#include"Screen.h"
+﻿#include"Screen.h"
 
 std::string Screen::topInfo(const Player& _player) {
     std::string name = _player.getName();
