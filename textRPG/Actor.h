@@ -12,7 +12,6 @@ private:
 
 public:
 	Actor(std::string _name);
-	Actor(std::string _name, int _hp, int _pow, int _crit,int _lv,int _exp);
 	virtual ~Actor();//상속받은 클래스들의 소멸을 위해 virtual로 선언
 
 	std::string getName() const;

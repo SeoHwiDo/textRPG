@@ -3,9 +3,10 @@
 #include <iomanip>
 #include <vector>
 
-#include"Choice.h"
-#include"Event.h"
-#include"Actor.h"
+//#include"Choice.h"
+//#include"Event.h"
+#include"Player.h"
+
 /*
        10        20        30        40
 12345679012345678901234567890123456789012
@@ -40,11 +41,15 @@ private:
     std::string FILL_LINE = "#########################################";
     std::string BLANK_LINE = "#                                       #";
 public:
-    std::string topInfo(const Actor& _actor);//플레이어 이름,레벨, 경험치, 스테이터스
-    std::string midInfo(Event _event ,Choice _choice);//현재 발생중인 이벤트 및 선택지
-    std::string botInfo(const Actor& _actor);//플레이어의 체력및 장비, 아이템
-
-    void showScreen(std::string _top, std::string _mid, std::string _bot);
+    template<typename T>
+    void inOutput(std::string _message, T& _inoutVar);
+    bool clear_input(bool check);
+    void topInfo(const Player& _player);//플레이어 이름,레벨, 경험치, 스테이터스
+    //std::string midInfo(Event _event ,Choice _choice);//현재 발생중인 이벤트 및 선택지
+    //std::string botInfo(const Player& _player);//플레이어의 체력및 장비, 아이템
+    Player* initPlayer();
+    //void showScreen(std::string _top, std::string _mid, std::string _bot);
 };
 
 
+  

@@ -123,25 +123,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="..\textRPG_old\textRPG\Readme.md" />
-    <None Include="..\textRPG_old\textRPG\syntax_error_report.md" />
+    <None Include="..\textRPG\textRPG.sln" />
+    <None Include="..\textRPG\textRPG.vcxproj" />
+    <None Include="..\textRPG\textRPG.vcxproj.user" />
+    <None Include=".gitignore" />
+    <None Include="textRPG\Readme.md" />
+    <None Include="textRPG\syntax_error_report.md" />
+    <None Include="textRPG\textRPG.vcxproj.filters" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\textRPG_old\textRPG\Actor.cpp" />
-    <ClCompile Include="..\textRPG_old\textRPG\Dice.cpp" />
-    <ClCompile Include="..\textRPG_old\textRPG\GameMain.cpp" />
-    <ClCompile Include="..\textRPG_old\textRPG\main.cpp" />
-    <ClCompile Include="..\textRPG_old\textRPG\Monster.cpp" />
-    <ClCompile Include="..\textRPG_old\textRPG\Player.cpp" />
-    <ClCompile Include="..\textRPG_old\textRPG\Screen.cpp" />
-    <ClCompile Include="..\textRPG_old\textRPG\Status.cpp" />
+    <ClInclude Include="textRPG\Actor.h" />
+    <ClInclude Include="textRPG\Monster.h" />
+    <ClInclude Include="textRPG\Player.h" />
+    <ClInclude Include="textRPG\Screen.h" />
+    <ClInclude Include="textRPG\Status.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\textRPG_old\textRPG\Actor.h" />
-    <ClInclude Include="..\textRPG_old\textRPG\Monster.h" />
-    <ClInclude Include="..\textRPG_old\textRPG\Player.h" />
-    <ClInclude Include="..\textRPG_old\textRPG\Screen.h" />
-    <ClInclude Include="..\textRPG_old\textRPG\Status.h" />
+    <ClCompile Include="textRPG\Actor.cpp" />
+    <ClCompile Include="textRPG\Dice.cpp" />
+    <ClCompile Include="textRPG\GameMain.cpp" />
+    <ClCompile Include="textRPG\Monster.cpp" />
+    <ClCompile Include="textRPG\Player.cpp" />
+    <ClCompile Include="textRPG\Screen.cpp" />
+    <ClCompile Include="textRPG\Status.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

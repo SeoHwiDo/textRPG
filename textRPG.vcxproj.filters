@@ -15,50 +15,58 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\textRPG_old\textRPG\Readme.md" />
-    <None Include="..\textRPG_old\textRPG\syntax_error_report.md" />
+    <None Include="..\textRPG\textRPG.vcxproj.user">
+      <Filter>소스 파일</Filter>
+    </None>
+    <None Include="..\textRPG\textRPG.sln">
+      <Filter>소스 파일</Filter>
+    </None>
+    <None Include="..\textRPG\textRPG.vcxproj">
+      <Filter>소스 파일</Filter>
+    </None>
+    <None Include="textRPG\Readme.md" />
+    <None Include="textRPG\syntax_error_report.md" />
+    <None Include="textRPG\textRPG.vcxproj.filters" />
+    <None Include=".gitignore" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\textRPG_old\textRPG\Actor.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\textRPG_old\textRPG\Dice.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\textRPG_old\textRPG\GameMain.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\textRPG_old\textRPG\main.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\textRPG_old\textRPG\Monster.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\textRPG_old\textRPG\Player.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\textRPG_old\textRPG\Screen.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\textRPG_old\textRPG\Status.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
+    <ClInclude Include="textRPG\Actor.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="textRPG\Monster.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="textRPG\Player.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="textRPG\Screen.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="textRPG\Status.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\textRPG_old\textRPG\Actor.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\textRPG_old\textRPG\Monster.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\textRPG_old\textRPG\Player.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\textRPG_old\textRPG\Screen.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\textRPG_old\textRPG\Status.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
+    <ClCompile Include="textRPG\Actor.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="textRPG\Dice.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="textRPG\GameMain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="textRPG\Monster.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="textRPG\Player.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="textRPG\Screen.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="textRPG\Status.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

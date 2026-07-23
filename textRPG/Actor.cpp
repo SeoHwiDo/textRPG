@@ -8,7 +8,6 @@ Actor::Actor(std::string _name) :name(_name) {
 	this->lv = DLV;
 	this->exp = DEXP;
 }
-Actor::Actor(std::string _name, int _hp, int _pow, int _crit, int _lv, int _exp) :name(_name), hp(_hp), power(_pow), critical(_crit),lv(_lv),exp(_exp) {}
 Actor::~Actor() {}
 
 //##########################[ getter,setter ]#########################################

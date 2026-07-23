@@ -5,12 +5,8 @@ Monster::Monster(std::string _name) :Actor(_name) {
 		monsterStatus.setStatusData(i, monsterStatus.STAT_MIN);
 	}
 }
-Monster::Monster(std::string _name, int _hp, int _pow, int _crit, int _lv, int _exp) :Actor(_name, _hp, _pow, _crit, _lv, _exp) {
-	for (int i = 0; i < monsterStatus.STATS; ++i) {
-		monsterStatus.setStatusData(i, monsterStatus.STAT_MIN);
-	}
-}
-Monster::Monster(std::string _name, int _hp, int _pow, int _crit, int _lv, int _exp, Status _monsterStatus) :Actor(_name, _hp, _pow, _crit, _lv, _exp), monsterStatus(_monsterStatus) {}
+
+Monster::Monster(std::string _name, Status _monsterStatus) :Actor(_name), monsterStatus(_monsterStatus) {}
 Monster::~Monster() {}
 
 

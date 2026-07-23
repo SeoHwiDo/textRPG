@@ -1,5 +1,6 @@
 ﻿#include"Status.h"
 // 모든 status의 수치 get
+const std::vector<std::string> Status::statsStr = {"힘", "민첩", "건강", "지혜", "매력", "잔여포인트"};
 std::vector<int> Status::getStatusData() const {
 	return this->statusData;
 };

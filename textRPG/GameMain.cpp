@@ -3,13 +3,12 @@
 
 #include"Player.h"
 #include"Monster.h"
+#include"Screen.h"
 
 int main() {
-	std::string name;
-	Screen::initPlayer(name);
-	Player* player = new Player(name);
+	Screen* mainScreen = new Screen;
+	Player* player= mainScreen->initPlayer();;
 	
-	while(1){
-
-	}
+	delete player;
+	delete mainScreen;
 }
