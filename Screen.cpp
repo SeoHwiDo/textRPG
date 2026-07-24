@@ -1,5 +1,5 @@
 ﻿#include"Screen.h"
-
+#include "Util.h"
 
 
 template<typename T>
@@ -36,7 +36,7 @@ Player* Screen::initPlayer() {
             if (clear_input(point <= remainPoint && point >= 0)) break;
             std::cout << "\n입력값 및 잔여 포인트를 확인하세요";
         }
-        player->status.setStatus(s, Status::validStatValue(player->status.getStatus(s) + point));
+        player->status.setStatus(s, (player->status.getStatus(s) + point));
         player->status.setStatusRemain(remainPoint - point);
     }
     return player;

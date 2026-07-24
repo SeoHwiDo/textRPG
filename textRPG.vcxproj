@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{ca7e1f9b-440c-469f-8eac-bf847af34348}</ProjectGuid>
+    <ProjectGuid>{c4e1060e-2e97-4272-a14c-8131128be4f1}</ProjectGuid>
     <RootNamespace>textRPG</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -123,31 +123,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="..\textRPG\textRPG.sln" />
-    <None Include="..\textRPG\textRPG.vcxproj" />
-    <None Include="..\textRPG\textRPG.vcxproj.user" />
-    <None Include=".gitignore" />
-    <None Include="README.md" />
-    <None Include="textRPG\textRPG.vcxproj.filters" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Equipment.h" />
-    <ClInclude Include="textRPG\Actor.h" />
-    <ClInclude Include="textRPG\Monster.h" />
-    <ClInclude Include="textRPG\Player.h" />
-    <ClInclude Include="textRPG\Screen.h" />
-    <ClInclude Include="textRPG\Status.h" />
-    <ClInclude Include="Util.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="textRPG\Actor.cpp" />
-    <ClCompile Include="textRPG\Dice.cpp" />
-    <ClCompile Include="textRPG\GameMain.cpp" />
-    <ClCompile Include="textRPG\Monster.cpp" />
-    <ClCompile Include="textRPG\Player.cpp" />
-    <ClCompile Include="textRPG\Screen.cpp" />
-    <ClCompile Include="textRPG\Status.cpp" />
+    <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="Dice.cpp" />
+    <ClCompile Include="GameMain.cpp" />
+    <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Screen.cpp" />
+    <ClCompile Include="Status.cpp" />
     <ClCompile Include="Util.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Actor.h" />
+    <ClInclude Include="Equipment.h" />
+    <ClInclude Include="Monster.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Screen.h" />
+    <ClInclude Include="Status.h" />
+    <ClInclude Include="Util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
