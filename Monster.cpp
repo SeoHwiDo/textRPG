@@ -1,4 +1,4 @@
-#include"Monster.h"
+﻿#include"Monster.h"
 
 Monster::Monster(std::string _name) :Actor(_name) {
 	for (Status::statusType s:Status::stat) {

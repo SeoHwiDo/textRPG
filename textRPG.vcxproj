@@ -124,7 +124,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
-    <ClCompile Include="Dice.cpp" />
+    <ClCompile Include="Equipment.cpp" />
     <ClCompile Include="GameMain.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -140,6 +140,9 @@
     <ClInclude Include="Screen.h" />
     <ClInclude Include="Status.h" />
     <ClInclude Include="Util.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="editorconfig .editorconfig" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

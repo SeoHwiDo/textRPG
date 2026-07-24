@@ -1,8 +1,8 @@
-#pragma once
+﻿#pragma once
 #include <random>
 namespace Util {
 
- bool check_versus_success(double my_stat, double enemy_stat);
- bool check_success(double stat);
+ bool check_versus_success(const int _myPercent, const int _enemyPercent);
+ bool check_success(int _percent);
 };
 

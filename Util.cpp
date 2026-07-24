@@ -1,26 +1,27 @@
-#include "Util.h"
+ï»¿#include "Util.h"
 
 
 
-bool Util::check_versus_success(double my_stat, double enemy_stat) {
-	// ½ºÅÈÀÌ ¸ğµÎ 0 ÀÌÇÏÀÌ¸é ¼º°ø ¿©ºÎ¸¦ ÆÇ´ÜÇÒ ¼ö ¾øÀ¸¹Ç·Î false ¹İÈ¯
-    if (my_stat <= 0.0 && enemy_stat <= 0.0) return false;
+bool Util::check_versus_success(const int _myPercent, const int _enemyPercent) {
+	double myRegulaizedPercent = std::max(0.0, std::min(1.0, static_cast<double>(_myPercent) / 100.0));
+    double enemyRegulaizedPercent = std::max(0.0, std::min(1.0, static_cast<double>(_enemyPercent) / 100.0));
+
+	// ë‘ statì´ ëª¨ë‘ 0 ì´í•˜ì´ë©´ ì„±ê³µë¥ ì„ ê³„ì‚°í•  ìˆ˜ ì—†ìœ¼ë¯€ë¡œ false ë°˜í™˜
+        if (_myPercent <= 0.0 && enemyRegulaizedPercent <= 0.0) return false;
 
     double success_rate;
-	if (enemy_stat <= 0.0) success_rate = 1.0;  // »ó´ë ½ºÅÈÀÌ 0 ÀÌÇÏÀÌ¸é ¹«Á¶°Ç ¼º°ø
-	else if (my_stat <= 0.0) success_rate = 0.0;  // ³» ½ºÅÈÀÌ 0 ÀÌÇÏÀÌ¸é ¹«Á¶°Ç ½ÇÆĞ
-    else success_rate = my_stat / (my_stat + enemy_stat);
+    if (enemyRegulaizedPercent <= 0.0) success_rate = 1.0; // ìƒëŒ€ë°©ì˜ statì´ 0 ì´í•˜ì´ë©´ ë¬´ì¡°ê±´ ì„±ê³µ
+    else if (myRegulaizedPercent <= 0.0) success_rate = 0.0;  // ë‚´ statì´ 0 ì´í•˜ì´ë©´ ë¬´ì¡°ê±´ ì‹¤íŒ¨
+    else success_rate = myRegulaizedPercent / (myRegulaizedPercent + enemyRegulaizedPercent);
 
-    // È®·üÀ» [0,1] ¹üÀ§·Î °íÁ¤
-    if (success_rate < 0.0) success_rate = 0.0;
-    else if (success_rate > 1.0) success_rate = 1.0;
+	success_rate = std::max(0.0, std::min(1.0, success_rate)); // ì„±ê³µë¥ ì„ 0ê³¼ 1 ì‚¬ì´ë¡œ ì œí•œ
 
     thread_local static std::mt19937 gen((std::random_device())());
-    std::bernoulli_distribution dist(success_rate);
+	std::bernoulli_distribution dist(success_rate);//ë² ë¥´ëˆ„ì´ ë¶„í¬ë¥¼ ì´ìš©í•˜ì—¬ ì„±ê³µë¥ ì— ë”°ë¼ true/false ë°˜í™˜
     return dist(gen);
 }
 
-bool Util::check_success(double stat) {
+bool Util::check_success(int _myPercent) {
 
     double p = stat;
     if (p < 0.0) p = 0.0;

@@ -1,4 +1,4 @@
-#include"Actor.h"
+﻿#include"Actor.h"
 #include"Player.h"
 
 Actor::Actor(std::string _name) :name(_name) {

@@ -1,4 +1,4 @@
-#include"Status.h"
+﻿#include"Status.h"
 
 const Status::statusType Status::stat[STATS] = { STR, DEX, CON, WIS, CHAM, REMAIN };
 const std::string Status::statName[STATS] = { "STR", "DEX", "CON", "WIS", "CHAM", "REMAIN" };

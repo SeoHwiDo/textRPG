@@ -18,9 +18,6 @@
     <ClCompile Include="Actor.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Dice.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="GameMain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -37,6 +34,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Util.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Equipment.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,5 +62,8 @@
     <ClInclude Include="Util.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="editorconfig .editorconfig" />
   </ItemGroup>
 </Project>
