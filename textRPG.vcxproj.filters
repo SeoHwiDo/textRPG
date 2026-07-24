@@ -13,15 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="소스 파일\Actor">
-      <UniqueIdentifier>{1b650d6d-ee85-4d1e-87bf-407345c245b7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\System">
-      <UniqueIdentifier>{69b8680a-80a1-4213-a8dc-b0bf9692a2c8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Actor">
-      <UniqueIdentifier>{11e2bbbb-eb02-4fa2-a65d-8760e266b31b}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\textRPG\textRPG.vcxproj.user">
@@ -33,26 +24,31 @@
     <None Include="..\textRPG\textRPG.vcxproj">
       <Filter>소스 파일</Filter>
     </None>
-    <None Include="textRPG\Readme.md" />
-    <None Include="textRPG\syntax_error_report.md" />
     <None Include="textRPG\textRPG.vcxproj.filters" />
     <None Include=".gitignore" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="textRPG\Actor.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Equipment.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="textRPG\Monster.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="textRPG\Player.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="textRPG\Status.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="textRPG\Screen.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="textRPG\Actor.h">
-      <Filter>헤더 파일\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="textRPG\Monster.h">
-      <Filter>헤더 파일\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="textRPG\Player.h">
-      <Filter>헤더 파일\Actor</Filter>
-    </ClInclude>
-    <ClInclude Include="textRPG\Status.h">
-      <Filter>헤더 파일\Actor</Filter>
+    <ClInclude Include="Util.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -60,22 +56,25 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="textRPG\Actor.cpp">
-      <Filter>소스 파일\Actor</Filter>
-    </ClCompile>
-    <ClCompile Include="textRPG\Player.cpp">
-      <Filter>소스 파일\Actor</Filter>
+      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="textRPG\Monster.cpp">
-      <Filter>소스 파일\Actor</Filter>
+      <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="textRPG\Screen.cpp">
-      <Filter>소스 파일\System</Filter>
+    <ClCompile Include="textRPG\Player.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="textRPG\Status.cpp">
-      <Filter>소스 파일\Actor</Filter>
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="textRPG\Dice.cpp">
-      <Filter>소스 파일\System</Filter>
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="textRPG\Screen.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

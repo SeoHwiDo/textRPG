@@ -127,16 +127,17 @@
     <None Include="..\textRPG\textRPG.vcxproj" />
     <None Include="..\textRPG\textRPG.vcxproj.user" />
     <None Include=".gitignore" />
-    <None Include="textRPG\Readme.md" />
-    <None Include="textRPG\syntax_error_report.md" />
+    <None Include="README.md" />
     <None Include="textRPG\textRPG.vcxproj.filters" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Equipment.h" />
     <ClInclude Include="textRPG\Actor.h" />
     <ClInclude Include="textRPG\Monster.h" />
     <ClInclude Include="textRPG\Player.h" />
     <ClInclude Include="textRPG\Screen.h" />
     <ClInclude Include="textRPG\Status.h" />
+    <ClInclude Include="Util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="textRPG\Actor.cpp" />
@@ -146,6 +147,7 @@
     <ClCompile Include="textRPG\Player.cpp" />
     <ClCompile Include="textRPG\Screen.cpp" />
     <ClCompile Include="textRPG\Status.cpp" />
+    <ClCompile Include="Util.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
