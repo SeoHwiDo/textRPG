@@ -42,26 +42,26 @@ int Status::getStatus(int stat) const {
 	}
 }
 
-void Status::setStatusStr(int amount) {
-	this->status.str = amount;
+void Status::setStatusStr(const int amount) {
+	this->status.str =std::max(STAT_MIN,std::min(STAT_MAX,amount));
 }
-void Status::setStatusDex(int amount) {
-	this->status.dex = amount;
+void Status::setStatusDex(const int amount) {
+	this->status.dex =std::max(STAT_MIN,std::min(STAT_MAX,amount));
 }
-void Status::setStatusCon(int amount) {
-	this->status.con = amount;
+void Status::setStatusCon(const int amount) {
+	this->status.con =std::max(STAT_MIN,std::min(STAT_MAX,amount));
 }
-void Status::setStatusWis(int amount) {
-	this->status.wis = amount;
+void Status::setStatusWis(const int amount) {
+	this->status.wis =std::max(STAT_MIN,std::min(STAT_MAX,amount));
 }
-void Status::setStatusCham(int amount) {
-	this->status.cham = amount;
+void Status::setStatusCham(const int amount) {
+	this->status.cham =std::max(STAT_MIN,std::min(STAT_MAX,amount));
 }
-void Status::setStatusRemain(int amount) {
-	this->status.remain = amount;
+void Status::setStatusRemain(const int amount) {
+	this->status.remain =std::max(STAT_MIN,std::min(STAT_MAX,amount));
 }
 
-void Status::setStatus(int stat, int amount) {
+void Status::setStatus(const int stat, const int amount) {
 	switch (stat) {
 	case STR:
 		setStatusStr(amount);

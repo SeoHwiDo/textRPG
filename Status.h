@@ -34,15 +34,15 @@ public:
 	int getStatus(int stat) const;
 
 	//특정 status값을 설정하는 setter
-	void setStatusStr(int amount);
-	void setStatusDex(int amount);
-	void setStatusCon(int amount);
-	void setStatusWis(int amount);
-	void setStatusCham(int amount);
-	void setStatusRemain(int amount);
+	void setStatusStr(const int amount);
+	void setStatusDex(const int amount);
+	void setStatusCon(const int amount);
+	void setStatusWis(const int amount);
+	void setStatusCham(const int amount);
+	void setStatusRemain(const int amount);
 
 	//스테이터스 종류를 입력받아 해당 status값을 설정하는 setter
-	void setStatus(int stat, int amount);
+	void setStatus(const int stat, const int amount);
 
 	void setStatus(int stst[STATS]) ;
 	//status값이 유효한지 검사하여 유효한 값이면 해당 값을 반환하고, 유효하지 않으면 기본값을 반환하는 함수
