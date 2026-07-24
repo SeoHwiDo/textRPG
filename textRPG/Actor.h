@@ -1,7 +1,21 @@
 #pragma once
 #include<string>
-const unsigned int DHP = 1, DPOW = 0, DCRIT = 0, DLV = 0, DEXP = 0, DGOLD = 0;
+
 class Actor {
+public:
+	const unsigned int HP_MIN = 1;
+
+	const unsigned int POWER_MIN = 0;
+
+	const unsigned int CRITICAL_MIN = 0;
+
+	const unsigned int LV_MIN = 0;
+
+	const unsigned int EXP_MIN = 0;
+	const unsigned int EXP_MAX = 100;
+
+	const unsigned int GOLD_MIN = 0;
+	
 private:
 	std::string name;//이름
 	unsigned int hp;//체력

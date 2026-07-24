@@ -2,12 +2,12 @@
 #include"Player.h"
 
 Actor::Actor(std::string _name) :name(_name) {
-	this->hp = DHP;
-	this->power = DPOW;
-	this->critical = DCRIT;
-	this->lv = DLV;
-	this->exp = DEXP;
-	this->gold = DGOLD;
+	this->hp = HP_MIN;
+	this->power = POWER_MIN;
+	this->critical = CRITICAL_MIN;
+	this->lv = LV_MIN;
+	this->exp = EXP_MIN;
+	this->gold = GOLD_MIN;
 }
 Actor::~Actor() {}
 
