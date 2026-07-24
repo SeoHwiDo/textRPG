@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include<vector>
 #include<string>
 class Status {
@@ -46,5 +46,4 @@ public:
 
 	void setStatus(int stst[STATS]) ;
 	//status값이 유효한지 검사하여 유효한 값이면 해당 값을 반환하고, 유효하지 않으면 기본값을 반환하는 함수
-	static int validStatValue(int stat);
 };

@@ -1,4 +1,4 @@
-﻿#include"Status.h"
+#include"Status.h"
 
 const Status::statusType Status::stat[STATS] = { STR, DEX, CON, WIS, CHAM, REMAIN };
 const std::string Status::statName[STATS] = { "STR", "DEX", "CON", "WIS", "CHAM", "REMAIN" };
@@ -92,14 +92,3 @@ void Status::setStatus(int stst[STATS]) {
 	}
 }
 
-int Status::validStatValue(int stat) {
-	if (stat < STAT_MIN) {
-		return STAT_MIN;
-	}
-	else if (stat > STAT_MAX) {
-		return STAT_MAX;
-	}
-	else {
-		return stat;
-	}
-}
