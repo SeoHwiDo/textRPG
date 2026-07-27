@@ -19,13 +19,13 @@ void Monster::setIsEnemy(bool _flag) {
 	this->isEnemy = _flag;
 }
 
-Monster::AIState Monster::monsterFSM(Player& _player){
-	if (_player.getDefend() >= this->power*2) {//때려도 데미지 0 -> 도망 시도
+Monster::AIState Monster::getMonsterFSM(Player& _player){
+	if (_player.getDefend() >= this->power * 2) {//때려도 데미지 0 -> 도망 시도
 		return RunOut;
 	}
-	else if (_player.getPower() - this->defend >= this->hp&&) {//포션 섭취
-		return Potion;
+	else if (isHasSkill() && skillReady()) {//스킬 사용
+		return Skill;
 	}
-	else if()//스킬 사용
 	else //일반공격
+		return Attack;
 }
