@@ -2,8 +2,13 @@
 #include "Util.h"
 
 Equipment::Equipment(std::shared_ptr<const EquipmentData> _data) :data(_data), stat(_data->baseStat), lv(1) {}
-
 Equipment::~Equipment() {}
+
+//Equipment& Equipment::operator=(const Equipment& equip){
+//	this->data = equip.data;
+//	this->lv = equip.lv;
+//}
+
 
 
 std::string Equipment::getName() const { return this->data->name; }
@@ -15,6 +20,8 @@ unsigned int Equipment::getLv() const { return this->lv; }
 void Equipment::setLv(const int _lv) { this->lv = _lv; }
 
 EquipType Equipment::getType() const { return this->data->type; }
+
+
 
 bool Equipment::EquipmnetEnhance(const int _percent) {
 	if (Util::check_success(_percent)) {

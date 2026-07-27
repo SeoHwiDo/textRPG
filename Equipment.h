@@ -14,18 +14,16 @@ protected:
 	int lv;
 public:
 	Equipment(std::shared_ptr<const EquipmentData> _data);
+	//Equipment& operator=(const Equipment& equip);
 	~Equipment();
 	std::string getName() const;
 	void setName(const std::string& _name);
 
 	EquipType getType() const;
-	void setType(const EquipType _type);
 
 	int getStat() const;
 	void setStat(const int _stat);
 
-	unsigned int getPrice() const;
-	void setPrice(const int _price);
 
 	unsigned int getLv() const;
 	void setLv(const int _lv);
