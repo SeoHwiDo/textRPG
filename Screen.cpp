@@ -15,20 +15,20 @@ bool Screen::clear_input(bool check) {//입력 허용범위 검사
 }
 
 
-Player* Screen::initPlayer() {
+void Screen::initPlayer(Player* _player) {
     std::string name;
     while (1) {
         inOutput("이름을 입력하세요(6글자 이내):", name);
         if(clear_input(name.size()<=6)) break;
         std::cout << "\n6글자를 초과하였습니다!";
     }
-    Player* player = new Player(name);
+    _player = new Player(name);
 
     int point;
     Status::stat;
     for (Status::statusType s : Status::stat) {
         if (s == Status::REMAIN) break;
-        int remainPoint = player->status.getStatusRemain();
+        int remainPoint = _player->status.getStatusRemain();
         while (1) {
             std::cout << "\n잔여포인트: " << remainPoint << "\n " << Status::statName[s];
             inOutput("\n스탯을 강화할 포인트를 입력하세요:", point);
@@ -36,11 +36,9 @@ Player* Screen::initPlayer() {
             if (clear_input(point <= remainPoint && point >= 0)) break;
             std::cout << "\n입력값 및 잔여 포인트를 확인하세요";
         }
-        player->status.setStatus(s, player->status.getStatus(s) + point);
-        player->status.setStatusRemain(remainPoint - point);
+        _player->status.setStatus(s, _player->status.getStatus(s) + point);
+        _player->status.setStatusRemain(remainPoint - point);
     }
-    return player;
-
 }
 
 //void Screen::topInfo(const Player& _player) {

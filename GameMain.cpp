@@ -1,14 +1,12 @@
 ﻿#include<iostream>
 #include<string>
-
 #include"Player.h"
 #include"Monster.h"
 #include"Screen.h"
 
 int main() {
-	Screen* mainScreen = new Screen;
-	Player* player= mainScreen->initPlayer();;
+	Screen mainScreen = Screen();
+	Player player = Player();
+	mainScreen.initPlayer(&player);
 	
-	delete player;
-	delete mainScreen;
 }

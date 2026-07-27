@@ -47,7 +47,7 @@ public:
     void topInfo(const Player& _player);//플레이어 이름,레벨, 경험치, 스테이터스
     //std::string midInfo(Event _event ,Choice _choice);//현재 발생중인 이벤트 및 선택지
     //std::string botInfo(const Player& _player);//플레이어의 체력및 장비, 아이템
-    Player* initPlayer();
+    void initPlayer(Player *_player);
     //void showScreen(std::string _top, std::string _mid, std::string _bot);
 };
 
