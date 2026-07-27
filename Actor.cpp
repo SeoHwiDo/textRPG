@@ -54,6 +54,19 @@ bool Actor::isPotionEmpty(PotionType type) const{
 		return false;
 }
 
+void Actor::setEquipment(bool isChange, Equipment equip){
+	if (isChange) {
+		equipSlot[equip.getType()] = equip;
+	}
+}
+
+
+
+bool Actor::isAlive() const
+{
+	return this->hp > 0 ? true : false;
+}
+
 
 
 

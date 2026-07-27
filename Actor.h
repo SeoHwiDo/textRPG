@@ -38,7 +38,7 @@ protected:
 	int lv;//레벨
 	int exp;//경험치
 	int gold;//골드
-	std::unique_ptr<Equipment> equip[2];
+	std::unique_ptr<Equipment> equipSlot[2];
 	PotionSlot potionSlot[2];
 public:
 	Status status;
@@ -78,4 +78,9 @@ public:
 	void setPotion(PotionType type, int code);
 	PotionSlot PotionSlotgetPotion(PotionType type) const;
 	bool isPotionEmpty(PotionType type) const;
+
+	void setEquipment(bool isChange, Equipment equip);
+	Equipment getEquipment(EquipType type) const;
+
+	bool isAlive() const;
 };
