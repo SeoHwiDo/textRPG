@@ -25,7 +25,6 @@ void Screen::initPlayer(Player* _player) {
     _player = new Player(name);
 
     int point;
-    Status::stat;
     for (Status::statusType s : Status::stat) {
         if (s == Status::REMAIN) break;
         int remainPoint = _player->status.getStatusRemain();
