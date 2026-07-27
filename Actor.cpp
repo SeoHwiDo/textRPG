@@ -1,6 +1,7 @@
 ﻿#include"Actor.h"
 #include"Player.h"
 
+Actor::Actor() {}
 Actor::Actor(std::string _name) :name(_name) {
 	this->hp = HP_MIN;
 	this->power = POWER_MIN;

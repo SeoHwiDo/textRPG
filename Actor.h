@@ -17,7 +17,7 @@ public:
 	const unsigned int GOLD_MIN = 0;
 	
 private:
-	std::string name;//이름
+	std::string name="noname";//이름
 	unsigned int hp;//체력
 	unsigned int power;//공격력
 	unsigned int critical;//치명타확률
@@ -25,6 +25,7 @@ private:
 	unsigned int exp;//경험치
 	unsigned int gold;//골드
 public:
+	Actor();
 	Actor(std::string _name);
 	virtual ~Actor();//상속받은 클래스들의 소멸을 위해 virtual로 선언
 
