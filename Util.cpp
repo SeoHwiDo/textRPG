@@ -21,13 +21,12 @@ bool Util::check_versus_success(const int _myPercent, const int _enemyPercent) {
     return dist(gen);
 }
 
-bool Util::check_success(int _myPercent) {
+bool Util::check_success(const int _myPercent) {
 
-    double p = stat;
-    if (p < 0.0) p = 0.0;
-    else if (p > 1.0) p = 1.0;
+    double myRegulaizedPercent = std::max(0.0, std::min(1.0, static_cast<double>(_myPercent) / 100.0));
+    double success_rate = std::max(0.0, std::min(1.0, success_rate)); // 성공률을 0과 1 사이로 제한
 
     thread_local static std::mt19937 gen((std::random_device())());
-    std::bernoulli_distribution dist(p);
+    std::bernoulli_distribution dist(success_rate);
     return dist(gen);
 }
