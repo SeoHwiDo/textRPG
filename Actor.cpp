@@ -54,10 +54,21 @@ bool Actor::isPotionEmpty(PotionType type) const{
 		return false;
 }
 
-void Actor::setEquipment(bool isChange, Equipment equip){
-	if (isChange) {
-		equipSlot[equip.getType()] = equip;
+void Actor::setEquipment(bool isChange, std::unique_ptr<Equipment> newEquip){
+	if (isChange && newEquip != nullptr) {
+		// 완성된 장비 객체의 소유권만 슬롯으로 이전
+		equipSlot[newEquip->getType()] = std::move(newEquip);
 	}
+}
+
+Equipment Actor::getEquipment(EquipType type) const
+{
+	return 
+}
+
+bool Actor::isEquipmentEmpty(EquipType type) const
+{
+	return false;
 }
 
 

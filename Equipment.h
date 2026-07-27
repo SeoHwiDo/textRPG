@@ -14,7 +14,7 @@ protected:
 	int lv;
 public:
 	Equipment(std::shared_ptr<const EquipmentData> _data);
-	//Equipment& operator=(const Equipment& equip);
+	Equipment& operator=(const Equipment& equip);
 	~Equipment();
 	std::string getName() const;
 	void setName(const std::string& _name);

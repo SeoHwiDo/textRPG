@@ -78,9 +78,11 @@ public:
 	void setPotion(PotionType type, int code);
 	PotionSlot PotionSlotgetPotion(PotionType type) const;
 	bool isPotionEmpty(PotionType type) const;
-
-	void setEquipment(bool isChange, Equipment equip);
+	
+	//장비 교체
+	void setEquipment(bool isChange, std::unique_ptr<Equipment> newEquip);
 	Equipment getEquipment(EquipType type) const;
+	bool isEquipmentEmpty(EquipType type) const;
 
 	bool isAlive() const;
 };
