@@ -1,8 +1,8 @@
 ﻿#include"Actor.h"
 #include"Player.h"
 
-Actor::Actor() :name("noname"),hp(HP_MIN), power(POWER_MIN),defend(DEFEND_MIN), critical(CRITICAL_MIN), lv(LV_MIN), exp(EXP_MIN), gold(GOLD_MIN) {}
-Actor::Actor(std::string _name) :name(_name), hp(HP_MIN), power(POWER_MIN), defend(DEFEND_MIN), critical(CRITICAL_MIN), lv(LV_MIN), exp(EXP_MIN), gold(GOLD_MIN) {}
+Actor::Actor() :name("noname"),hp(HP_MIN),mp(MP_MIN), power(POWER_MIN), defend(DEFEND_MIN), critical(CRITICAL_MIN), lv(LV_MIN), exp(EXP_MIN), gold(GOLD_MIN) {}
+Actor::Actor(std::string _name) :name(_name), hp(HP_MIN), mp(MP_MIN), power(POWER_MIN), defend(DEFEND_MIN), critical(CRITICAL_MIN), lv(LV_MIN), exp(EXP_MIN), gold(GOLD_MIN) {}
 Actor::~Actor() {}
 
 //##########################[ getter,setter ]#########################################
@@ -11,6 +11,9 @@ void Actor::setName(const std::string& _name) { this->name = _name; }
 
 int Actor::getHp() const { return this->hp; }
 void Actor::setHp(const int _hp) { this->hp = std::max(HP_MIN, _hp); }
+
+int Actor::getMp() const { return this->mp; }
+void Actor::setMp(const int _mp) { this->mp = std::max(MP_MIN, _mp); }
 
 int Actor::getPower() const { return this->power; }
 void Actor::setPower(const int _power) { this->power = std::max(0, _power); }

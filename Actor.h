@@ -9,6 +9,8 @@ class Actor {
 public:
 	const int HP_MIN = 10;
 
+	const int MP_MIN = 10;
+
 	const int POWER_MIN = 0;
 
 	const int DEFEND_MIN = 0;
@@ -29,6 +31,7 @@ public:
 protected:
 	std::string name;//이름
 	int hp;//체력
+	int mp;//마나
 	int power;//공격력
 	int defend;
 	int critical;//치명타확률
@@ -49,6 +52,9 @@ public:
 
 	int getHp() const;
 	void setHp(const int _hp);
+
+	int getMp() const;
+	void setMp(const int _mp);
 
 	int getPower() const;
 	void setPower(const int _power);
