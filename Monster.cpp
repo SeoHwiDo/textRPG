@@ -1,13 +1,13 @@
 ﻿#include"Monster.h"
 
 Monster::Monster(std::string _name) :Actor(_name) {
-	for (Status::statusType s:Status::stat) {
-		monsterStatus.setStatus(s, monsterStatus.STAT_MIN);
+	for (Status::statusType s: status.stat) {
+		status.setStatus(s, status.STAT_MIN);
 	}
 }
 
 Monster::Monster(std::string _name,int stat[5]) :Actor(_name) {
-	monsterStatus.setStatus(stat);
+	status.setStatus(stat);
 }
 Monster::~Monster() {}
 
