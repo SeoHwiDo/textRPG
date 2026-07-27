@@ -44,6 +44,11 @@ public:
     template<typename T>
     void inOutput(std::string _message, T& _inoutVar);
     bool clear_input(bool check);
+    void clearScreen() {
+        // \033[2J : 전체 화면 지우기
+        // \033[1;1H : 커서를 1행 1열(좌측 상단)로 이동
+        std::cout << "\033[2J\033[1;1H";
+    }
     void topInfo(const Player& _player);//플레이어 이름,레벨, 경험치, 스테이터스
     //std::string midInfo(Event _event ,Choice _choice);//현재 발생중인 이벤트 및 선택지
     //std::string botInfo(const Player& _player);//플레이어의 체력및 장비, 아이템

@@ -32,7 +32,7 @@ void Screen::initPlayer(Player* _player) {
         while (1) {
             std::cout << "\n잔여포인트: " << remainPoint << "\n " << Status::statName[s];
             inOutput("\n스탯을 강화할 포인트를 입력하세요:", point);
-            system("cls");
+            clearScreen();
             if (clear_input(point <= remainPoint && point >= 0)) break;
             std::cout << "\n입력값 및 잔여 포인트를 확인하세요";
         }
