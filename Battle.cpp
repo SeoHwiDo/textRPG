@@ -91,9 +91,14 @@ void Battle::doPlayerTurn(const int choice)
 	}
 }
 
+void Battle::battleReward()
+{
+	if(_monster.getEquipment(WEAPON)!=nullptr)
+}
+
 void Battle::judgeBattleResult(){
 	if (_player.isAlive()) {
-		_player.
+		
 	}
 }
 

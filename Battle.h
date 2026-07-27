@@ -36,6 +36,8 @@ public:
 	void doMonsterTurn();
 	//플레이어가 선택한 플레이어행동
 	void doPlayerTurn(const int choice);
+	//보상지급
+	void battleReward();
 	//전투 결과
 	void judgeBattleResult();
 };
