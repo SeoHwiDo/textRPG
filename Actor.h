@@ -1,25 +1,33 @@
 ﻿#pragma once
 #include<string>
+#include<memory>
+#include<map>
 #include"Status.h"
+#include"Equipment.h"
+#include"Potion.h"
 class Actor {
 public:
-	const  int HP_MIN = 10;
+	const int HP_MIN = 10;
 
-	const  int POWER_MIN = 0;
+	const int POWER_MIN = 0;
 
-	const  int DEFEND_MIN = 0;
+	const int DEFEND_MIN = 0;
 
-	const  int CRITICAL_MIN = 0;
+	const int CRITICAL_MIN = 0;
 
-	const  int LV_MIN = 0;
+	const int LV_MIN = 0;
 
-	const  int EXP_MIN = 0;
-	const  int EXP_MAX = 100;
+	const int EXP_MIN = 0;
+	const int EXP_MAX = 100;
 
-	const  int GOLD_MIN = 0;
-
+	const int GOLD_MIN = 0;
+	struct PotionSlot
+	{
+		std::shared_ptr<PotionData> potion;
+		int num;
+	};
 protected:
-	std::string name = "noname";//이름
+	std::string name;//이름
 	int hp;//체력
 	int power;//공격력
 	int defend;
@@ -27,6 +35,8 @@ protected:
 	int lv;//레벨
 	int exp;//경험치
 	int gold;//골드
+	std::unique_ptr<Equipment> equip[2];
+	PotionSlot potionSlot[2];
 public:
 	Status status;
 
@@ -58,4 +68,8 @@ public:
 	int getGold()const;
 	void setGold(const int _gold);
 
+	void addPotion(PotionType type, int num);
+	void setPotion(PotionType type, int code);
+	PotionSlot PotionSlotgetPotion(PotionType type) const;
+	bool isPotionEmpty(PotionType type) const;
 };

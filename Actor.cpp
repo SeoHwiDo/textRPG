@@ -1,8 +1,8 @@
 ﻿#include"Actor.h"
 #include"Player.h"
 
-Actor::Actor() :hp(HP_MIN), power(POWER_MIN), critical(CRITICAL_MIN), lv(LV_MIN), exp(EXP_MIN), gold(GOLD_MIN) {}
-Actor::Actor(std::string _name) :name(_name), hp(HP_MIN), power(POWER_MIN), critical(CRITICAL_MIN), lv(LV_MIN), exp(EXP_MIN), gold(GOLD_MIN) {}
+Actor::Actor() :name("noname"),hp(HP_MIN), power(POWER_MIN),defend(DEFEND_MIN), critical(CRITICAL_MIN), lv(LV_MIN), exp(EXP_MIN), gold(GOLD_MIN) {}
+Actor::Actor(std::string _name) :name(_name), hp(HP_MIN), power(POWER_MIN), defend(DEFEND_MIN), critical(CRITICAL_MIN), lv(LV_MIN), exp(EXP_MIN), gold(GOLD_MIN) {}
 Actor::~Actor() {}
 
 //##########################[ getter,setter ]#########################################
@@ -30,6 +30,27 @@ void Actor::setExp(const int _exp) { this->exp = std::max(0, _exp); }
 
 int Actor::getGold()const { return this->gold; }
 void Actor::setGold(const int _gold) { this->gold = std::max(0, _gold); }
+
+void Actor::addPotion(PotionType type, int num){
+	potionSlot[type].num += num;
+}
+
+void Actor::setPotion(PotionType type, int code){
+	potionSlot[type].potion = Potion::GetPotionData(code);
+}
+Actor::PotionSlot Actor::PotionSlotgetPotion(PotionType type)const {
+	return potionSlot[type];
+}
+
+bool Actor::isPotionEmpty(PotionType type) const{
+	if (potionSlot[type].potion == nullptr || potionSlot[type].num <= 0) {
+		//잔여가 없음
+		return true;
+	}
+	else
+		return false;
+}
+
 
 
 

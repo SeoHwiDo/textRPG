@@ -1,19 +1,19 @@
 ﻿#pragma once
 #include<string>
-
-class Equipment {
-public:
-	enum EquipType { WEAPON, SHILD };
-
-private:
+enum EquipType { WEAPON, SHILD };
+struct EquipmentData {
 	std::string name;
 	EquipType type;
+	int baseStat;
+};
+class Equipment {
+
+protected:
+	std::shared_ptr<const EquipmentData> data;
 	int stat;
-	unsigned int price;
-	unsigned int lv;
+	int lv;
 public:
-	Equipment();
-	Equipment(const std::string& _name, const EquipType _type, const int _stat, const unsigned int _price, const unsigned int _lv);
+	Equipment(std::shared_ptr<const EquipmentData> _data);
 	~Equipment();
 	std::string getName() const;
 	void setName(const std::string& _name);
