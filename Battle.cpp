@@ -95,16 +95,18 @@ void Battle::battleReward(std::function<int(Actor::EquipSlot)> askChoiceCallback
 {
 	for (int i = 0; i < 2; ++i) {
 		if (!_monster.isEquipmentEmpty(i)) {
-		Actor::EquipSlot dropItem = _monster.getEquipment(i);
-		int choice = askChoiceCallback(dropItem);
-		if (choice == 1) {
-			_player.setEquipment(dropItem);
-		}
-		else if (choice == 2) {
-			// 현행 유지
+			Actor::EquipSlot dropItem = _monster.getEquipment(i);
+			int choice = askChoiceCallback(dropItem);
+			if (choice == 1) {
+				_player.setEquipment(dropItem);
+			}
+			else if (choice == 2) {
+				// 현행 유지
+			}
 		}
 	}
 }
+
 
 
 

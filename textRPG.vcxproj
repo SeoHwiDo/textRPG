@@ -130,7 +130,8 @@
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Potion.cpp" />
-    <ClCompile Include="Screen.cpp" />
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="Skill.cpp" />
     <ClCompile Include="Status.cpp" />
     <ClCompile Include="Util.cpp" />
   </ItemGroup>
@@ -138,15 +139,17 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Battle.h" />
     <ClInclude Include="Equipment.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Potion.h" />
-    <ClInclude Include="Screen.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Skill.h" />
     <ClInclude Include="Status.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="editorconfig .editorconfig" />
+    <None Include=".editorconfig" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

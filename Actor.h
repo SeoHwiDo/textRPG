@@ -23,6 +23,8 @@ public:
 	const int EXP_MAX = 100;
 
 	const int GOLD_MIN = 0;
+	//potion관리 슬롯
+	//item슬롯은 고정데이터값을 저장할 shared_ptr과 가변적인 데이터를 관리할 일반변수를 조합하여 대응
 	struct PotionSlot
 	{
 		std::shared_ptr<const PotionData> potion;
@@ -52,6 +54,8 @@ public:
 	Actor();
 	Actor(std::string _name);
 	virtual ~Actor();//상속받은 클래스들의 소멸을 위해 virtual로 선언
+	//액터 생존 여부
+	bool isAlive() const;
 
 	std::string getName() const;
 	void setName(const std::string& _name);
@@ -80,21 +84,25 @@ public:
 	int getGold()const;
 	void setGold(const int _gold);
 
+	//포션슬롯 한칸의 값을 모두 value로 전달
 	PotionSlot getPotion(int type) const;
+	//포션의 갯수
 	int getPotionNum(int type)const;
+	//포션의 갯수 증감
 	void addPotion(int type,int num);
+	//포션의 종류 변경
 	void setPotion(int code);
+	//포션이 비어있는지 확인
 	bool isPotionEmpty(int type) const;
 	
-	//장비 교체
+	//장비슬롯 한칸의 값을 모두 value로 전달
 	EquipSlot getEquipment(int type) const;
-
+	//장비변경-DBid또는 getEquipment로 전달받은 값을 그대로 전달
 	void setEquipment(int code);
 	void setEquipment(EquipSlot newEqip);
-
+	//장비가 비어있는지 확인
 	bool isEquipmentEmpty(int type) const;
-
+	//장비의 상태에 따라 Actor의 스탯 변동
 	void initEquipSlot();
 
-	bool isAlive() const;
 };
