@@ -1,13 +1,13 @@
-﻿#include"Screen.h"
+﻿#include"GameManager.h"
 #include "Util.h"
 
 
 template<typename T>
-void Screen::inOutput(std::string _message, T& _inoutVar) {
+void GameManager::inOutput(std::string _message, T& _inoutVar) {
     std::cout << _message;
     std::cin >> _inoutVar;
 }
-bool Screen::clear_input(bool check) {//입력 허용범위 검사
+bool GameManager::clear_input(bool check) {//입력 허용범위 검사
     if (!std::cin.fail() && check) return true;
     std::cin.clear();//오류상태 해제
     std::cin.ignore(1000, '\n');//clear buffer
@@ -15,7 +15,7 @@ bool Screen::clear_input(bool check) {//입력 허용범위 검사
 }
 
 
-void Screen::initPlayer(Player* _player) {
+void GameManager::initPlayer(Player* _player) {
     std::string name;
     while (1) {
         inOutput("이름을 입력하세요(6글자 이내):", name);

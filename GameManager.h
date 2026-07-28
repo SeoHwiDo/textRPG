@@ -26,15 +26,15 @@
 # 3.선택지                              #14
 # 4.선택지                              #15
 #########################################16
-# 체력: 000 | 무기: 이름이름이름     +0 #17
-# 마나: 000 | 방패: 이름이름이름     +0 #18
+# 체력: 000 | 무기: 이름이름이름    000 #17
+# 마나: 000 | 방패: 이름이름이름    000 #18
 # 골드: 000 | 체력포션: 0 | 체력포션: 0 #19
 #########################################20
 
 
 
 */
-class Screen {
+class GameManager {
 private:
     int WIDTH = 42;
     int HEIGHT = 20;
@@ -50,8 +50,8 @@ public:
         std::cout << "\033[2J\033[1;1H";
     }
     void topInfo(const Player& _player);//플레이어 이름,레벨, 경험치, 스테이터스
-    //std::string midInfo(Event _event ,Choice _choice);//현재 발생중인 이벤트 및 선택지
-    //std::string botInfo(const Player& _player);//플레이어의 체력및 장비, 아이템
+    std::string midInfo(const Content& _content);//현재 발생중인 이벤트 및 선택지
+    std::string botInfo(const Player& _player);//플레이어의 체력및 장비, 아이템
     void initPlayer(Player *_player);
     //void showScreen(std::string _top, std::string _mid, std::string _bot);
 };

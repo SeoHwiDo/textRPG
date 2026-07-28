@@ -2,11 +2,11 @@
 #include<string>
 #include"Player.h"
 #include"Monster.h"
-#include"Screen.h"
+#include"GameManager.h"
 
 int main() {
-	Screen mainScreen = Screen();
+	GameManager gm = GameManager();
 	Player player = Player();
-	mainScreen.initPlayer(&player);
+	gm.initPlayer(&player);
 	
 }
