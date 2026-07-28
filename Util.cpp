@@ -30,3 +30,39 @@ bool Util::check_success(const int _myPercent) {
     std::bernoulli_distribution dist(success_rate);
     return dist(gen);
 }
+
+int Util::makeID(SkillOwner owner, SkillType type, int uniqueNum) {
+    return static_cast<int>(CategoryPrefix::SKILL) +
+        static_cast<int>(owner) +
+        static_cast<int>(type) +
+        uniqueNum;
+}
+
+int Util::makeID(EquipType type, EquipGrade grade) {
+    return static_cast<int>(CategoryPrefix::EQUIP) +
+        static_cast<int>(type) +
+        static_cast<int>(grade);
+}
+
+int Util::makeID(PotionType type, PotionGrade grade) {
+    return static_cast<int>(CategoryPrefix::POTION) +
+        static_cast<int>(type) +
+        static_cast<int>(grade);
+}
+
+// ID 파싱 (천의 자리를 구하기 위해 1000으로 나눔)
+Util::CategoryPrefix Util::GetMainCategory(int id) {
+    int prefix = (id / 1000) * 1000;
+    return static_cast<CategoryPrefix>(prefix);
+}
+
+// 스킬 ID 중 백의 자리가 0인지 100인지 판별
+bool Util::IsPlayerSkill(int id) {
+    if (GetMainCategory(id) != CategoryPrefix::SKILL) return false;
+
+    // 1000을 나눈 나머지(0~999)에서, 다시 100으로 나눈 몫을 구함
+    // 1032 % 1000 = 32 -> 32 / 100 = 0 (플레이어)
+    // 1132 % 1000 = 132 -> 132 / 100 = 1 (몬스터)
+    int ownerDigit = (id % 1000) / 100;
+    return ownerDigit == 0;
+}
