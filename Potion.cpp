@@ -1,15 +1,14 @@
 ﻿#include "Potion.h"
+using namespace Util;
 // 00=체력 10=마나
 //0=하급 1=중급 2=상급
 void Potion::InitDB(){
 	
-	itemDB[00] = std::make_shared<PotionData>(PotionData{ HP, "하급 체력 포션", 0, 50 });
-	itemDB[10] = std::make_shared<PotionData>(PotionData{ MP, "하급 마나 포션" , 0, 30});
-
-	itemDB[01] = std::make_shared<PotionData>(PotionData{ HP, "중급 체력 포션", 1, 100 });
-	itemDB[11] = std::make_shared<PotionData>(PotionData{ MP, "중급 마나 포션" , 1, 60 });
-
-	itemDB[02] = std::make_shared<PotionData>(PotionData{ HP, "상급 체력 포션", 2, 200 });
-	itemDB[12] = std::make_shared<PotionData>(PotionData{ MP, "상급 마나 포션" , 2, 120 });
+	itemDB[makeID(PotionType::HP,PotionGrade::LOW)] = std::make_shared<PotionData>(PotionData{ PotionType::HP, "하급 체력 포션", PotionGrade::LOW, 50 });
+	itemDB[makeID(PotionType::MP,PotionGrade::LOW)] = std::make_shared<PotionData>(PotionData{ PotionType::MP, "하급 마나 포션", PotionGrade::LOW, 30 });
+	itemDB[makeID(PotionType::HP,PotionGrade::MID)] = std::make_shared<PotionData>(PotionData{ PotionType::HP, "중급 체력 포션", PotionGrade::MID, 100 });
+	itemDB[makeID(PotionType::MP,PotionGrade::MID)] = std::make_shared<PotionData>(PotionData{ PotionType::MP, "중급 마나 포션", PotionGrade::MID, 60 });
+	itemDB[makeID(PotionType::HP,PotionGrade::HIGH)] = std::make_shared<PotionData>(PotionData{ PotionType::HP, "상급 체력 포션", PotionGrade::HIGH, 200 });
+	itemDB[makeID(PotionType::MP,PotionGrade::HIGH)] = std::make_shared<PotionData>(PotionData{ PotionType::MP, "상급 마나 포션", PotionGrade::HIGH, 120 });
 }
 

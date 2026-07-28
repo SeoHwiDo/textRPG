@@ -1,15 +1,16 @@
 ﻿#include "Equipment.h"
 #include "Util.h"
+using namespace Util;
 //00=검 10=방패
 //00=하급 01=중급 02=상급
 void Equipment::InitDB() {
-	itemDB[00] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"낡은 검",0,10 });
-	itemDB[01] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"좋은 검",1,30 });
-	itemDB[02] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"전설 검",2,100 });
+	itemDB[makeID(EquipType::SWORD,EquipGrade::LOW)] = std::make_shared<EquipmentData>(EquipmentData{EquipType::SWORD,"낡은 검",EquipGrade::LOW,10});
+	itemDB[makeID(EquipType::SWORD, EquipGrade::MID)] = std::make_shared<EquipmentData>(EquipmentData{ EquipType::SWORD,"좋은 검",EquipGrade::MID,30 });
+	itemDB[makeID(EquipType::SWORD, EquipGrade::HIGH)] = std::make_shared<EquipmentData>(EquipmentData{ EquipType::SWORD,"전설 검",EquipGrade::HIGH,100 });
 
-	itemDB[10] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"낡은 방패",0,5 });
-	itemDB[11] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"좋은 방패",1,20});
-	itemDB[12] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"전설 방패",2,80});
+	itemDB[makeID(EquipType::SHIELD,EquipGrade::LOW)] = std::make_shared<EquipmentData>(EquipmentData{ EquipType::SHIELD,"낡은 방패",EquipGrade::LOW,5 });
+	itemDB[makeID(EquipType::SHIELD,EquipGrade::MID)] = std::make_shared<EquipmentData>(EquipmentData{ EquipType::SHIELD,"좋은 방패",EquipGrade::MID,20});
+	itemDB[makeID(EquipType::SHIELD,EquipGrade::HIGH)] = std::make_shared<EquipmentData>(EquipmentData{ EquipType::SHIELD,"전설 방패",EquipGrade::HIGH,80});
 
 }
 
