@@ -34,16 +34,24 @@ void Actor::setExp(const int _exp) { this->exp = std::max(0, _exp); }
 int Actor::getGold()const { return this->gold; }
 void Actor::setGold(const int _gold) { this->gold = std::max(0, _gold); }
 
+Actor::PotionSlot Actor::getPotion(PotionType type) const
+{
+	return potionSlot[type];
+}
+
+int Actor::getPotionNum(PotionType type) const
+{
+	return potionSlot[type].num;
+
+}
+
 void Actor::addPotion(PotionType type, int num){
 	potionSlot[type].num += num;
 }
+void Actor::setPotion(int code){
+	potionSlot[code/10].potion = Potion::getItemData(code);
+}
 
-void Actor::setPotion(PotionType type, int code){
-	potionSlot[type].potion = Potion::GetPotionData(code);
-}
-Actor::PotionSlot Actor::PotionSlotgetPotion(PotionType type)const {
-	return potionSlot[type];
-}
 
 bool Actor::isPotionEmpty(PotionType type) const{
 	if (potionSlot[type].potion == nullptr || potionSlot[type].num <= 0) {
@@ -54,21 +62,18 @@ bool Actor::isPotionEmpty(PotionType type) const{
 		return false;
 }
 
-void Actor::setEquipment(bool isChange, std::unique_ptr<Equipment> newEquip){
-	if (isChange && newEquip != nullptr) {
-		// 완성된 장비 객체의 소유권만 슬롯으로 이전
-		equipSlot[newEquip->getType()] = std::move(newEquip);
-	}
+Actor::EquipSlot Actor::getEquipment(EquipType type) const
+{
+	return equipSlot[type];
 }
 
-Equipment Actor::getEquipment(EquipType type) const
-{
-	return 
+void Actor::setEquipment(int code){
+	equipSlot[code / 10] = Equipment::getItemData(code);
 }
 
 bool Actor::isEquipmentEmpty(EquipType type) const
 {
-	return false;
+	return equipSlot[type / 10] == nullptr;
 }
 
 

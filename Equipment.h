@@ -11,11 +11,6 @@ struct EquipmentData {
 	int baseStat;
 };
 class Equipment :public Item<EquipmentData>{
-private:
-
 public:
-
 	static void InitDB();
-	
-	bool isBetterEquipment()const;
 };

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include<string>
 #include <memory>
 #include <map>
@@ -11,13 +11,13 @@ protected:
 public:
 	static void initDB();
 
-	static std::shared_ptr<const T> GetItemData(int id)
+	static std::shared_ptr<const T> getItemData(int id)
 	{
 		auto it = itemDB.find(id);
 		if (it != itemDB.end()) {
 			return it->second;
 		}
-		return nullptr; // Ã£Áö ¸øÇßÀ» °æ¿ì
+		return nullptr; // ì°¾ì§€ ëª»í–ˆì„ ê²½ìš°
 	}
 };
 template <typename T>

@@ -3,15 +3,19 @@
 //10=검 20=방패
 //01=하급 02=중급 03=상급
 void Equipment::InitDB() {
-	itemDB[11] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"낡은 검",1,10 });
-	itemDB[12] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"좋은 검",2,30 });
-	itemDB[13] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"전설 검",3,100 });
+	itemDB[00] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"낡은 검",0,10 });
+	itemDB[01] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"좋은 검",1,30 });
+	itemDB[02] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"전설 검",2,100 });
 
-	itemDB[21] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"낡은 방패",1,5 });
-	itemDB[22] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"좋은 방패",1,20});
-	itemDB[23] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"전설 방패",1,80});
+	itemDB[10] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"낡은 방패",0,5 });
+	itemDB[11] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"좋은 방패",1,20});
+	itemDB[12] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"전설 방패",2,80});
 
 }
+
+
+
+
 
 
 

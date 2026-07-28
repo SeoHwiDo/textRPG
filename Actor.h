@@ -25,8 +25,14 @@ public:
 	const int GOLD_MIN = 0;
 	struct PotionSlot
 	{
-		std::shared_ptr<PotionData> potion;
+		std::shared_ptr<const PotionData> potion;
 		int num;
+	};
+	struct EquipSlot
+	{
+		std::shared_ptr<const EquipmentData> equip;
+		int lv;//강화율은 플레이어에 귀속,현재 equip이 바라보는 데이터에 따라 변경
+		int stat;
 	};
 protected:
 	std::string name;//이름
@@ -38,7 +44,7 @@ protected:
 	int lv;//레벨
 	int exp;//경험치
 	int gold;//골드
-	std::unique_ptr<Equipment> equipSlot[2];
+	EquipSlot equipSlot[2];
 	PotionSlot potionSlot[2];
 public:
 	Status status;
@@ -74,14 +80,15 @@ public:
 	int getGold()const;
 	void setGold(const int _gold);
 
-	void addPotion(PotionType type, int num);
-	void setPotion(PotionType type, int code);
-	PotionSlot PotionSlotgetPotion(PotionType type) const;
+	PotionSlot getPotion(PotionType type) const;
+	int getPotionNum(PotionType type)const;
+	void addPotion(PotionType type,int num);
+	void setPotion(int code);
 	bool isPotionEmpty(PotionType type) const;
 	
 	//장비 교체
-	void setEquipment(bool isChange, std::unique_ptr<Equipment> newEquip);
-	Equipment getEquipment(EquipType type) const;
+	EquipSlot getEquipment(EquipType type) const;
+	void setEquipment(int code);
 	bool isEquipmentEmpty(EquipType type) const;
 
 	bool isAlive() const;
