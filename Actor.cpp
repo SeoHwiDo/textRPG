@@ -34,18 +34,18 @@ void Actor::setExp(const int _exp) { this->exp = std::max(0, _exp); }
 int Actor::getGold()const { return this->gold; }
 void Actor::setGold(const int _gold) { this->gold = std::max(0, _gold); }
 
-Actor::PotionSlot Actor::getPotion(PotionType type) const
+Actor::PotionSlot Actor::getPotion(int type) const
 {
 	return potionSlot[type];
 }
 
-int Actor::getPotionNum(PotionType type) const
+int Actor::getPotionNum(int type) const
 {
 	return potionSlot[type].num;
 
 }
 
-void Actor::addPotion(PotionType type, int num){
+void Actor::addPotion(int type, int num){
 	potionSlot[type].num += num;
 }
 void Actor::setPotion(int code){
@@ -53,7 +53,7 @@ void Actor::setPotion(int code){
 }
 
 
-bool Actor::isPotionEmpty(PotionType type) const{
+bool Actor::isPotionEmpty(int type) const{
 	if (potionSlot[type].potion == nullptr || potionSlot[type].num <= 0) {
 		//잔여가 없음
 		return true;
@@ -62,20 +62,29 @@ bool Actor::isPotionEmpty(PotionType type) const{
 		return false;
 }
 
-Actor::EquipSlot Actor::getEquipment(EquipType type) const
+Actor::EquipSlot Actor::getEquipment(int type) const
 {
 	return equipSlot[type];
 }
 
 void Actor::setEquipment(int code){
-	equipSlot[code / 10] = Equipment::getItemData(code);
+	equipSlot[code / 10].equip = Equipment::getItemData(code);
+}
+void Actor::setEquipment(Actor::EquipSlot newEquip) {
+		equipSlot[newEquip.equip.get()->type]= newEquip;
 }
 
 bool Actor::isEquipmentEmpty(EquipType type) const
 {
-	return equipSlot[type / 10] == nullptr;
+	return equipSlot[type].equip == nullptr;
 }
-
+bool Actor::isEquipmentEmpty(int type) const
+{
+	return equipSlot[type].equip == nullptr;
+}
+void Actor::initEquipSlot() {
+	equipSlot[WEAPON].stat = equipSlot[WEAPON].equip.get()->baseStat;
+}
 
 
 bool Actor::isAlive() const

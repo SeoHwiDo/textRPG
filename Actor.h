@@ -80,16 +80,21 @@ public:
 	int getGold()const;
 	void setGold(const int _gold);
 
-	PotionSlot getPotion(PotionType type) const;
-	int getPotionNum(PotionType type)const;
-	void addPotion(PotionType type,int num);
+	PotionSlot getPotion(int type) const;
+	int getPotionNum(int type)const;
+	void addPotion(int type,int num);
 	void setPotion(int code);
-	bool isPotionEmpty(PotionType type) const;
+	bool isPotionEmpty(int type) const;
 	
 	//장비 교체
-	EquipSlot getEquipment(EquipType type) const;
+	EquipSlot getEquipment(int type) const;
+
 	void setEquipment(int code);
-	bool isEquipmentEmpty(EquipType type) const;
+	void setEquipment(EquipSlot newEqip);
+
+	bool isEquipmentEmpty(int type) const;
+
+	void initEquipSlot();
 
 	bool isAlive() const;
 };
