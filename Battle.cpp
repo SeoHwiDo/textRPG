@@ -91,16 +91,21 @@ void Battle::doPlayerTurn(const int choice)
 	}
 }
 
-void Battle::battleReward()
+void Battle::battleReward(std::function<int(Actor::EquipSlot)> askChoiceCallback)
 {
-	if(_monster.getEquipment(WEAPON)!=nullptr)
-}
-
-void Battle::judgeBattleResult(){
-	if (_player.isAlive()) {
-		
+	for (int i = 0; i < 2; ++i) {
+		if (!_monster.isEquipmentEmpty(i)) {
+		Actor::EquipSlot dropItem = _monster.getEquipment(i);
+		int choice = askChoiceCallback(dropItem);
+		if (choice == 1) {
+			_player.setEquipment(dropItem);
+		}
+		else if (choice == 2) {
+			// 현행 유지
+		}
 	}
 }
+
 
 
 

@@ -36,10 +36,8 @@ public:
 	void doMonsterTurn();
 	//플레이어가 선택한 플레이어행동
 	void doPlayerTurn(const int choice);
-	//��������
-	void battleReward();
-	//���� ���
 	//보상지급
+	void battleReward(std::function<int(Actor::EquipSlot)> askChoiceCallback);
 	//전투 결과
 	void judgeBattleResult();
 };
