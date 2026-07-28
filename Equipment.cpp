@@ -1,7 +1,7 @@
 ﻿#include "Equipment.h"
 #include "Util.h"
-//10=검 20=방패
-//01=하급 02=중급 03=상급
+//00=검 10=방패
+//00=하급 01=중급 02=상급
 void Equipment::InitDB() {
 	itemDB[00] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"낡은 검",0,10 });
 	itemDB[01] = std::make_shared<EquipmentData>(EquipmentData{ WEAPON,"좋은 검",1,30 });

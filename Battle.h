@@ -1,9 +1,9 @@
-#pragma once
+ï»¿#pragma once
 #include "Player.h"
 #include"Monster.h"
 #include"Actor.h"
 #include<memory>
-//ÀüÅõ °ü·Ã ÇÔ¼öµéÀ» ¸ğ¾Æ³õÀº ³×ÀÓ½ºÆäÀÌ½º
+#include<functional>
 
 class Battle
 {
@@ -21,24 +21,26 @@ public:
 
 	bool crticalCheck(Actor& _actor);
 
-	//µµ¸ÁÄ¡±â »ç¿ë
+	//ë„ë§ì¹˜ê¸° ì‚¬ìš©
 	bool doRunOut(Actor& _attacker, Actor& _defender);
-	//°ø°İ »ç¿ë
+	//ê³µê²© ì‚¬ìš©
 	void doAttack(Actor& _attacker, Actor& _defender);
-	//±â¼ú »ç¿ë
+	//ê¸°ìˆ  ì‚¬ìš©
 	void doSkill(Actor& _attacker, Actor& _defender);
-	//Æ÷¼Ç »ç¿ë
+	//í¬ì…˜ ì‚¬ìš©
 	void doPotion(Actor& _actor, PotionType _potion);
 
-	////°ø¼ö±³Ã¼
+	////ê³µìˆ˜êµì²´
 	//void turnSwap();
-	//¸ó½ºÅÍ Çàµ¿
+	//ëª¬ìŠ¤í„° í–‰ë™
 	void doMonsterTurn();
-	//ÇÃ·¹ÀÌ¾î°¡ ¼±ÅÃÇÑ ÇÃ·¹ÀÌ¾îÇàµ¿
+	//í”Œë ˆì´ì–´ê°€ ì„ íƒí•œ í”Œë ˆì´ì–´í–‰ë™
 	void doPlayerTurn(const int choice);
-	//º¸»óÁö±Ş
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	void battleReward();
-	//ÀüÅõ °á°ú
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	//ë³´ìƒì§€ê¸‰
+	//ì „íˆ¬ ê²°ê³¼
 	void judgeBattleResult();
 };
 

@@ -1,4 +1,4 @@
-#include "Battle.h"
+ï»¿#include "Battle.h"
 #include"Util.h"
 bool Battle::crticalCheck(Actor& _actor)
 {
@@ -13,7 +13,7 @@ bool Battle::missCheck(Actor& _attacker, Actor& _defender)
 }
 int Battle::DamageCalculation(Actor& _attacker, Actor& _defender)
 {
-	//Å©¸®Æ¼ÄÃ ÆÇ´ÜÇØ¼­ °ø°Ýµ¥¹ÌÁö °è»ê
+	//í¬ë¦¬í‹°ì»¬ íŒë‹¨í•´ì„œ ê³µê²©ë°ë¯¸ì§€ ê³„ì‚°
 	int attackPower = crticalCheck(_attacker) ? _attacker.getPower() * 2 : _attacker.getPower();
 	return attackPower;
 }
@@ -33,7 +33,7 @@ void Battle::doAttack(Actor& _attacker, Actor& _defender)
 
 void Battle::doSkill(Actor& _attacker, Actor& _defender)
 {
-	//½ºÅ³ °ü·Ã json¶Ç´Â Å¬·¡½º,½ºÆ®·°Æ®¸¦ ¸¸µé¾î¼­ °ü¸®
+	//ìŠ¤í‚¬ ê´€ë ¨ jsonë˜ëŠ” í´ëž˜ìŠ¤,ìŠ¤íŠ¸ëŸ­íŠ¸ë¥¼ ë§Œë“¤ì–´ì„œ ê´€ë¦¬
 }
 
 void Battle::doPotion(Actor& _actor, PotionType _potion)
@@ -45,12 +45,12 @@ void Battle::doPotion(Actor& _actor, PotionType _potion)
 		{
 		case HP:
 			int prevHp = _actor.getHp();
-			_actor.setHp(prevHp + _actor.PotionSlotgetPotion(HP).potion->amount);
+			_actor.setHp(prevHp + _actor.getPotion(HP).potion.get()->amount);
 			_actor.addPotion(HP,-1);
 			break;
 		case MP:
 			int prevMp = _actor.getMp();
-			_actor.setMp(prevMp + _actor.PotionSlotgetPotion(MP).potion->amount);
+			_actor.setMp(prevMp + _actor.getPotion(MP).potion.get()->amount);
 			_actor.addPotion(MP, -1);
 			break;
 		default:
