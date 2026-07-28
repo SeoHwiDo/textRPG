@@ -25,4 +25,20 @@ void Skill::initDB() {
 		}	
 	};
 	skillDB[makeID(SkillOwner::PLAYER, SkillType::ATTACK, 0)] = powerShot;
+
+	std::shared_ptr<SkillData> clowSwipeing = std::make_shared<SkillData>();
+	clowSwipeing->name = "할퀴기";
+	clowSwipeing->text = "3회 데미지를 줍니다.";
+	clowSwipeing->mp = 5;
+	clowSwipeing->effect = [](Actor& caster, std::vector<Actor*>& targets) {
+		if (targets.empty())return;
+		auto target = targets[0];
+		for (int i = 1; i <= 3;++i) {
+			int damage = Battle::doAttack
+			std::cout << target->getName() << "에게 " <<i<<"번째" << damage << "피해!\n";
+			int prevHp = target->getHp();
+			target->setHp(prevHp - damage);
+		}
+	}
+
 }
