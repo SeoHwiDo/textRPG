@@ -15,11 +15,11 @@ private:
 	//Actor& firstAttack;
 public:
 
-	int DamageCalculation(Actor& _attacker, Actor& _defender);
+	static int DamageCalculation(Actor& _attacker, Actor& _defender);
 
-	bool missCheck(Actor& _attacker, Actor& _defender);
+	static bool missCheck(Actor& _attacker, Actor& _defender);
 
-	bool crticalCheck(Actor& _actor);
+	static bool crticalCheck(Actor& _actor);
 
 	//도망치기 사용
 	bool doRunOut(Actor& _attacker, Actor& _defender);
@@ -38,7 +38,5 @@ public:
 	void doPlayerTurn(const int choice);
 	//보상지급
 	void battleReward(std::function<int(Actor::EquipSlot)> askChoiceCallback);
-	//전투 결과
-	void judgeBattleResult();
 };
 
