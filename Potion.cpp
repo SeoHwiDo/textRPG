@@ -1,22 +1,15 @@
-#include "Potion.h"
-std::map<int, std::shared_ptr<PotionData>> potionDB;//Á¤Àû ¸â¹öº¯¼ö´Â ¹İµå½Ã cpp¿¡¼­ ÇÑ¹ø Á¤ÀÇÇØ¼­ ¸Ş¸ğ¸® ÇÒ´çÇØÁÖ¾î¾ßÇÔ
+ï»¿#include "Potion.h"
+// 00=ì²´ë ¥ 10=ë§ˆë‚˜
+//1=í•˜ê¸‰ 2=ì¤‘ê¸‰ 3=ìƒê¸‰
 void Potion::InitDB(){
-	//10=Ã¼·Â
-	//20=¸¶³ª
-	//1=ÇÏ±Ş
-	//2=Áß±Ş
-	//3=»ó±Ş
-	potionDB[11] = std::make_shared<PotionData>(PotionData{ HP, "ÇÏ±Ş Ã¼·Â Æ÷¼Ç", 1, 50 });
-	potionDB[21] = std::make_shared<PotionData>(PotionData{ MP, "ÇÏ±Ş ¸¶³ª Æ÷¼Ç" , 1, 30});
+	
+	itemDB[11] = std::make_shared<PotionData>(PotionData{ HP, "í•˜ê¸‰ ì²´ë ¥ í¬ì…˜", 1, 50 });
+	itemDB[21] = std::make_shared<PotionData>(PotionData{ MP, "í•˜ê¸‰ ë§ˆë‚˜ í¬ì…˜" , 1, 30});
 
-	potionDB[12] = std::make_shared<PotionData>(PotionData{ HP, "Áß±Ş Ã¼·Â Æ÷¼Ç", 2, 100 });
-	potionDB[22] = std::make_shared<PotionData>(PotionData{ MP, "Áß±Ş ¸¶³ª Æ÷¼Ç" , 2, 60 });
+	itemDB[12] = std::make_shared<PotionData>(PotionData{ HP, "ì¤‘ê¸‰ ì²´ë ¥ í¬ì…˜", 2, 100 });
+	itemDB[22] = std::make_shared<PotionData>(PotionData{ MP, "ì¤‘ê¸‰ ë§ˆë‚˜ í¬ì…˜" , 2, 60 });
 
-	potionDB[13] = std::make_shared<PotionData>(PotionData{ HP, "»ó±Ş Ã¼·Â Æ÷¼Ç", 1, 200 });
-	potionDB[23] = std::make_shared<PotionData>(PotionData{ MP, "»ó±Ş ¸¶³ª Æ÷¼Ç" , 1, 120 });
+	itemDB[13] = std::make_shared<PotionData>(PotionData{ HP, "ìƒê¸‰ ì²´ë ¥ í¬ì…˜", 1, 200 });
+	itemDB[23] = std::make_shared<PotionData>(PotionData{ MP, "ìƒê¸‰ ë§ˆë‚˜ í¬ì…˜" , 1, 120 });
 }
 
-std::shared_ptr<PotionData> Potion::GetPotionData(int id)
-{
-	return potionDB[id];
-}

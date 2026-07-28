@@ -1,7 +1,7 @@
-# ¸ğµç ÆÄÀÏ
+# ëª¨ë“  íŒŒì¼
 [*]
 charset = utf-8
 
-# C++ ÆÄÀÏ
+# C++ íŒŒì¼
 [*.{cpp,h,hpp,cc,cxx}]
 charset = utf-8-bom
