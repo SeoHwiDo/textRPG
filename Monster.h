@@ -9,6 +9,7 @@ public:
 	enum AIState {
 		Attack,
 		Skill,
+		Potion,
 		RunOut
 	};
 	Monster(std::string _name);
@@ -17,6 +18,7 @@ public:
 
 	bool getIsEnemy() const;
 	void setIsEnemy(bool _flag);
+	PotionType selectPotion(Player& _player);
 	//몬스터의 현재 상태에 따른 다음 행동
 	AIState getMonsterFSM(Player& _player);
 };
