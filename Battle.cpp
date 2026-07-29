@@ -2,6 +2,9 @@
 #include"Util.h"
 #include<iostream>
 //치명타 작동 여부
+Battle::Battle(Player& player, Monster& monster)
+	: _player(player), _monster(monster) {
+}
 bool Battle::crticalCheck(Actor& _actor)
 {
 	bool isCritical=Util::check_success(_actor.getCritical());
@@ -276,6 +279,28 @@ void Battle::battleReward(std::function<int(Actor::EquipSlot)> askChoiceCallback
 	}
 }
 
+BattleResult Battle::inBattle(const std::function<void(const Monster&)>& drawBattle)
+{
+	while (_player.isAlive() && _monster.isAlive()) {
+		drawBattle(_monster);  // GameManager의 showBattleMid 호출
+
+		doPlayerTurn();
+
+		if (!_monster.isAlive()) {
+			return BattleResult::PlayerWin;
+		}
+
+		doMonsterTurn();
+
+		if (!_player.isAlive()) {
+			return BattleResult::PlayerLose;
+		}
+	}
+
+	return _player.isAlive()
+		? BattleResult::PlayerWin
+		: BattleResult::PlayerLose;
+}
 
 
 

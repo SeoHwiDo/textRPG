@@ -9,6 +9,12 @@ enum class BattleUIState {
 	SKILL_MENU,  // 스킬 목록 선택
 	POTION_MENU  // 포션 목록 선택
 };
+enum class BattleResult {
+	PlayerWin,
+	PlayerLose,
+	Escaped
+};
+
 class Battle
 {
 private:
@@ -23,6 +29,8 @@ public:
 	static int DamageCalculation(Actor& _attacker, Actor& _defender);
 
 	static bool missCheck(Actor& _attacker, Actor& _defender);
+
+	Battle(Player& player, Monster& monster);
 
 	static bool crticalCheck(Actor& _actor);
 
@@ -46,5 +54,7 @@ public:
 	void doPlayerTurn();
 	//보상지급
 	void battleReward(std::function<int(Actor::EquipSlot)> askChoiceCallback);
+
+	BattleResult inBattle(const std::function<void(const Monster&)>& drawBattle);
 };
 
