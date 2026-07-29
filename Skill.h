@@ -3,9 +3,8 @@
 #include<map>
 #include<memory>
 #include <functional>
-#include"Actor.h"
 #include"Util.h"
-
+class Actor;
 struct SkillData {
 	SkillType type;
 	std::string name;
@@ -19,6 +18,7 @@ class Skill{
 protected:
 	static std::map<int, std::shared_ptr<const SkillData>>  skillDB;
 	static void initDB();
+public:
 	static std::shared_ptr<const SkillData> getSkillData(int id);
 };
 
