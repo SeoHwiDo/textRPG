@@ -4,10 +4,15 @@
 #include"Actor.h"
 #include<memory>
 #include<functional>
-
+enum class BattleUIState {
+	MAIN_MENU,   // 1. 공격 / 2. 스킬 / 3. 포션 / 4. 도망
+	SKILL_MENU,  // 스킬 목록 선택
+	POTION_MENU  // 포션 목록 선택
+};
 class Battle
 {
 private:
+
 	Monster& _monster;
 	Player& _player;
 	//Actor& _attacker;
@@ -24,11 +29,12 @@ public:
 	//도망치기 사용
 	bool doRunOut(Actor& _attacker, Actor& _defender);
 	//공격 사용
-	void doAttack(Actor& _attacker, Actor& _defender);
-	bool doSkill(std::function<int(std::vector<Actor::SkillSlot>)> askChoiceCallback, Actor& _attacker, Actor& _defender);
+	static int doAttack(Actor& _attacker, Actor& _defender);
+	//스킬 사용
 	bool executeSkill(Actor& _attacker, Actor& _defender, int idx);
 	bool doPlayerSkill(std::function<int(std::vector<Actor::SkillSlot>)> askChoiceCallback);
 	void doMonsterSkill();
+	bool doPlayerPotion(std::function<PotionType(const std::map<PotionType, Actor::PotionSlot>&)> askChoiceCallback);
 	//포션 사용
 	void doPotion(Actor& _actor, PotionType _potion);
 
@@ -37,7 +43,7 @@ public:
 	//몬스터 행동
 	void doMonsterTurn();
 	//플레이어가 선택한 플레이어행동
-	void doPlayerTurn(const int choice);
+	void doPlayerTurn();
 	//보상지급
 	void battleReward(std::function<int(Actor::EquipSlot)> askChoiceCallback);
 };
