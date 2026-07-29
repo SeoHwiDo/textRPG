@@ -86,13 +86,15 @@ const std::map<EquipType, Actor::EquipSlot>& Actor::getEquipmentList() const
 
 void Actor::setEquipment(int code) {
 	auto basicEqiup = Equipment::getItemData(code);//새로운 장비로 교체시 기존 강화내용 초기화
-	if (basicEqiup != nullptr) {
+	
+	if (basicEqiup != nullptr) {//교체할 장비가 정상값일때
+
 		EquipSlot newEquip;
 		newEquip.equip = basicEqiup;
 		newEquip.lv = 0;
 		newEquip.stat = 0;
 		equipSlot[basicEqiup->type] = newEquip;
-		initEquipSlot();
+		initEquipStat(basicEqiup->type);
 	}
 	
 }
@@ -108,12 +110,32 @@ bool Actor::isEquipmentEmpty(EquipType type) const
 	}
 	return false;
 }
-void Actor::initEquipSlot() {
-	equipSlot[EquipType::SWORD].stat = equipSlot[EquipType::SWORD].equip->baseStat + (2 << equipSlot[EquipType::SWORD].lv) * 10;//기본 무기 스탯+레벨*10
-	this->power += equipSlot[EquipType::SWORD].stat;
+void Actor::initEquipStat(EquipType type) {
+
+	if (equipSlot[type].equip != nullptr) {//장착중인 장비가 있을때
+		// 부위별 기본 장비 스탯 + 레벨 보정 적용
+		equipSlot[type].stat = equipSlot[type].equip->baseStat + (2 << equipSlot[type].lv) * 10;//기본 무기 스탯+레벨*10
+		//if(type==EquipType::SWORD)
+		//	setPower(this->power + equipSlot[type].stat); // 스탯 합산
+		//else if(type==EquipType::SHIELD)
+		//	setDefend(this->defend + equipSlot[type].stat);
+	}
+}
+void Actor::initStatus() {
+	int newPower = this->power + status.getStatusStr()*10;//힘*10만큼 공격력
+	setPower(newPower);
+	int newHp = this->hp + status.getStatusCon() * 50;
+	setPower(newHp);
+
+	int newMP = this->mp + status.getStatusWis() * 30;
+	setPower(newMP);
+
+	int newCritical = this->critical + status.getStatusDex() * 2;
+	setPower(newCritical);
 }
 
-std::vector<Actor::SkillSlot> Actor::getSkillList() const
+
+const std::vector<Actor::SkillSlot>& Actor::getSkillList() const
 {
 	return skillSlot;
 }

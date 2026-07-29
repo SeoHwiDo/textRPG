@@ -116,7 +116,9 @@ public:
 	bool isEquipmentEmpty(EquipType type) const;
 
 	//장비의 상태에 따라 Actor의 스탯 변동
-	void initEquipSlot();
+	void initEquipStat(EquipType type);
+
+	void initStatus();
 
 	//장비슬롯 한칸의 값을 모두 value로 전달
 	SkillSlot getSkill(int idx) const;
