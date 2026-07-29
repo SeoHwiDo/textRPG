@@ -34,7 +34,7 @@ void Skill::initDB() {
 		if (targets.empty())return;
 		auto target = targets[0];
 		for (int i = 1; i <= 3;++i) {
-			int damage = Battle::doAttack
+			int damage = Battle::doAttack(caster, target);
 			std::cout << target->getName() << "에게 " <<i<<"번째" << damage << "피해!\n";
 			int prevHp = target->getHp();
 			target->setHp(prevHp - damage);

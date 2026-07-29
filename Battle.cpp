@@ -1,5 +1,6 @@
 ﻿#include "Battle.h"
 #include"Util.h"
+#include<iostream>
 bool Battle::crticalCheck(Actor& _actor)
 {
 	bool isCritical=Util::check_success(_actor.getCritical());
@@ -31,9 +32,45 @@ void Battle::doAttack(Actor& _attacker, Actor& _defender)
 	
 }
 
-void Battle::doSkill(Actor& _attacker, Actor& _defender)
+bool Battle::doSkill(std::function<int(std::vector<Actor::SkillSlot>)> askChoiceCallback, Actor& _attacker, Actor& _defender)
 {
-	//스킬 관련 json또는 클래스,스트럭트를 만들어서 관리
+	auto skillList = _attacker.getSkillList();
+	if (skillList.empty()) {
+		//스킬 사용 불가시 사전에 여기로 들어오지 않게 구현
+		return;
+	}
+	int choice = askChoiceCallback(skillList);
+	if (choice == -1) {
+		std::cout << "스킬 사용을 취소했습니다.\n";
+		return;
+	}
+	Actor::SkillSlot selectedSlot = skillList[choice];
+	
+
+	if (selectedSlot.skill == nullptr) return;
+
+	// 5. 사용 조건 검사 (마나 및 쿨타임)
+	if (_attacker.getMp() < selectedSlot.skill->mp) {
+		std::cout << "마나가 부족합니다!\n";
+		return;
+	}
+	if (selectedSlot.remainCoolTime > 0) {
+		std::cout << "아직 쿨타임 중입니다! (" << selectedSlot.remainCoolTime << "턴 남음)\n";
+		return;
+	}
+
+	// 6. 스킬 사용 및 자원 소모
+	_attacker.setMp(_attacker.getMp() - selectedSlot.skill->mp);
+
+	// TODO: 쿨타임 초기화 로직 (Actor 내부 스킬 리스트의 currentCooldown 값을 skillData->cooltime으로 설정)
+	// _attacker.setSkillCooldown(choiceIndex, skillData->cooltime); 
+
+	std::cout << "\n[" << selectedSlot.skill->name << "] 사용!\n";
+
+	// 7. 스킬 Effect 람다 실행 (타겟을 vector로 감싸서 전달)
+	std::vector<Actor*> targets;
+	targets.push_back(&_defender);
+	selectedSlot.skill->effect(_attacker, targets);
 }
 
 void Battle::doPotion(Actor& _actor, PotionType _potion)
@@ -43,15 +80,15 @@ void Battle::doPotion(Actor& _actor, PotionType _potion)
 	}else{
 		switch (_potion)
 		{
-		case HP:
+		case PotionType::HP:
 			int prevHp = _actor.getHp();
-			_actor.setHp(prevHp + _actor.getPotion(HP).potion.get()->amount);
-			_actor.addPotion(HP,-1);
+			_actor.setHp(prevHp + _actor.getPotion(PotionType::HP).potion.get()->amount);
+			_actor.addPotion(PotionType::HP,-1);
 			break;
-		case MP:
+		case PotionType::MP:
 			int prevMp = _actor.getMp();
-			_actor.setMp(prevMp + _actor.getPotion(MP).potion.get()->amount);
-			_actor.addPotion(MP, -1);
+			_actor.setMp(prevMp + _actor.getPotion(PotionType::MP).potion.get()->amount);
+			_actor.addPotion(PotionType::MP, -1);
 			break;
 		default:
 			break;
@@ -93,9 +130,9 @@ void Battle::doPlayerTurn(const int choice)
 
 void Battle::battleReward(std::function<int(Actor::EquipSlot)> askChoiceCallback)
 {
-	for (int i = 0; i < 2; ++i) {
-		if (!_monster.isEquipmentEmpty(i)) {
-			Actor::EquipSlot dropItem = _monster.getEquipment(i);
+	for (auto& equip :_monster.getEquipmentList()) {
+		if (!_monster.isEquipmentEmpty(equip.first)) {
+			Actor::EquipSlot dropItem = equip.second;
 			int choice = askChoiceCallback(dropItem);
 			if (choice == 1) {
 				_player.setEquipment(dropItem);
