@@ -32,48 +32,80 @@ void Battle::doAttack(Actor& _attacker, Actor& _defender)
 	_defender.setHp(defenderPrevHp-totalDamage);
 	
 }
-
-bool Battle::doSkill(std::function<int(std::vector<Actor::SkillSlot>)> askChoiceCallback, Actor& _attacker, Actor& _defender)
+//스킬실제실행여부
+bool Battle::executeSkill(Actor& _attacker, Actor& _defender, int idx)
 {
 	auto skillList = _attacker.getSkillList();
-	if (skillList.empty()) {
-		//스킬 사용 불가시 사전에 여기로 들어오지 않게 구현
-		return;
-	}
-	int choice = askChoiceCallback(skillList);
-	if (choice == -1) {
-		std::cout << "스킬 사용을 취소했습니다.\n";
-		return;
-	}
-	Actor::SkillSlot selectedSlot = skillList[choice];
-	
+	Actor::SkillSlot selectedSlot = skillList[idx];
 
-	if (selectedSlot.skill == nullptr) return;
+	if (selectedSlot.skill == nullptr) return false;
 
-	// 5. 사용 조건 검사 (마나 및 쿨타임)
 	if (_attacker.getMp() < selectedSlot.skill->mp) {
-		std::cout << "마나가 부족합니다!\n";
-		return;
+		std::cout << _attacker.getName() << "의 마나가 부족합니다!\n";
+		return false;
 	}
 	if (selectedSlot.remainCoolTime > 0) {
-		std::cout << "아직 쿨타임 중입니다! (" << selectedSlot.remainCoolTime << "턴 남음)\n";
-		return;
+		std::cout << _attacker.getName() << "의 스킬이 아직 쿨타임 중입니다! (" << selectedSlot.remainCoolTime << "턴 남음)\n";
+		return false;
 	}
 
-	// 6. 스킬 사용 및 자원 소모
+	// 자원 소모 및 텍스트 출력
 	_attacker.setMp(_attacker.getMp() - selectedSlot.skill->mp);
+	std::cout << "\n[" << _attacker.getName() << "] " << selectedSlot.skill->name << " 사용!\n";
 
-	// TODO: 쿨타임 초기화 로직 (Actor 내부 스킬 리스트의 currentCooldown 값을 skillData->cooltime으로 설정)
-	// _attacker.setSkillCooldown(choiceIndex, skillData->cooltime); 
-
-	std::cout << "\n[" << selectedSlot.skill->name << "] 사용!\n";
-
-	// 7. 스킬 Effect 람다 실행 (타겟을 vector로 감싸서 전달)
+	// 스킬 Effect 실행
 	std::vector<Actor*> targets;
 	targets.push_back(&_defender);
 	selectedSlot.skill->effect(_attacker, targets);
-}
 
+	// TODO: 여기서 쿨타임 적용 로직 추가 (_attacker의 해당 인덱스 스킬 remainCoolTime 갱신)
+
+	return true;
+}
+//플레이어 스킬 선택,콜백함수에 스킬리스트를 전달하여 리스트중 선택한 스킬의 인덱스 반환,콜백함수는 GameManager에서 관리
+bool Battle::doPlayerSkill(std::function<int(std::vector<Actor::SkillSlot>)> askChoiceCallback)
+{
+	auto skillList = _player.getSkillList();
+	if (skillList.empty()) {
+		//
+		return false;
+	}
+	int choice = askChoiceCallback(skillList);
+	if (choice == -1) {
+		//스킬 취소
+		return false;
+	}
+	return executeSkill(_player, _monster, choice);
+}
+//몬스터의 스킬 선택,
+void Battle::doMonsterSkill()
+{
+	auto skillList = _monster.getSkillList();
+	if (skillList.empty()) {
+		intdoAttack(_monster, _player); // 스킬이 아예 없으면 일반 공격으로 대체
+		return;
+	}
+	//몬스터가 보유한 스킬을 랜덤순서로 섞어서 순서대로 실행하여 가능한 스킬 작동
+	std::vector<int> skillOrder(skillList.size());
+	for (int i = 0; i < skillList.size(); ++i) {
+		skillOrder[i] = i + 1;
+	}
+	//벡터셔플
+	Util::ShuffleList(skillOrder);
+	for (auto i: skillOrder) {
+		if (skillList[i].skill != nullptr &&
+			skillList[i].remainCoolTime == 0 &&
+			_monster.getMp() >= skillList[i].skill->mp)
+		{
+			executeSkill(_monster, _player, i);
+			return; // 성공적으로 스킬을 썼으므로 종료
+		}
+	}
+
+	// 만약 모든 스킬이 쿨타임이거나 마나가 부족하다면 일반 공격으로 대체
+	std::cout << _monster.getName() << "은(는) 마나가 부족해 스킬 대신 공격을 시도했다!\n";
+	intdoAttack(_monster, _player);
+}
 void Battle::doPotion(Actor& _actor, PotionType _potion)
 {
 	if (_actor.isPotionEmpty(_potion)) {
@@ -104,8 +136,10 @@ void Battle::doMonsterTurn()
 	case Monster::Attack:
 		doAttack(_monster, _player);
 		break;
+	case Monster::Potion:
+		doPotion(_monster, _monster.selectPotion(_player));
 	case Monster::Skill:
-		doSkill(_monster, _player);
+		doMonsterSkill();
 	case Monster::RunOut:
 		doRunOut(_monster, _player);
 	default:
