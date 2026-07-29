@@ -11,6 +11,15 @@ enum class EquipGrade : int { LOW = 0, MID = 1, HIGH = 2 };
 enum class PotionType : int { HP = 0, MP = 10 };
 enum class PotionGrade : int { LOW = 0, MID = 1, HIGH = 2 };
 
+enum class EventType :int {
+	Story = 0,
+	Battle = 100,
+	Shop = 200,
+	Rest = 300,
+	Treasure = 400,
+	Boss = 500
+};
+
 
 namespace Util {
 
@@ -20,18 +29,21 @@ namespace Util {
 	bool check_success(int _percent);
 
 
- //ID 생성 함수
-    int makeSkillID(SkillOwner owner, SkillType type, int uniqueNum);
-    int makeEquipID(EquipType type, EquipGrade grade);
-    int makePotionID(PotionType type, PotionGrade grade);
-    enum class CategoryPrefix : int {
-        SKILL = 1000,
-        EQUIP = 2000,
-        POTION = 3000
-    };
-    // 2. ID 해석(파싱) 함수
-    //static CategoryPrefix GetMainCategory(int id);
-    //static bool IsPlayerSkill(int id);
+	//ID 생성 함수
+	int makeSkillID(SkillOwner owner, SkillType type, int uniqueNum);
+	int makeEquipID(EquipType type, EquipGrade grade);
+	int makePotionID(PotionType type, PotionGrade grade);
+	int makeEventID(EventType type ,int uniqueNum);
+
+	enum class CategoryPrefix : int {
+		SKILL = 1000,
+		EQUIP = 2000,
+		POTION = 3000,
+		EVENT = 4000,
+	};
+	// 2. ID 해석(파싱) 함수
+	//static CategoryPrefix GetMainCategory(int id);
+	//static bool IsPlayerSkill(int id);
 
 	template <typename T>
 	void ShuffleList(std::vector<T>& list) {

@@ -49,3 +49,7 @@ int Util::makePotionID(PotionType type, PotionGrade grade) {
         static_cast<int>(type) +
         static_cast<int>(grade);
 }
+int Util::makeEventID(EventType type,int uniqueNum) {
+    return static_cast<int>(CategoryPrefix::EVENT) +
+        uniqueNum;
+}
