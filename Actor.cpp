@@ -149,6 +149,39 @@ const std::vector<Actor::SkillSlot>& Actor::getSkillList() const
 {
 	return skillSlot;
 }
+void Actor::addSkill(int new_code)
+{
+	if (skillSlot.size() < SKILL_MAX)
+		skillSlot.push_back(SkillSlot{ Skill::getSkillData(new_code),0 });
+}
+void Actor::replaceSkill(int slot_idx,int new_code)
+{
+	int t_idx = slot_idx - 1;
+	if (t_idx >= 0 && t_idx < skillSlot.size())
+		skillSlot.at(t_idx) = SkillSlot{ Skill::getSkillData(new_code),0 };
+}
+
+void Actor::initSkill() const
+{
+	for (auto s : skillSlot) {
+		if (s.remainCoolTime <= 0 && s.skill->mp) {
+			s.isReady = true;
+		}
+		else {
+			s.isReady = false;
+		}
+	}
+}
+
+bool Actor::canUseSkill() const
+{
+	for (auto s : skillSlot) {
+		if (s.isReady) {
+			return true;
+		}
+	}
+	return false;
+}
 
 
 bool Actor::isAlive() const

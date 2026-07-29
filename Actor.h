@@ -24,6 +24,7 @@ public:
 	const int EXP_MAX = 100;
 
 	const int GOLD_MIN = 0;
+	const int SKILL_MAX = 4;
 	//potion관리 슬롯
 	//item슬롯은 고정데이터값을 저장할 shared_ptr과 가변적인 데이터를 관리할 일반변수를 조합하여 대응
 	struct PotionSlot
@@ -39,7 +40,8 @@ public:
 	};
 	struct SkillSlot {
 		std::shared_ptr<const SkillData> skill;
-		int remainCoolTime;
+		int remainCoolTime=0;
+		bool isReady = true;
 	};
 protected:
 	std::string name;//이름
@@ -110,7 +112,7 @@ public:
 	const EquipSlot& getEquipment(EquipType type) const;
 	const std::map<EquipType, EquipSlot>& getEquipmentList() const;
 
-	//장비변경-DBid또는 getEquipment로 전달받은 값을 그대로 전달
+	//장변경-DBid또는 getEquipment로 전달받은 값을 그대로 전달
 	void setEquipment(int code);
 	void setEquipment(EquipSlot newEquip);
 	//장비가 비어있는지 확인
@@ -121,13 +123,16 @@ public:
 
 	void initStatus();
 
-	//장비슬롯 한칸의 값을 모두 value로 전달
+	//스킬슬롯 한칸의 값을 모두 value로 전달
 	SkillSlot getSkill(int idx) const;
 	const std::vector<SkillSlot>& getSkillList() const;
 
-	//장비변경-DBid또는 getEquipment로 전달받은 값을 그대로 전달
-	void setSkill(int code);
-	void setSkill(int idx);
-	//장비가 비어있는지 확인
-	bool isSkillEmpty() const;
+	void addSkill(int new_code);
+
+	void replaceSkill(int slot_idx, int new_code);
+
+	void initSkill() const;
+
+	//보유 스킬의 사용가능 여부
+	bool canUseSkill() const;
 };
