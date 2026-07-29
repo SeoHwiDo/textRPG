@@ -37,85 +37,35 @@ void GameManager::clearScreen()
 	std::cout << "\033[2J\033[1;1H";
 }
 
-int GameManager::getDisplayWidth(const std::string& str) {
-	int width = 0;
-	for (size_t i = 0; i < str.length(); ) {
-		unsigned char c = str[i];
-		if ((c & 0x80) == 0) {
-			// 1바이트 문자 (ASCII/영문/숫자/기호) -> 화면 1칸
-			width += 1;
-			i += 1;
-		}
-		else if ((c & 0xE0) == 0xC0) {
-			// 2바이트 문자
-			width += 1;
-			i += 2;
-		}
-		else if ((c & 0xF0) == 0xE0) {
-			// 3바이트 문자 (한글 등 CJK 문자) -> 화면 2칸
-			width += 2;
-			i += 3;
-		}
-		else if ((c & 0xF8) == 0xF0) {
-			// 4바이트 문자 (이모지 등) -> 화면 2칸
-			width += 2;
-			i += 4;
-		}
-		else {
-			// 예외/오류 바이트 처리
-			width += 1;
-			i += 1;
-		}
-	}
-	return width;
-}
 
-std::string GameManager::padRight(const std::string& str, int totalWidth) {
-	int currentWidth = getDisplayWidth(str);
-	int padding = totalWidth - currentWidth;
-	if (padding > 0) {
-		return str + std::string(padding, ' ');
-	}
-	return str; // 이미 길이를 초과했다면 원본 반환
-}
+void GameManager::DrowFillLine() {//가운데 채워진 선
+	for (auto i = 0; i < WIDTH; ++i)std::cout << "#";
 
-std::string GameManager::padLeft(const std::string& str, int totalWidth) {
-	int currentWidth = getDisplayWidth(str);
-	int padding = totalWidth - currentWidth;
-	if (padding > 0) {
-		return std::string(padding, ' ') + str;
-	}
-	return str;
 }
-void GameManager::printLine(const std::string& left,
-	const std::string& right)
+void GameManager::DrowBlankLine(){//가운데 비워진 선
+	std::cout << "#";
+	for (auto i = 1; i < WIDTH-1; ++i)std::cout << " ";
+	std::cout << "#";
+}
+void GameManager::drawFrame()
 {
-	constexpr int LEFT_WIDTH = 20;
+	//topInfo
+	gotoXY(0, 0);DrowFillLine();
+	for (int i = 1; i <= 3; ++i) {
+		gotoXY(0, i); DrowBlankLine();
+	}
+	gotoXY(0, 4);DrowFillLine();
+	for (int i = 5; i <= 14; ++i) {
+		gotoXY(0, i); DrowBlankLine();
+	}
+	gotoXY(0, 15); DrowFillLine();
+	for (int i = 15; i <= 18; ++i) {
+		gotoXY(0, i); DrowBlankLine();
+	}
+	gotoXY(0, 19); DrowFillLine();
 
-	std::cout << "# "
-		<< padRight(left, LEFT_WIDTH)
-		<< right
-		<< " #\n";
-}
-void GameManager::drawFrameTopInfo()
-{
-	gotoXY(0, 0);
-	std::cout << "##########################################";
-
-	gotoXY(0, 1);
-	std::cout << "#                                        #";
-
-	gotoXY(0, 2);
-	std::cout << "#                                        #";
-
-	gotoXY(0, 3);
-	std::cout << "#                                        #";
-
-	gotoXY(0, 4);
-	std::cout << "##########################################";
 }
 void GameManager::initPlayer() {
-	std::cout << getDisplayWidth("레벨") << std::endl;
 	std::string name;
 	while (1) {
 		inOutput("이름을 입력하세요(6글자 이내):", name);
@@ -145,30 +95,28 @@ void GameManager::topInfo()
 {
 	gotoXY(2, 1);
 	std::cout << "이름: " << player.getName();
-
 	gotoXY(2, 2);
 	std::cout << "레벨: " << player.getLv();
-
 	gotoXY(2, 3);
 	std::cout << "경험치: " << player.getExp();
-
 	gotoXY(22, 1);
 	std::cout << "| str: " << player.status.getStatusStr();
-
 	gotoXY(22, 2);
 	std::cout << "| wis: " << player.status.getStatusWis();
-
 	gotoXY(22, 3);
 	std::cout << "| con: " << player.status.getStatusCon();
-
 	gotoXY(31, 1);
 	std::cout << "| dex: " << player.status.getStatusDex();
-
 	gotoXY(31, 2);
 	std::cout << "| chm: " << player.status.getStatusCham();
-
 	gotoXY(31, 3);
 	std::cout << "| rmn: " << player.status.getStatusRemain();
+	gotoXY(WIDTH-1, HEIGHT-1);
+}
+
+void GameManager::midInfo()
+{
+
 }
 
 // 1. 메인 전투 행동 선택 UI
