@@ -41,6 +41,11 @@ const Actor::PotionSlot& Actor::getPotion(PotionType type) const {
 	else return { nullptr,0 };
 }
 
+const std::map<PotionType, Actor::PotionSlot>& Actor::getPotionList() const
+{
+	return potionSlot;
+}
+
 int Actor::getPotionNum(PotionType type) const {
 	auto it = potionSlot.find(type);
 	if (it != potionSlot.end())
@@ -134,6 +139,11 @@ void Actor::initStatus() {
 	setPower(newCritical);
 }
 
+
+Actor::SkillSlot Actor::getSkill(int idx) const
+{
+	return skillSlot[idx];
+}
 
 const std::vector<Actor::SkillSlot>& Actor::getSkillList() const
 {

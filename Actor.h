@@ -91,7 +91,8 @@ public:
 	void setGold(const int _gold);
 
 	//포션슬롯 한칸의 값을 모두 value로 전달
-	const Actor::PotionSlot& getPotion(PotionType type) const;
+	const PotionSlot& getPotion(PotionType type) const;
+	const std::map<PotionType, PotionSlot>& getPotionList() const;
 	//포션의 갯수
 	int getPotionNum(PotionType type)const;
 
