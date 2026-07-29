@@ -5,6 +5,7 @@
 #include"Status.h"
 #include"Equipment.h"
 #include"Potion.h"
+#include"Skill.h"
 class Actor {
 public:
 	const int HP_MIN = 10;
@@ -36,6 +37,10 @@ public:
 		int lv;//강화율은 플레이어에 귀속,현재 equip이 바라보는 데이터에 따라 변경
 		int stat;
 	};
+	struct SkillSlot {
+		std::shared_ptr<const SkillData> skill;
+		int remainCoolTime;
+	};
 protected:
 	std::string name;//이름
 	int hp;//체력
@@ -46,8 +51,9 @@ protected:
 	int lv;//레벨
 	int exp;//경험치
 	int gold;//골드
-	EquipSlot equipSlot[2];
-	PotionSlot potionSlot[2];
+	std::map<EquipType,EquipSlot> equipSlot;
+	std::map<PotionType,PotionSlot> potionSlot;
+	std::vector<SkillSlot> skillSlot;
 public:
 	Status status;
 
@@ -85,24 +91,40 @@ public:
 	void setGold(const int _gold);
 
 	//포션슬롯 한칸의 값을 모두 value로 전달
-	PotionSlot getPotion(int type) const;
+	Actor::PotionSlot getPotion(PotionType type) const;
 	//포션의 갯수
-	int getPotionNum(int type)const;
+	int getPotionNum(PotionType type)const;
+
 	//포션의 갯수 증감
-	void addPotion(int type,int num);
+	void addPotion(PotionType type, int num);
+
 	//포션의 종류 변경
 	void setPotion(int code);
+
 	//포션이 비어있는지 확인
-	bool isPotionEmpty(int type) const;
+	bool isPotionEmpty(PotionType type) const;
+
 	
 	//장비슬롯 한칸의 값을 모두 value로 전달
-	EquipSlot getEquipment(int type) const;
+	EquipSlot getEquipment(EquipType type) const;
+	std::map<EquipType, EquipSlot> getEquipmentList() const;
+
 	//장비변경-DBid또는 getEquipment로 전달받은 값을 그대로 전달
 	void setEquipment(int code);
-	void setEquipment(EquipSlot newEqip);
+	void setEquipment(EquipSlot newEquip);
 	//장비가 비어있는지 확인
-	bool isEquipmentEmpty(int type) const;
+	bool isEquipmentEmpty(EquipType type) const;
+
 	//장비의 상태에 따라 Actor의 스탯 변동
 	void initEquipSlot();
 
+	//장비슬롯 한칸의 값을 모두 value로 전달
+	SkillSlot getSkill(int idx) const;
+	std::vector<SkillSlot> getSkillList() const;
+
+	//장비변경-DBid또는 getEquipment로 전달받은 값을 그대로 전달
+	void setSkill(int code);
+	void setSkill(int idx);
+	//장비가 비어있는지 확인
+	bool isSkillEmpty() const;
 };
