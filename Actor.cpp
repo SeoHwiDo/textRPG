@@ -68,7 +68,7 @@ void Actor::setPotion(int code) {
 
 bool Actor::isPotionEmpty(PotionType type) const {
 	auto it = potionSlot.find(type);
-	if (it != potionSlot.end() || it->second.num <= 0) {
+	if (it == potionSlot.end() || it->second.num <= 0) {
 		//잔여가 없음
 		return true;
 	}
@@ -130,13 +130,13 @@ void Actor::initStatus() {
 	int newPower = this->power + status.getStatusStr()*10;//힘*10만큼 공격력
 	setPower(newPower);
 	int newHp = this->hp + status.getStatusCon() * 50;
-	setPower(newHp);
+	setHp(newHp);
 
 	int newMP = this->mp + status.getStatusWis() * 30;
-	setPower(newMP);
+	setMp(newMP);
 
 	int newCritical = this->critical + status.getStatusDex() * 2;
-	setPower(newCritical);
+	setCritical (newCritical);
 }
 
 

@@ -5,8 +5,8 @@
 #include"GameManager.h"
 
 int main() {
-	GameManager gm = GameManager();
 	Player player = Player();
-	gm.initPlayer(&player);
-	
+	GameManager gm = GameManager(player);
+	gm.initPlayer();
+	gm.topInfo();
 }
