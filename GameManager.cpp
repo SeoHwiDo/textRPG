@@ -1,6 +1,5 @@
 ﻿#include"GameManager.h"
-#include "Util.h"
-#include <windows.h>
+
 
 void gotoXY(short x, short y)
 {
@@ -37,7 +36,21 @@ void GameManager::clearScreen()
 	std::cout << "\033[2J\033[1;1H";
 }
 
+void GameManager::clearMidArea()
+{
+	for (int y = 5; y <= 14; ++y) {
+		gotoXY(1, y);
+		std::cout << std::string(WIDTH - 2, ' ');
+	}
+}
 
+void GameManager::clearChoiceArea()
+{
+	for (int y = 11; y <= 14; ++y) {
+		gotoXY(1, y);
+		std::cout << std::string(WIDTH - 2, ' ');
+	}
+}
 void GameManager::DrowFillLine() {//가운데 채워진 선
 	for (auto i = 0; i < WIDTH; ++i)std::cout << "#";
 
@@ -114,17 +127,86 @@ void GameManager::topInfo()
 	gotoXY(WIDTH-1, HEIGHT-1);
 }
 
-void GameManager::midInfo()
+int GameManager::showEventMid(const std::shared_ptr<EventData>& event)
 {
+	int y = 5;
+	gotoXY(2, y++);
+	std::cout << "["<<event.get()->title<<"]";
+	
+	for (auto des:event->description) {
+		gotoXY(2, y++);
+		std::cout<< des;
+	}
+	if (event->choices.empty()) {
+		return -1;  // 선택지가 없는 이벤트
+	}
+	for (int i = 0; i <= event->choices.size(); ++i) {
+		gotoXY(2, y++);
+		std::cout <<"["<<i+1<<"]"<< event->choices[i].text;
+	}
+	int choice;
+	do {
+		gotoXY(2, y + 1);
+		std::cout << "선택: ";
+		std::cin >> choice;
+	} while (!clear_input(choice >= 1 &&
+		choice <= static_cast<int>(event->choices.size())));
+}
+void GameManager::showBattleMid(const Monster& monster)
+{
+	clearMidArea();
 
+	int y = 5;
+
+	gotoXY(2, y++);
+	std::cout << "[ 전투 ]";
+
+	gotoXY(2, y++);
+	std::cout << "적: " << monster.getName();
+
+	gotoXY(2, y++);
+	std::cout << "HP: " << monster.getHp();
+
+	gotoXY(2, y += 2);
+	std::cout << "내 HP: " << player.getHp()
+		<< " / MP: " << player.getMp();
+}
+void GameManager::applyEventResult(const EventResult& result)
+{
+	player.setHp(player.getHp() + result.hp);
+	player.setMp(player.getMp() + result.mp);
+	player.setExp(player.getExp() + result.exp);
+	player.setGold(player.getGold() + result.gold);
+
+	player.levelUpCheck();
+
+	switch (result.action) {
+	case EventAction::Battle:
+		// Battle 객체를 생성하거나 전투 시작
+		break;
+	case EventAction::Shop:
+		// 상점 UI 열기
+		break;
+	case EventAction::Rest:
+		// 휴식 처리 또는 안내 출력
+		break;
+	case EventAction::GameOver:
+		// 게임 종료 처리
+		break;
+	case EventAction::None:
+		break;
+	}
 }
 
 // 1. 메인 전투 행동 선택 UI
 int GameManager::selectBattleActionUI() {
-	std::cout << "1. 기본공격\n";
-	std::cout << "2. 스킬\n";
-	std::cout << "3. 포션\n";
-	std::cout << "4. 도망\n";
+
+	clearChoiceArea();
+	int y = 11;
+	gotoXY(2, y++);std::cout << "1. 기본공격\n";
+	gotoXY(2, y++);std::cout << "2. 스킬\n";
+	gotoXY(2, y++); std::cout << "3. 포션\n";
+	gotoXY(2, y++); std::cout << "4. 도망\n";
 
 	int choice;
 	while (true) {

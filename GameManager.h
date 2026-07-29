@@ -2,11 +2,13 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <windows.h>
 
-//#include"Choice.h"
-//#include"Event.h"
+#include "Util.h"
+#include"Event.h"
 #include"Player.h"
-
+#include"Monster.h"
+#include"Battle.h"
 /*
        10        20        30        40
 01234567901234567890123456789012345678901
@@ -37,9 +39,11 @@
 class GameManager {
 private:
     Player player;
-    int WIDTH = 42;
-    int HEIGHT = 20;
+
+    Event event;
 public:
+    static const int WIDTH = 42;
+    static const int HEIGHT = 20;
     GameManager(Player _player);
     ~GameManager();
 
@@ -49,9 +53,17 @@ public:
     bool clear_input(bool check);
     void clearScreen();
 
+    void clearMidArea();
+
+
+
 
     void topInfo();//플레이어 이름,레벨, 경험치, 스테이터스
-    void midInfo();//현재 발생중인 이벤트 및 선택지
+    int  showEventMid(const std::shared_ptr<EventData>& event);
+    void showBattleMid(const Monster& monster);
+    //현재 발생중인 이벤트 및 선택지
+    void applyEventResult(const EventResult& result);
+
     void botInfo();//플레이어의 체력및 장비, 아이템
     void initPlayer();
     void DrowFillLine();
@@ -61,6 +73,7 @@ public:
 
     //void showScreen(std::string _top, std::string _mid, std::string _bot);
     // [전투 UI 콜백 함수]
+    static void clearChoiceArea();
     static int selectBattleActionUI(); // 1.공격 2.스킬 3.포션 4.도망
     static int selectSkillUI(const std::vector<Actor::SkillSlot>& skills);
     static PotionType selectPotionUI(const std::map<PotionType, Actor::PotionSlot>& potions);
