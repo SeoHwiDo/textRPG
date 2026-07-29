@@ -1,6 +1,17 @@
 ﻿#include"GameManager.h"
 #include "Util.h"
+#include <windows.h>
 
+void gotoXY(short x, short y)
+{
+	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	COORD pos;
+	pos.X = x;
+	pos.Y = y;
+
+	SetConsoleCursorPosition(hOut, pos);
+}
 
 
 template<typename T>
@@ -76,24 +87,35 @@ std::string GameManager::padLeft(const std::string& str, int totalWidth) {
 	}
 	return str;
 }
-void GameManager::printLine(const std::string& left, const std::string& right) {
-	// 전체 42칸 중 양끝 "# "(2칸)과 " #"(2칸)을 제외한 순수 내부 공간은 37칸
-	int innerWidth = WIDTH - 4;
+void GameManager::printLine(const std::string& left,
+	const std::string& right)
+{
+	constexpr int LEFT_WIDTH = 20;
 
-	// 한글과 영문이 섞인 실제 출력 너비 계산
-	int leftWidth = getDisplayWidth(left);
-	int rightWidth = getDisplayWidth(right);
+	std::cout << "# "
+		<< padRight(left, LEFT_WIDTH)
+		<< right
+		<< " #\n";
+}
+void GameManager::drawFrameTopInfo()
+{
+	gotoXY(0, 0);
+	std::cout << "##########################################";
 
-	// 가운데 들어가야 할 빈칸(여백) 개수 계산
-	int spaceCount = innerWidth - leftWidth - rightWidth;
-	if (spaceCount < 0) spaceCount = 0; // 안전 장치
+	gotoXY(0, 1);
+	std::cout << "#                                        #";
 
-	// 조립: "# " + 좌측내용 + 빈칸들 + 우측내용 + " #"
-	std::cout << "# " << left << std::string(spaceCount, ' ') << right << " #\n";
-};
+	gotoXY(0, 2);
+	std::cout << "#                                        #";
 
+	gotoXY(0, 3);
+	std::cout << "#                                        #";
+
+	gotoXY(0, 4);
+	std::cout << "##########################################";
+}
 void GameManager::initPlayer() {
-	std::cout << getDisplayWidth("이름") << std::endl;
+	std::cout << getDisplayWidth("레벨") << std::endl;
 	std::string name;
 	while (1) {
 		inOutput("이름을 입력하세요(6글자 이내):", name);
@@ -121,29 +143,32 @@ void GameManager::initPlayer() {
 
 void GameManager::topInfo()
 {
-	std::cout << FILL_LINE << "\n";
-	std::string nameStr = "이름: " + player.getName();
-	std::string lvStr = "레벨:" + std::to_string(player.getLv());
-	std::string expStr = "경험치:" + std::to_string(player.getExp());
+	gotoXY(2, 1);
+	std::cout << "이름: " << player.getName();
 
-	std::string strStr = "| str:" + padLeft(std::to_string(player.status.getStatusStr()), 2);
-	std::string dexStr = "| dex:" + padLeft(std::to_string(player.status.getStatusDex()), 2);
-	std::string stat1 = strStr + dexStr;
-	
-	std::string wisStr = "| wis:" + padLeft(std::to_string(player.status.getStatusWis()), 2);
-	std::string chmStr = "| chm:" + padLeft(std::to_string(player.status.getStatusCham()), 2);
-	std::string stat2 = wisStr + chmStr;
+	gotoXY(2, 2);
+	std::cout << "레벨: " << player.getLv();
 
-	std::string conStr = "| con:" + padLeft(std::to_string(player.status.getStatusCon()), 2);
-	std::string rmnStr = "| rmn:" + padLeft(std::to_string(player.status.getStatusRemain()), 2);
-	std::string stat3 = conStr + rmnStr;
+	gotoXY(2, 3);
+	std::cout << "경험치: " << player.getExp();
 
+	gotoXY(22, 1);
+	std::cout << "| str: " << player.status.getStatusStr();
 
-    // 4. 조립된 함수로 줄별 출력
-    printLine(nameStr, stat1);
-    printLine(lvStr, stat2);
-    printLine(expStr, stat3);
-	std::cout << FILL_LINE << "\n";
+	gotoXY(22, 2);
+	std::cout << "| wis: " << player.status.getStatusWis();
+
+	gotoXY(22, 3);
+	std::cout << "| con: " << player.status.getStatusCon();
+
+	gotoXY(31, 1);
+	std::cout << "| dex: " << player.status.getStatusDex();
+
+	gotoXY(31, 2);
+	std::cout << "| chm: " << player.status.getStatusCham();
+
+	gotoXY(31, 3);
+	std::cout << "| rmn: " << player.status.getStatusRemain();
 }
 
 // 1. 메인 전투 행동 선택 UI

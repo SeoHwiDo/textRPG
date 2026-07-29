@@ -8,5 +8,6 @@ int main() {
 	Player player = Player();
 	GameManager gm = GameManager(player);
 	gm.initPlayer();
+	gm.drawFrameTopInfo();
 	gm.topInfo();
 }

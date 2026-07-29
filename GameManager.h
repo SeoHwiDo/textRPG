@@ -63,6 +63,7 @@ public:
     std::string botInfo();//플레이어의 체력및 장비, 아이템
     void initPlayer();
     void printLine(const std::string& left, const std::string& right);
+    void drawFrameTopInfo();
     //void showScreen(std::string _top, std::string _mid, std::string _bot);
     // [전투 UI 콜백 함수]
     static int selectBattleActionUI(); // 1.공격 2.스킬 3.포션 4.도망
