@@ -91,7 +91,7 @@ public:
 	void setGold(const int _gold);
 
 	//포션슬롯 한칸의 값을 모두 value로 전달
-	Actor::PotionSlot getPotion(PotionType type) const;
+	const Actor::PotionSlot& getPotion(PotionType type) const;
 	//포션의 갯수
 	int getPotionNum(PotionType type)const;
 
@@ -106,8 +106,8 @@ public:
 
 	
 	//장비슬롯 한칸의 값을 모두 value로 전달
-	EquipSlot getEquipment(EquipType type) const;
-	std::map<EquipType, EquipSlot> getEquipmentList() const;
+	const EquipSlot& getEquipment(EquipType type) const;
+	const std::map<EquipType, EquipSlot>& getEquipmentList() const;
 
 	//장비변경-DBid또는 getEquipment로 전달받은 값을 그대로 전달
 	void setEquipment(int code);
@@ -120,7 +120,7 @@ public:
 
 	//장비슬롯 한칸의 값을 모두 value로 전달
 	SkillSlot getSkill(int idx) const;
-	std::vector<SkillSlot> getSkillList() const;
+	const std::vector<SkillSlot>& getSkillList() const;
 
 	//장비변경-DBid또는 getEquipment로 전달받은 값을 그대로 전달
 	void setSkill(int code);

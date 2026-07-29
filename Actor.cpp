@@ -34,7 +34,7 @@ void Actor::setExp(const int _exp) { this->exp = std::max(0, _exp); }
 int Actor::getGold()const { return this->gold; }
 void Actor::setGold(const int _gold) { this->gold = std::max(0, _gold); }
 
-Actor::PotionSlot Actor::getPotion(PotionType type) const {
+const Actor::PotionSlot& Actor::getPotion(PotionType type) const {
 	auto it = potionSlot.find(type);
 	if (it != potionSlot.end())
 		return it->second;
@@ -71,7 +71,7 @@ bool Actor::isPotionEmpty(PotionType type) const {
 		return false;
 }
 
-Actor::EquipSlot Actor::getEquipment(EquipType type) const
+const Actor::EquipSlot& Actor::getEquipment(EquipType type) const
 {
 	auto it = equipSlot.find(type);
 	if (it != equipSlot.end())
@@ -79,7 +79,7 @@ Actor::EquipSlot Actor::getEquipment(EquipType type) const
 	else return { nullptr,0,0 };
 }
 
-std::map<EquipType, Actor::EquipSlot> Actor::getEquipmentList() const
+const std::map<EquipType, Actor::EquipSlot>& Actor::getEquipmentList() const
 {
 	return equipSlot;
 }
