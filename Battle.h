@@ -25,8 +25,7 @@ public:
 	bool doRunOut(Actor& _attacker, Actor& _defender);
 	//공격 사용
 	void doAttack(Actor& _attacker, Actor& _defender);
-	//기술 사용
-	void doSkill(Actor& _attacker, Actor& _defender);
+	bool doSkill(std::function<int(std::vector<Actor::SkillSlot>)> askChoiceCallback, Actor& _attacker, Actor& _defender);
 	//포션 사용
 	void doPotion(Actor& _actor, PotionType _potion);
 
