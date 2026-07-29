@@ -14,8 +14,8 @@ bool Battle::missCheck(Actor& _attacker, Actor& _defender)
 }
 int Battle::DamageCalculation(Actor& _attacker, Actor& _defender)
 {
-	//크리티컬 판단해서 공격데미지 계산
-	int attackPower = crticalCheck(_attacker) ? _attacker.getPower() * 2 : _attacker.getPower();
+	//크리티컬 판단해서 공격데미지 계산+객체 무기 능력치
+	int attackPower = (crticalCheck(_attacker) ? _attacker.getPower() * 2 : _attacker.getPower())+_attacker.getEquipment(EquipType::SWORD).stat;
 	return attackPower;
 }
 bool Battle::doRunOut(Actor& _attacker, Actor& _defender)
@@ -27,7 +27,8 @@ bool Battle::doRunOut(Actor& _attacker, Actor& _defender)
 void Battle::doAttack(Actor& _attacker, Actor& _defender)
 {
 	int defenderPrevHp = _defender.getHp();
-	int totalDamage = std::max(0,DamageCalculation(_attacker, _defender) - _defender.getDefend());
+	//최종데미지=계산된 공격데미지-객체 방어력-객체 방어구 능력치
+	int totalDamage = std::max(0,DamageCalculation(_attacker, _defender) - _defender.getDefend()-_defender.getEquipment(EquipType::SHIELD).stat);
 	_defender.setHp(defenderPrevHp-totalDamage);
 	
 }
