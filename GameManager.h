@@ -22,11 +22,11 @@
 #  이벤트 설명은공백포함 40*3           # 7
 #                                       # 8
 #                                       # 9
-# 1.선택지                              # 11
-# 2.선택지                              # 12
-# 3.선택지                              # 13
-# 4.선택지                              # 14
-#                                       # 10
+# 1.선택지                              # 10
+# 2.선택지                              # 11
+# 3.선택지                              # 12
+# 4.선택지                              # 13
+#                                       # 14
 ######################################### 15
 # 체력: 000 | 무기: 이름이름이름    000 # 16
 # 마나: 000 | 방패: 이름이름이름    000 # 17
@@ -63,7 +63,7 @@ public:
 
     void topInfo();//플레이어 이름,레벨, 경험치, 스테이터스
     EventResult  showEventMid(const std::shared_ptr<EventData>& event);
-    void showBattleMid(const Monster& monster);
+    void showBattleMid(const Monster& monster,const std::vector<std::string>& logs);
     //현재 발생중인 이벤트 및 선택지
     void applyEventResult(const EventResult& result);
 

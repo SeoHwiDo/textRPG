@@ -24,12 +24,17 @@ private:
 	//Actor& _attacker;
 	//Actor& _defender;
 	//Actor& firstAttack;
+	std::vector<std::string> _logs;
+
+	// UI 갱신 콜백 저장
+	std::function<void(const Monster&, const std::vector<std::string>&)> _drawBattleUI;
+	std::function<void()> _drawBotInfoUI;
 public:
 
 	static int DamageCalculation(Actor& _attacker, Actor& _defender);
 
 	static bool missCheck(Actor& _attacker, Actor& _defender);
-
+	void addLog(const std::string& logMsg);
 	Battle(Player& player, Monster& monster);
 
 	static bool crticalCheck(Actor& _actor);
@@ -49,12 +54,12 @@ public:
 	////공수교체
 	//void turnSwap();
 	//몬스터 행동
-	void doMonsterTurn();
+	bool doMonsterTurn();
 	//플레이어가 선택한 플레이어행동
-	void doPlayerTurn();
+	bool doPlayerTurn();
 	//보상지급
 	void battleReward(std::function<int(Actor::EquipSlot)> askChoiceCallback);
 
-	BattleResult inBattle(const std::function<void(const Monster&)>& drawBattle, const std::function<void()>& drawBotInfo);
+	BattleResult inBattle(const std::function<void(const Monster&, const std::vector<std::string>&)>& drawBattle, const std::function<void()>& drawBotInfo);
 };
 

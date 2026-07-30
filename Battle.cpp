@@ -8,9 +8,23 @@
 Battle::Battle(Player& player, Monster& monster)
 	: _player(player), _monster(monster) {
 }
+void Battle::addLog(const std::string& logMsg)
+{
+	_logs.push_back(logMsg);
+	if (_logs.size() > 3) {
+		_logs.erase(_logs.begin()); // 최근 3개만 유지
+	}
+
+	// UI 즉시 갱신
+	if (_drawBattleUI) _drawBattleUI(_monster, _logs);
+	if (_drawBotInfoUI) _drawBotInfoUI();
+
+	// 전투 실황을 눈으로 확인할 수 있도록 짧은 대기시간 부여
+	Sleep(1200);
+}
 bool Battle::crticalCheck(Actor& _actor)
 {
-	bool isCritical=Util::check_success(_actor.getCritical());
+	bool isCritical = Util::check_success(_actor.getCritical());
 	return isCritical;
 
 }
@@ -24,7 +38,7 @@ bool Battle::missCheck(Actor& _attacker, Actor& _defender)
 int Battle::DamageCalculation(Actor& _attacker, Actor& _defender)
 {
 	//크리티컬 판단해서 공격데미지 계산+객체 무기 능력치
-	int attackPower = (crticalCheck(_attacker) ? _attacker.getPower() * 2 : _attacker.getPower())+_attacker.getEquipment(EquipType::SWORD).stat;
+	int attackPower = (crticalCheck(_attacker) ? _attacker.getPower() * 2 : _attacker.getPower()) + _attacker.getEquipment(EquipType::SWORD).stat;
 	return attackPower;
 }
 //도망 성공 여부
@@ -38,8 +52,9 @@ int Battle::doAttack(Actor& _attacker, Actor& _defender)
 {
 	int defenderPrevHp = _defender.getHp();
 	//최종데미지=계산된 공격데미지-객체 방어력-객체 방어구 능력치
-	int totalDamage = std::max(0, DamageCalculation(_attacker, _defender) - _defender.getDefend() - _defender.getEquipment(EquipType::SHIELD).stat);
+	int totalDamage = (std::max)(0, DamageCalculation(_attacker, _defender) - _defender.getDefend() - _defender.getEquipment(EquipType::SHIELD).stat);
 	_defender.setHp(defenderPrevHp - totalDamage);
+	std::string log = _attacker.getName() + "의 공격! " + _defender.getName() + "에게 " + std::to_string(totalDamage) + " 피해!";
 	return totalDamage;
 }
 //스킬실제실행여부
@@ -102,7 +117,7 @@ void Battle::doMonsterSkill()
 	}
 	//벡터셔플
 	Util::ShuffleList(skillOrder);
-	for (auto i: skillOrder) {
+	for (auto i : skillOrder) {
 		if (skillList[i].skill != nullptr &&
 			skillList[i].remainCoolTime == 0 &&
 			_monster.getMp() >= skillList[i].skill->mp)
@@ -140,53 +155,64 @@ void Battle::doPotion(Actor& _actor, PotionType _potion)
 {
 	if (_actor.isPotionEmpty(_potion)) {
 		return;
-	}else{
+	}
+	else {
 		switch (_potion)
 		{
 		case PotionType::HP:
-{
+		{
 			int prevHp = _actor.getHp();
 			_actor.setHp(prevHp + _actor.getPotion(PotionType::HP).potion.get()->amount);
 			_actor.addPotion(PotionType::HP, -1);
 			break;
-}
+		}
 		case PotionType::MP:
-{
+		{
 			int prevMp = _actor.getMp();
 			_actor.setMp(prevMp + _actor.getPotion(PotionType::MP).potion.get()->amount);
 			_actor.addPotion(PotionType::MP, -1);
 			break;
-}
+		}
 		default:
 			break;
 		}
 	}
 }
 
-void Battle::doMonsterTurn()
+bool Battle::doMonsterTurn()
 {
 	switch (_monster.getMonsterFSM(_player))
 	{
 	case Monster::Attack:
-		doAttack(_monster, _player);
+	{
+		int dmg = doAttack(_monster, _player);
+		addLog(_monster.getName() + "의 공격! " + std::to_string(dmg) + " 피해를 입었습니다!");
 		break;
+	}
 	case Monster::Potion:
 		doPotion(_monster, _monster.selectPotion(_player));
+		addLog(_monster.getName() + "이(가) 포션을 사용했습니다!");
 		break;
 	case Monster::Skill:
 		doMonsterSkill();
+		addLog(_monster.getName() + "이(가) 스킬을 사용했습니다!");
 		break;
 	case Monster::RunOut:
-		doRunOut(_monster, _player);
-		break;
-	default:
+		if (doRunOut(_monster, _player)) {
+			addLog(_monster.getName() + "이(가) 도망쳤습니다!");
+			return true;
+		}
+		else {
+			addLog(_monster.getName() + "이(가) 도망에 실패했습니다!");
+		}
 		break;
 	}
+	return false;
 }
 
 
 
-void Battle::doPlayerTurn()
+bool Battle::doPlayerTurn()
 {
 
 	std::stack<BattleUIState> uiStack;
@@ -209,7 +235,8 @@ void Battle::doPlayerTurn()
 
 			if (choice == 1) {
 				// 1. 기본 공격 -> 행동 완수 후 턴 종료
-				doAttack(_player, _monster);
+				int dmg=doAttack(_player, _monster);
+				addLog(_player.getName() + "의 공격! " + std::to_string(dmg) + " 데미지!");
 				isTurnEnded = true;
 			}
 			else if (choice == 2) {
@@ -221,9 +248,15 @@ void Battle::doPlayerTurn()
 				uiStack.push(BattleUIState::POTION_MENU);
 			}
 			else if (choice == 4) {
-				// 4. 도망 -> 행동 완수 후 턴 종료
-				doRunOut(_player, _monster);
-				isTurnEnded = true;
+				// 수정된 플레이어 도망 로직 반영
+				if (doRunOut(_player, _monster)) {
+					addLog(_player.getName() + "이(가) 무사히 도망쳤습니다!");
+					return true; // 도망 성공 시 true 반환
+				}
+				else {
+					addLog(_player.getName() + "이(가) 도망치는데 실패했습니다!");
+					isTurnEnded = true; // 도망에 실패하면 턴만 소모됨
+				}
 			}
 			break;
 		}
@@ -235,6 +268,7 @@ void Battle::doPlayerTurn()
 
 			if (isSuccess) {
 				// 스킬 사용 성공 -> 턴 종료
+				addLog(_player.getName() + "이(가) 스킬을 사용했습니다!");
 				isTurnEnded = true;
 			}
 			else {
@@ -253,6 +287,7 @@ void Battle::doPlayerTurn()
 
 			if (isSuccess) {
 				// 포션 사용 성공 -> 턴 종료
+				addLog(_player.getName() + "이(가) 포션을 사용했습니다!");
 				isTurnEnded = true;
 			}
 			else {
@@ -269,7 +304,7 @@ void Battle::doPlayerTurn()
 
 void Battle::battleReward(std::function<int(Actor::EquipSlot)> askChoiceCallback)
 {
-	for (auto& equip :_monster.getEquipmentList()) {
+	for (auto& equip : _monster.getEquipmentList()) {
 		if (!_monster.isEquipmentEmpty(equip.first)) {
 			Actor::EquipSlot dropItem = equip.second;
 			int choice = askChoiceCallback(dropItem);
@@ -283,21 +318,33 @@ void Battle::battleReward(std::function<int(Actor::EquipSlot)> askChoiceCallback
 	}
 }
 
-BattleResult Battle::inBattle(const std::function<void(const Monster&)>& drawBattle, const std::function<void()>& drawBotInfo)
+BattleResult Battle::inBattle(const std::function<void(const Monster&, const std::vector<std::string>&)>& drawBattle, const std::function<void()>& drawBotInfo)
 {
 	while (_player.isAlive() && _monster.isAlive()) {
-		drawBattle(_monster);  // GameManager의 showBattleMid 호출
-		drawBotInfo();
-		doPlayerTurn();
+		_drawBattleUI = drawBattle;
+		_drawBotInfoUI = drawBotInfo;
+		_logs.clear();
+
+		addLog("전투가 시작되었습니다!");
+		if (doPlayerTurn()) {
+			return BattleResult::Escaped;
+		}
+
 		if (!_monster.isAlive()) {
+			addLog(_monster.getName() + "을(를) 처치했습니다!");
 			return BattleResult::PlayerWin;
 		}
 
-		doMonsterTurn();
+		// 몬스터 턴 수행 (true 반환 시 몬스터 도망 성공으로 간주하여 즉시 종료)
+		if (doMonsterTurn()) {
+			return BattleResult::Escaped;
+		}
+
 		if (!_player.isAlive()) {
+			addLog(_player.getName() + "이(가) 쓰러졌습니다...");
 			return BattleResult::PlayerLose;
 		}
-		
+
 	}
 
 	return _player.isAlive()
