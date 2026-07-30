@@ -38,6 +38,7 @@ struct EventData//이벤트 정보
 	std::vector<std::string> description;
 	std::vector<EventChoice> choices;
 	int id;
+	bool isVIsited=false;
 };
 class Event
 {
@@ -47,6 +48,7 @@ public:
 	std::shared_ptr<EventData> getRandomEventData(int tmpId);
 	std::shared_ptr<EventData> getRandomEventData(int tmpId,EventType type);
 	std::shared_ptr<EventData> getRandomEventData(int tmpId,std::initializer_list<EventType> types);
+	static void setVisited(int tmpId);
 protected:
 	static std::map<int,std::shared_ptr<EventData>> eventDB;
 };
