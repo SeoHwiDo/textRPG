@@ -16,18 +16,26 @@ bool Util::check_versus_success(const int _myPercent, const int _enemyPercent) {
 
 	success_rate = std::max(0.0, std::min(1.0, success_rate)); // 성공률을 0과 1 사이로 제한
 
-    thread_local static std::mt19937 gen((std::random_device())());
+    thread_local static std::mt19937 gen(std::random_device{}());
 	std::bernoulli_distribution dist(success_rate);//베르누이 분포를 이용하여 성공률에 따라 true/false 반환
     return dist(gen);
 }
 
+//성공 여부 판단
 bool Util::check_success(const int _myPercent) {
 
     double myRegulaizedPercent = std::max(0.0, std::min(1.0, static_cast<double>(_myPercent) / 100.0));
     double success_rate = std::max(0.0, std::min(1.0, success_rate)); // 성공률을 0과 1 사이로 제한
 
-    thread_local static std::mt19937 gen((std::random_device())());
+    thread_local static std::mt19937 gen(std::random_device{}());
     std::bernoulli_distribution dist(success_rate);
+    return dist(gen);
+}
+
+std::size_t Util::getRandomIdx(std::size_t idxSize)
+{
+    thread_local static std::mt19937 gen(std::random_device{}());
+    std::uniform_int_distribution<size_t> dist(0, idxSize - 1);
     return dist(gen);
 }
 
@@ -51,5 +59,6 @@ int Util::makePotionID(PotionType type, PotionGrade grade) {
 }
 int Util::makeEventID(EventType type,int uniqueNum) {
     return static_cast<int>(CategoryPrefix::EVENT) +
+        static_cast<int>(type) +
         uniqueNum;
 }

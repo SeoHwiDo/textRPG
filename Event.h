@@ -19,7 +19,9 @@ struct EventResult//결과정보
 	int mp = 0;
 	int exp = 0;
 	int gold = 0;
-	EventAction action = EventAction::None;
+	EventAction thisAction = EventAction::None;
+	int nextEvent=-1;//만약 연계 이벤트 존재시 해당 이벤트 유니크넘버, 없으면 -1
+
 };
 
 struct EventChoice//선택지에 따른 결과
@@ -40,7 +42,9 @@ class Event
 public:
 	static void initDB();
 	const std::shared_ptr<EventData>& getEventData(int eventId);
-	const std::shared_ptr<EventData>& getRandomEventData(EventType type);
+	std::shared_ptr<EventData> getRandomEventData();
+	std::shared_ptr<EventData> getRandomEventData(EventType type);
+	std::shared_ptr<EventData> getRandomEventData(std::initializer_list<EventType> types);
 protected:
 	static std::map<int,std::shared_ptr<EventData>> eventDB;
 };

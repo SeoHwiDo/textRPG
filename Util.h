@@ -17,7 +17,9 @@ enum class EventType :int {
 	Shop = 200,
 	Rest = 300,
 	Treasure = 400,
-	Boss = 500
+	Boss = 500,
+	Random = 600,
+	Empty = 999
 };
 
 
@@ -27,8 +29,7 @@ namespace Util {
 	bool check_versus_success(const int _myPercent, const int _enemyPercent);
 	//내 스탯을 기반으로 성공률을 계산하고, 그 성공률에 따라 true/false를 반환하는 함수
 	bool check_success(int _percent);
-
-
+	std::size_t getRandomIdx(std::size_t idxSize);
 	//ID 생성 함수
 	int makeSkillID(SkillOwner owner, SkillType type, int uniqueNum);
 	int makeEquipID(EquipType type, EquipGrade grade);
