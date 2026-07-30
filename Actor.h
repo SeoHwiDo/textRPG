@@ -9,16 +9,22 @@
 class Actor {
 public:
 	const int HP_MIN = 0;
+	const int HP_MAX = 2000;
 
 	const int MP_MIN = 0;
+	const int MP_MAX = 1000;
 
 	const int POWER_MIN = 0;
+	const int POWER_MAX = 1000;
 
 	const int DEFEND_MIN = 0;
+	const int DEFEND_MAX = 500;
 
 	const int CRITICAL_MIN = 0;
+	const int CRITICAL_MAX = 100;
 
 	const int LV_MIN = 0;
+	const int LV_MAX = 100;
 
 	const int EXP_MIN = 0;
 	const int EXP_MAX = 100;

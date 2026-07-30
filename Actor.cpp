@@ -10,29 +10,30 @@ std::string Actor::getName() const { return this->name; }
 void Actor::setName(const std::string& _name) { this->name = _name; }
 
 int Actor::getHp() const { return this->hp; }
-void Actor::setHp(const int _hp) { this->hp = std::max(0, _hp); }
+void Actor::setHp(const int _hp) { this->hp = std::min(std::max(0, _hp),HP_MAX); }
 
 int Actor::getMp() const { return this->mp; }
-void Actor::setMp(const int _mp) { this->mp = std::max(MP_MIN, _mp); }
+void Actor::setMp(const int _mp) { this->mp = std::min(std::max(MP_MIN, _mp),MP_MAX);
+}
 
 int Actor::getPower() const { return this->power; }
-void Actor::setPower(const int _power) { this->power = std::max(0, _power); }
+void Actor::setPower(const int _power) { this->power = std::min(std::max(POWER_MIN, _power), POWER_MAX); }
 
 int Actor::getDefend() const { return this->defend; }
-void Actor::setDefend(const int _defend) { this->defend = std::max(0, _defend); }
+void Actor::setDefend(const int _defend) { this->defend = std::min(std::max(DEFEND_MIN, _defend), DEFEND_MAX); }
 
 
 int Actor::getCritical() const { return this->critical; }
-void Actor::setCritical(const int _critical) { this->critical = std::max(0, _critical); }
+void Actor::setCritical(const int _critical) { this->critical = std::min(std::max(CRITICAL_MIN, _critical), CRITICAL_MAX); }
 
 int Actor::getLv() const { return this->lv; }
-void Actor::setLv(const int _lv) { this->lv = std::max(0, _lv); }
+void Actor::setLv(const int _lv) { this->lv = std::min(std::max(LV_MIN, _lv), LV_MAX); }
 
 int Actor::getExp() const { return this->exp; }
-void Actor::setExp(const int _exp) { this->exp = std::max(0, _exp); }
+void Actor::setExp(const int _exp) { this->exp =std::max(EXP_MIN, _exp); }
 
 int Actor::getGold()const { return this->gold; }
-void Actor::setGold(const int _gold) { this->gold = std::max(0, _gold); }
+void Actor::setGold(const int _gold) { this->gold = std::min(std::max(GOLD_MIN, _gold),9999); }
 
 Actor::PotionSlot Actor::getPotion(PotionType type) const {
 	auto it = potionSlot.find(type);
@@ -127,15 +128,15 @@ void Actor::initEquipStat(EquipType type) {
 	}
 }
 void Actor::initStatus() {
-	int newPower = this->power + status.getStatusStr()*10;//힘*10만큼 공격력
+	int newPower = this->power + status.getStatusStr()*4;//힘*10만큼 공격력
 	setPower(newPower);
-	int newHp = this->hp + status.getStatusCon() * 50;
+	int newHp = this->hp + status.getStatusCon() * 6;
 	setHp(newHp);
 
-	int newMP = this->mp + status.getStatusWis() * 30;
+	int newMP = this->mp + status.getStatusWis() * 2;
 	setMp(newMP);
 
-	int newCritical = this->critical + status.getStatusDex() * 2;
+	int newCritical = this->critical + status.getStatusDex() * 1;
 	setCritical (newCritical);
 }
 
