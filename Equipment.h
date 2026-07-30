@@ -9,5 +9,5 @@ struct EquipmentData {
 };
 class Equipment :public Item<EquipmentData>{
 public:
-	static void InitDB();
+	static void initDB();
 };

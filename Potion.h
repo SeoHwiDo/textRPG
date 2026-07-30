@@ -10,7 +10,7 @@ struct PotionData {
 class Potion :public Item<PotionData>
 {
 public:
-	static void InitDB();
+	static void initDB();
 
 };
 

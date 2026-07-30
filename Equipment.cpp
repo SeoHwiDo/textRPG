@@ -3,7 +3,7 @@
 using namespace Util;
 //00=검 10=방패
 //00=하급 01=중급 02=상급
-void Equipment::InitDB() {
+void Equipment::initDB() {
 	itemDB[makeEquipID(EquipType::SWORD,EquipGrade::LOW)] = std::make_shared<EquipmentData>(EquipmentData{EquipType::SWORD,"낡은 검",EquipGrade::LOW,10});
 	itemDB[makeEquipID(EquipType::SWORD, EquipGrade::MID)] = std::make_shared<EquipmentData>(EquipmentData{ EquipType::SWORD,"좋은 검",EquipGrade::MID,30 });
 	itemDB[makeEquipID(EquipType::SWORD, EquipGrade::HIGH)] = std::make_shared<EquipmentData>(EquipmentData{ EquipType::SWORD,"전설 검",EquipGrade::HIGH,100 });

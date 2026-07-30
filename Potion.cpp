@@ -2,7 +2,7 @@
 using namespace Util;
 // 00=체력 10=마나
 //0=하급 1=중급 2=상급
-void Potion::InitDB(){
+void Potion::initDB(){
 	
 	itemDB[makePotionID(PotionType::HP,PotionGrade::LOW)] = std::make_shared<PotionData>(PotionData{ PotionType::HP, "하급 체력 포션", PotionGrade::LOW, 50 });
 	itemDB[makePotionID(PotionType::MP,PotionGrade::LOW)] = std::make_shared<PotionData>(PotionData{ PotionType::MP, "하급 마나 포션", PotionGrade::LOW, 30 });
