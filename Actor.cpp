@@ -10,7 +10,7 @@ std::string Actor::getName() const { return this->name; }
 void Actor::setName(const std::string& _name) { this->name = _name; }
 
 int Actor::getHp() const { return this->hp; }
-void Actor::setHp(const int _hp) { this->hp = std::max(HP_MIN, _hp); }
+void Actor::setHp(const int _hp) { this->hp = std::max(0, _hp); }
 
 int Actor::getMp() const { return this->mp; }
 void Actor::setMp(const int _mp) { this->mp = std::max(MP_MIN, _mp); }
@@ -34,7 +34,7 @@ void Actor::setExp(const int _exp) { this->exp = std::max(0, _exp); }
 int Actor::getGold()const { return this->gold; }
 void Actor::setGold(const int _gold) { this->gold = std::max(0, _gold); }
 
-const Actor::PotionSlot& Actor::getPotion(PotionType type) const {
+Actor::PotionSlot Actor::getPotion(PotionType type) const {
 	auto it = potionSlot.find(type);
 	if (it != potionSlot.end())
 		return it->second;
@@ -76,7 +76,7 @@ bool Actor::isPotionEmpty(PotionType type) const {
 		return false;
 }
 
-const Actor::EquipSlot& Actor::getEquipment(EquipType type) const
+Actor::EquipSlot Actor::getEquipment(EquipType type) const
 {
 	auto it = equipSlot.find(type);
 	if (it != equipSlot.end())
@@ -152,7 +152,7 @@ const std::vector<Actor::SkillSlot>& Actor::getSkillList() const
 void Actor::addSkill(int new_code)
 {
 	if (skillSlot.size() < SKILL_MAX)
-		skillSlot.push_back(SkillSlot{ Skill::getSkillData(new_code),0 });
+		skillSlot.push_back(SkillSlot{ Skill::getSkillData(new_code),0,0 });
 }
 void Actor::replaceSkill(int slot_idx,int new_code)
 {

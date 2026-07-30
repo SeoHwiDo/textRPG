@@ -8,9 +8,9 @@
 #include"Skill.h"
 class Actor {
 public:
-	const int HP_MIN = 10;
+	const int HP_MIN = 0;
 
-	const int MP_MIN = 10;
+	const int MP_MIN = 0;
 
 	const int POWER_MIN = 0;
 
@@ -93,7 +93,7 @@ public:
 	void setGold(const int _gold);
 
 	//포션슬롯 한칸의 값을 모두 value로 전달
-	const PotionSlot& getPotion(PotionType type) const;
+	PotionSlot getPotion(PotionType type) const;
 	const std::map<PotionType, PotionSlot>& getPotionList() const;
 	//포션의 갯수
 	int getPotionNum(PotionType type)const;
@@ -109,7 +109,7 @@ public:
 
 	
 	//장비슬롯 한칸의 값을 모두 value로 전달
-	const EquipSlot& getEquipment(EquipType type) const;
+	EquipSlot getEquipment(EquipType type) const;
 	const std::map<EquipType, EquipSlot>& getEquipmentList() const;
 
 	//장변경-DBid또는 getEquipment로 전달받은 값을 그대로 전달
