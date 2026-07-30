@@ -8,10 +8,10 @@
 #include"Skill.h"
 class Actor {
 public:
-	const int HP_MIN = 0;
+	const int HP_MIN = 10;
 	const int HP_MAX = 2000;
 
-	const int MP_MIN = 0;
+	const int MP_MIN = 10;
 	const int MP_MAX = 1000;
 
 	const int POWER_MIN = 0;
@@ -23,7 +23,7 @@ public:
 	const int CRITICAL_MIN = 0;
 	const int CRITICAL_MAX = 100;
 
-	const int LV_MIN = 0;
+	const int LV_MIN = 1;
 	const int LV_MAX = 100;
 
 	const int EXP_MIN = 0;
@@ -51,8 +51,10 @@ public:
 	};
 protected:
 	std::string name;//이름
-	int hp;//체력
-	int mp;//마나
+	int tmpHp;//현재체력
+	int fullHp;//전체체력
+	int tmpMp;//현재마나
+	int fullMp;//전체마나
 	int power;//공격력
 	int defend;
 	int critical;//치명타확률
@@ -74,11 +76,17 @@ public:
 	std::string getName() const;
 	void setName(const std::string& _name);
 
-	int getHp() const;
-	void setHp(const int _hp);
+	int getTmpHp() const;
+	void setTmpHp(const int _hp);
 
-	int getMp() const;
-	void setMp(const int _mp);
+	int getFullHp() const;
+	void setFullHp(const int _fhp);
+
+	int getTmpMp() const;
+	void setTmpMp(const int _mp);
+
+	int getFullMp() const;
+	void setFullMp(const int _fmp);
 
 	int getPower() const;
 	void setPower(const int _power);

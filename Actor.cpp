@@ -1,20 +1,25 @@
 ﻿#include"Actor.h"
 #include"Player.h"
 
-Actor::Actor() :name("noname"), hp(HP_MIN), mp(MP_MIN), power(POWER_MIN), defend(DEFEND_MIN), critical(CRITICAL_MIN), lv(LV_MIN), exp(EXP_MIN), gold(GOLD_MIN) {}
-Actor::Actor(std::string _name) :name(_name), hp(HP_MIN), mp(MP_MIN), power(POWER_MIN), defend(DEFEND_MIN), critical(CRITICAL_MIN), lv(LV_MIN), exp(EXP_MIN), gold(GOLD_MIN) {}
+Actor::Actor() :name("noname"), fullHp(HP_MIN), fullMp(MP_MIN), power(POWER_MIN), defend(DEFEND_MIN), critical(CRITICAL_MIN), lv(LV_MIN), exp(EXP_MIN), gold(GOLD_MIN) {}
+Actor::Actor(std::string _name) :name(_name), fullHp(HP_MIN), fullMp(MP_MIN), power(POWER_MIN), defend(DEFEND_MIN), critical(CRITICAL_MIN), lv(LV_MIN), exp(EXP_MIN), gold(GOLD_MIN) {}
 Actor::~Actor() {}
 
 //##########################[ getter,setter ]#########################################
 std::string Actor::getName() const { return this->name; }
 void Actor::setName(const std::string& _name) { this->name = _name; }
 
-int Actor::getHp() const { return this->hp; }
-void Actor::setHp(const int _hp) { this->hp = std::min(std::max(0, _hp),HP_MAX); }
+int Actor::getTmpHp() const { return this->tmpHp; }
+void Actor::setTmpHp(const int _hp) { this->tmpHp = std::min(std::max(0, _hp), fullHp); }
 
-int Actor::getMp() const { return this->mp; }
-void Actor::setMp(const int _mp) { this->mp = std::min(std::max(MP_MIN, _mp),MP_MAX);
-}
+int Actor::getFullHp() const { return this->fullHp; }
+void Actor::setFullHp(const int _hp) { this->fullHp = std::min(std::max(HP_MIN, _hp), HP_MAX); }
+
+int Actor::getTmpMp() const { return this->tmpMp; }
+void Actor::setTmpMp(const int _mp) { this->tmpMp = std::min(std::max(0, _mp), fullMp);}
+
+int Actor::getFullMp() const { return this->fullMp; }
+void Actor::setFullMp(const int _mp) { this->fullMp = std::min(std::max(MP_MIN, _mp), MP_MAX); }
 
 int Actor::getPower() const { return this->power; }
 void Actor::setPower(const int _power) { this->power = std::min(std::max(POWER_MIN, _power), POWER_MAX); }
@@ -128,13 +133,13 @@ void Actor::initEquipStat(EquipType type) {
 	}
 }
 void Actor::initStatus() {
-	int newPower = this->power + status.getStatusStr()*4;//힘*10만큼 공격력
+	int newPower = this->power + status.getStatusStr()*4;
 	setPower(newPower);
-	int newHp = this->hp + status.getStatusCon() * 6;
-	setHp(newHp);
+	int newHp = this->fullHp + status.getStatusCon() * 6;
+	setFullHp(newHp);
 
-	int newMP = this->mp + status.getStatusWis() * 2;
-	setMp(newMP);
+	int newMP = this->fullHp + status.getStatusWis() * 2;
+	setFullMp(newMP);
 
 	int newCritical = this->critical + status.getStatusDex() * 1;
 	setCritical (newCritical);
@@ -187,7 +192,7 @@ bool Actor::canUseSkill() const
 
 bool Actor::isAlive() const
 {
-	return this->hp > 0 ? true : false;
+	return this->tmpHp > 0 ? true : false;
 }
 
 
