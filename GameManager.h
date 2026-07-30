@@ -10,7 +10,7 @@
 #include"Monster.h"
 #include"Battle.h"
 /*
-       10        20        30        40
+       10        20        30        40         50
 01234567901234567890123456789012345678901234567890
 ################################################## 0  종료입력 
 # 이름이름이름 | str:00 | dex:00                 # 1
@@ -19,7 +19,7 @@
 ################################################## 4
 # [장소]                                         # 5
 # [이벤트이름]                                   # 6
-#  이벤트 설명은공백포함 40*3                    # 7
+#  이벤트 설명은공백포함 48*3                    # 7
 #                                                # 8
 #                                                # 9
 # 1.선택지                                       # 10
@@ -39,13 +39,29 @@
 class GameManager {
 private:
     Player player;
-
     Event event;
     bool runBattles(const std::vector<int>& monsterIds);
+    bool isRunning;
 public:
     static const int WIDTH = 50;
     static const int HEIGHT = 20;
-    static void choiceInput(int& choice ,int min, int max);
+
+    static const int INNER_X_START = 2;
+    static const int INNER_X_END = 48;
+
+    static const int TOP_Y_START = 1;
+    static const int TOP_Y_END = 3;
+
+    static const int MID_Y_START = 5;
+    static const int MID_Y_END = 14;
+
+    static const int CHOICE_Y_START = 10;
+    static const int CHOICE_Y_END = 14;
+
+    static const int BOT_Y_START = 16;
+    static const int BOT_Y_END = 18;
+
+    
     GameManager(Player _player);
     ~GameManager();
 
@@ -56,11 +72,9 @@ public:
     
     static bool clear_input(bool check);
     static void clearScreen();
-
     static void clearMidArea();
-
     static void clearBotArea();
-
+    void endGame();
 
 
 
@@ -77,7 +91,8 @@ public:
 
     void drawFrame();
 
-    //void showScreen(std::string _top, std::string _mid, std::string _bot);
+    void useStatusPoint();
+
     // [전투 UI 콜백 함수]
     static void clearChoiceArea();
     static int selectBattleActionUI(); // 1.공격 2.스킬 3.포션 4.도망

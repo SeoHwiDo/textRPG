@@ -20,8 +20,8 @@ void Skill::initDB() {
 		for (auto t : targets) {
 			int damage = Battle::DamageCalculation(caster, *t,Battle::criticalCheck(caster));
 			std::cout << t->getName() << "에게 " << damage << "의 강력한 피해!\n";
-			int prevHp = t->getHp();
-			t->setHp(prevHp - damage);
+			int prevHp = t->getTmpHp();
+			t->setTmpHp(prevHp - damage);
 		}	
 	};
 	skillDB[makeSkillID(SkillOwner::PLAYER, SkillType::ATTACK, 0)] = powerShot;

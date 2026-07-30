@@ -1,6 +1,10 @@
 ﻿#include"GameManager.h"
 #include <conio.h>
 
+GameManager::GameManager(Player _player) :player(_player), isRunning(true) {}
+GameManager::~GameManager() {}
+
+//화면 관련
 void gotoXY(short x, short y)
 {
 	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -11,16 +15,11 @@ void gotoXY(short x, short y)
 
 	SetConsoleCursorPosition(hOut, pos);
 }
-
-
 template<typename T>
 void GameManager::inOutput(std::string _message, T& _inoutVar) {
 	std::cout << _message;
 	std::cin >> _inoutVar;
 }
-GameManager::GameManager(Player _player) :player(_player) {}
-
-GameManager::~GameManager() {}
 void GameManager::waitAnyKey()
 {
 	gotoXY(2, 14); // 선택지 영역의 하단 빈 공간에 출력
@@ -67,6 +66,11 @@ void GameManager::clearBotArea()
 		std::cout << std::string(WIDTH - 2, ' ');
 	}
 }
+void GameManager::endGame()
+{
+	isRunning = false; // 메인 루프를 종료하도록 플래그 변경
+	resultGame();
+}
 void GameManager::clearChoiceArea()
 {
 	for (int y = 10; y <= 14; ++y) {
@@ -101,19 +105,7 @@ void GameManager::drawFrame()
 	gotoXY(0, 19); DrowFillLine();
 
 }
-
-void GameManager::initPlayer() {
-	std::string name;
-	while (1) {
-		inOutput("이름을 입력하세요(6글자 이내):", name);
-		if (clear_input(name.size() <= 6)) break;
-		std::cout << "\n6글자를 초과하였습니다!";
-	}
-	player.setName(name);
-	player.setHp(100);
-	player.setMp(50);
-	player.setGold(10);
-	player.setLv(1);
+void GameManager::useStatusPoint() {
 	int point;
 	for (Status::statusType s : Status::stat) {
 		if (s == Status::REMAIN) break;
@@ -130,26 +122,40 @@ void GameManager::initPlayer() {
 	}
 	player.initStatus();
 }
+void GameManager::initPlayer() {
+	std::string name;
+	while (1) {
+		inOutput("이름을 입력하세요(6글자 이내):", name);
+		if (clear_input(name.size() <= 6)) break;
+		std::cout << "\n6글자를 초과하였습니다!";
+	}
+	player.setName(name);
+	player.setFullHp(100);
+	player.setFullMp(50);
+	player.setGold(10);
+	player.setLv(1);
+	useStatusPoint();
+	player.setTmpHp(player.getFullHp());
+	player.setTmpMp(player.getFullMp());
+
+}
 
 void GameManager::topInfo()
 {
-	gotoXY(2, 1);
-	std::cout << "이름: " << player.getName();
-	gotoXY(2, 2);
-	std::cout << "레벨: " << player.getLv();
-	gotoXY(2, 3);
-	std::cout << "경험치: " << player.getExp();
-	gotoXY(22, 1);
+	gotoXY(INNER_X_START, TOP_Y_START); std::cout << "이름: " << player.getName();
+	gotoXY(INNER_X_START, TOP_Y_START+1); std::cout << "레벨: " << player.getLv();
+	gotoXY(INNER_X_START, TOP_Y_START+2); std::cout << "경험치: " << player.getExp();
+	gotoXY(INNER_X_END-18, TOP_Y_START);
 	std::cout << "| str: " << player.status.getStatusStr();
-	gotoXY(22, 2);
+	gotoXY(INNER_X_END - 18, TOP_Y_START+1);
 	std::cout << "| wis: " << player.status.getStatusWis();
-	gotoXY(22, 3);
+	gotoXY(INNER_X_END - 18, TOP_Y_START+2);
 	std::cout << "| con: " << player.status.getStatusCon();
-	gotoXY(31, 1);
+	gotoXY(INNER_X_END - 9, TOP_Y_START);
 	std::cout << "| dex: " << player.status.getStatusDex();
-	gotoXY(31, 2);
+	gotoXY(INNER_X_END - 9, TOP_Y_START+1);
 	std::cout << "| chm: " << player.status.getStatusCham();
-	gotoXY(31, 3);
+	gotoXY(INNER_X_END - 9, TOP_Y_START+2);
 	std::cout << "| rmn: " << player.status.getStatusRemain();
 	gotoXY(WIDTH - 1, HEIGHT - 1);
 }
@@ -158,8 +164,8 @@ EventResult GameManager::showEventMid(const std::shared_ptr<EventData>& event)
 {
 	clearMidArea();
 	
-	int y = 5;
-	gotoXY(2, y++);
+	int y = MID_Y_START;
+	gotoXY(INNER_X_START, y);
 	std::cout << "[" << event.get()->title << "]";
 
 	for (auto des : event->description) {
@@ -169,16 +175,16 @@ EventResult GameManager::showEventMid(const std::shared_ptr<EventData>& event)
 	if (event->choices.empty()) {
 		return EventResult{ 0,0,0,0,EventAction::None };  // 선택지가 없는 이벤트
 	}
-	y = 10;
+	y = CHOICE_Y_START-1;
 	for (int i = 0; i < event->choices.size(); ++i) {
 		gotoXY(2, y++);
 		std::cout << "[" << i + 1 << "]" << event->choices[i].text;
 	}
 	int choice;
 	do {
-		gotoXY(2, 14);
+		gotoXY(INNER_X_START, CHOICE_Y_END);
 		std::cout << "선택:          ";
-		gotoXY(8, 14); char ch = _getch();
+		gotoXY(8, CHOICE_Y_END); char ch = _getch();
 		choice = ch - '0';
 	} while (!clear_input(choice >= 1 && choice <= static_cast<int>(event->choices.size())));
 	return event->choices[choice - 1].result;
@@ -187,21 +193,20 @@ void GameManager::showBattleMid(const Monster& monster, const std::vector<std::s
 {
 	clearMidArea();
 
-	int y = 5;
+	int y = MID_Y_START;
 
-	gotoXY(2, y++);
+	gotoXY(2, y);
 	std::cout << "[ 전투 ]";
 
 	gotoXY(2, y++);
-	std::cout << "적: " << monster.getName() << " / HP: " << monster.getHp();
-
+	std::cout << "적: " << monster.getName();
 	gotoXY(2, y++);
-	std::cout << "내 HP: " << player.getHp()
-		<< " / MP: " << player.getMp()
-		<< " / 공격력: " << (player.getPower() + player.getEquipment(EquipType::SWORD).stat);
+	std::cout << "HP: " << monster.getTmpHp() << " / 공격력: " << monster.getPower() << " / 방어력: " << monster.getDefend();
+	gotoXY(2, y++);
+	std::cout << " 공격력: " << (player.getPower() + player.getEquipment(EquipType::SWORD).stat);
 	y = 8;
 	for (const auto& log : logs) {
-		gotoXY(2, y++);
+		gotoXY(INNER_X_START, y++);
 		std::cout << "> " << log;
 	}
 }
@@ -209,22 +214,29 @@ void GameManager::botInfo()
 {
 	clearBotArea();
 
-	int y = 16;
 
-	gotoXY(2, y++);
-	std::cout << "체력: " << player.getHp() << " | 무기 : "
-		<< (player.isEquipmentEmpty(EquipType::SWORD) ? " " : player.getEquipment(EquipType::SWORD).equip->name)
-		<< " +" << player.getEquipment(EquipType::SWORD).lv;
-	gotoXY(2, y++);
-	std::cout << "마나: " << player.getMp() << " | 방패 : "
-		<< (player.isEquipmentEmpty(EquipType::SHIELD) ? " " : player.getEquipment(EquipType::SHIELD).equip->name)
-		<< " +" << player.getEquipment(EquipType::SHIELD).lv;
-	gotoXY(2, y++);
-	std::cout << "골드: " << player.getGold()
-		<< " | 체력포션 : " << player.getPotion(PotionType::HP).num
-		<< " | 마나포션" << player.getPotion(PotionType::MP).num;
+	gotoXY(INNER_X_START, BOT_Y_START);
+	std::cout << "체력: " << player.getTmpHp() << " / " << player.getFullHp();
+	gotoXY(INNER_X_END - 4 - 26, BOT_Y_START);
+	std::cout << "| 무기 : " << (player.isEquipmentEmpty(EquipType::SWORD) ? " " : player.getEquipment(EquipType::SWORD).equip->name);
+	gotoXY(INNER_X_END - 4, BOT_Y_START);
+	std::cout << "+" << player.getEquipment(EquipType::SWORD).lv;
+
+	gotoXY(INNER_X_START, BOT_Y_START + 1);
+	std::cout << "마나: " << player.getTmpMp() << " / " << player.getFullMp();
+	gotoXY(INNER_X_END - 4 - 26, BOT_Y_START + 1);
+	std::cout << "| 방패 : " << (player.isEquipmentEmpty(EquipType::SHIELD) ? " " : player.getEquipment(EquipType::SHIELD).equip->name);
+	gotoXY(INNER_X_END - 4, BOT_Y_START + 1);
+	std::cout << "+" << player.getEquipment(EquipType::SHIELD).lv;
+
+	gotoXY(INNER_X_START, BOT_Y_START + 2);
+	std::cout << "골드: " << player.getGold();
+	gotoXY(INNER_X_END - 15 - 15, BOT_Y_START + 2);
+	std::cout << "| 체력포션 : " << player.getPotion(PotionType::HP).num;
+	gotoXY(INNER_X_END - 15, BOT_Y_START + 2);
+	std::cout << "| 마나포션 :" << player.getPotion(PotionType::MP).num;
+
 }
-
 bool GameManager::runBattles(const std::vector<int>& monsterIds)
 {
 	for (int monsterId : monsterIds) {
@@ -242,6 +254,7 @@ bool GameManager::runBattles(const std::vector<int>& monsterIds)
 		if (battleResult != BattleResult::PlayerWin) {
 			return false;
 		}
+		player.setExp(player.getExp() + monster->getExp());
 		// monster는 이 반복이 끝날 때 unique_ptr 소멸과 함께 제거된다.
 	}
 	return true;
@@ -249,22 +262,32 @@ bool GameManager::runBattles(const std::vector<int>& monsterIds)
 
 void GameManager::applyEventResult(const EventResult& result)
 {
-	player.setHp(player.getHp() + result.hp);
-	player.setMp(player.getMp() + result.mp);
+	player.setTmpHp(player.getTmpHp() + result.hp);
+	player.setTmpMp(player.getTmpMp() + result.mp);
 	player.setExp(player.getExp() + result.exp);
 	player.setGold(player.getGold() + result.gold);
 
-	player.levelUpCheck();
+	if (player.levelUpCheck()) {
+		clearChoiceArea();
+		gotoXY(INNER_X_START, CHOICE_Y_START);
+		useStatusPoint();
+		player.initStatus();
+	}
 	
 	botInfo();
 	switch (result.thisAction) {
 	case EventAction::Battle:
-		runBattles(result.monsterIds);
+		if (!runBattles(result.monsterIds)) {
+			endGame();
+		}
 		break;
 	case EventAction::Shop:
 		// 상점 UI 열기
 		break;
 	case EventAction::Rest:
+		clearChoiceArea();
+		gotoXY(INNER_X_START, CHOICE_Y_START);
+		std::cout << "체력 및 마나를 모두 회복합니다.";
 		// 휴식 처리 또는 안내 출력
 		break;
 	case EventAction::GameOver:
@@ -386,11 +409,7 @@ void GameManager::runGame() {
 	initPlayer();
 	//UI 프레임
 	drawFrame();
-	//최초 튜토리얼
-	topInfo();
-	botInfo();
-	auto result = showEventMid(event.getEventData(Util::makeEventID(EventType::Story, 0)));
-	//장비 및 포션 지급
+	// 장비 및 포션 지급
 	player.setEquipment(Util::makeEquipID(EquipType::SWORD, EquipGrade::LOW));
 	player.setEquipment(Util::makeEquipID(EquipType::SHIELD, EquipGrade::LOW));
 	player.setPotion(Util::makePotionID(PotionType::HP, PotionGrade::LOW));
@@ -398,11 +417,17 @@ void GameManager::runGame() {
 	player.setPotion(Util::makePotionID(PotionType::MP, PotionGrade::LOW));
 	player.addPotion(PotionType::MP, 2);
 	player.addSkill(Util::makeSkillID(SkillOwner::PLAYER, SkillType::ATTACK, 0));
+	//최초 튜토리얼
+	topInfo();
+	botInfo();
+	auto result = showEventMid(event.getEventData(Util::makeEventID(EventType::Story, 0)));
+	
+
 	applyEventResult(result);
 	std::shared_ptr<EventData> eventData = std::make_shared<EventData>();
 	int currentEventId = -1;
-
-	while (1) {
+	isRunning = true; 
+	while (isRunning) {
 		std::shared_ptr<EventData> eventData = nullptr; // 빈 포인터로 초기화
 
 		if (result.nextEvent != -1) {
@@ -419,11 +444,10 @@ void GameManager::runGame() {
 			case EventAction::Rest:
 				eventData = event.getRandomEventData(currentEventId, { EventType::Boss, EventType::Story, EventType::Treasure, EventType::Battle });
 				break;
-			case EventAction::GameOver:
-				
-				break;
 			case EventAction::None:
 				eventData = event.getRandomEventData(currentEventId);
+				break;
+			case EventAction::GameOver:
 				break;
 			}
 		}
@@ -433,6 +457,7 @@ void GameManager::runGame() {
 		// 3. 잘못된 Empty 이벤트가 튀어나온 경우
 		// 위 세 가지 중 하나라도 해당하면 메인 루프를 즉시 탈출(게임 셋).
 		if (!player.isAlive() || result.thisAction == EventAction::GameOver || eventData->id == Util::makeEventID(EventType::Empty, 0)) {
+			endGame();
 			break;
 		}
 
