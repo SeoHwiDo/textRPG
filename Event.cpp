@@ -31,7 +31,7 @@ void Event::initDB() {
 	std::shared_ptr<EventData> story1 = std::make_shared<EventData>();
 	*story1 = {
 		EventType::Story, "안개 속의 갈림길",
-		{ "짙은 안개가 길을 삼키고 있다.", "왼쪽에서는 검은 연기가,"," 오른쪽에서는 희미한 종소리가 들린다." },
+		{ "짙은 안개가 길을 삼키고 있다.", "왼쪽에서는 검은 연기가,","오른쪽에서는 희미한 종소리가 들린다." },
 		{ { "연기를 따라간다", { -5, 0, 15, 0, EventAction::Battle, makeEventID(EventType::Battle, 2), { static_cast<int>(MonsterId::Goblin) } } },
 		  { "종소리를 따라간다", { 0, 0, 10, 5, EventAction::None, makeEventID(EventType::Rest, 1) } } },
 		 makeEventID(EventType::Story, 1)
@@ -43,7 +43,7 @@ void Event::initDB() {
 		EventType::Story, "수상한 여행자",
 		{ "낡은 망토를 두른 여행자가 길을 막아선다.", "그는 물 한 모금과 ","정보를 바꾸자고 제안한다." },
 		{ { "물을 건넨다", { 5, -3, 20, 0, EventAction::None, makeEventID(EventType::Shop, 3) } },
-		  { "거절하고 지나간다", { 0, 0, 0, 0, EventAction::None, makeEventID(EventType::Battle, 1) } } },
+		  { "거절하고 지나간다", { 0, 0, 0, 0, EventAction::None, makeEventID(EventType::Battle, 1),{ static_cast<int>(MonsterId::HungryWolf) } } } },
 		  makeEventID(EventType::Story, 2)
 	};
 	eventDB[makeEventID(EventType::Story, 2)] = story2;

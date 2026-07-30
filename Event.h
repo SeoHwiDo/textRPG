@@ -10,7 +10,8 @@ enum class EventAction//선택지에 따른 후속행동
 	Battle,
 	Shop,
 	Rest,
-	GameOver
+	GameOver,
+	Treasure,
 };
 
 struct EventResult//결과정보

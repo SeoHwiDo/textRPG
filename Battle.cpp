@@ -51,12 +51,18 @@ bool Battle::doRunOut(Actor& _attacker, Actor& _defender)
 //기본공격
 int Battle::doAttack(Actor& _attacker, Actor& _defender, bool isCri)
 {
-	int defenderPrevHp = _defender.getHp();
+	int defenderPrevHp = _defender.getTmpHp();
 	//최종데미지=계산된 공격데미지-객체 방어력-객체 방어구 능력치
 	int totalDamage = (std::max)(0, DamageCalculation(_attacker, _defender, isCri) - _defender.getDefend() - _defender.getEquipment(EquipType::SHIELD).stat);
-	_defender.setHp(defenderPrevHp - totalDamage);
-	std::string log = _attacker.getName() + "의 공격! " + _defender.getName() + "에게 " + std::to_string(totalDamage);
-	log=log+(isCri?"치명타 피해!" : " 피해!");
+	std::string log = _attacker.getName() + "의 공격! ";
+	if (missCheck(_attacker, _defender)) {
+		totalDamage = 0;
+		log += "회피성공!" + _defender.getName() + "에게 공격 빗나감!";
+	}
+	else {
+		log += _defender.getName() + "에게 " + std::to_string(totalDamage) + (isCri ? "치명타 피해!" : " 피해!");
+	}
+	_defender.setTmpHp(defenderPrevHp - totalDamage);
 	return totalDamage;
 }
 //스킬실제실행여부
@@ -67,7 +73,7 @@ bool Battle::executeSkill(Actor& _attacker, Actor& _defender, int idx)
 
 	if (selectedSlot.skill == nullptr) return false;
 
-	if (_attacker.getMp() < selectedSlot.skill->mp) {
+	if (_attacker.getTmpMp() < selectedSlot.skill->mp) {
 		//std::cout << _attacker.getName() << "의 마나가 부족합니다!\n";
 		return false;
 	}
@@ -77,7 +83,7 @@ bool Battle::executeSkill(Actor& _attacker, Actor& _defender, int idx)
 	}
 
 	// 자원 소모 및 텍스트 출력
-	_attacker.setMp(_attacker.getMp() - selectedSlot.skill->mp);
+	_attacker.setTmpMp(_attacker.getTmpMp() - selectedSlot.skill->mp);
 	//std::cout << "\n[" << _attacker.getName() << "] " << selectedSlot.skill->name << " 사용!\n";
 
 	// 스킬 Effect 실행
@@ -122,7 +128,7 @@ void Battle::doMonsterSkill()
 	for (auto i : skillOrder) {
 		if (skillList[i].skill != nullptr &&
 			skillList[i].remainCoolTime == 0 &&
-			_monster.getMp() >= skillList[i].skill->mp)
+			_monster.getTmpMp() >= skillList[i].skill->mp)
 		{
 			executeSkill(_monster, _player, i);
 			return; // 성공적으로 스킬을 썼으므로 종료
@@ -163,15 +169,15 @@ void Battle::doPotion(Actor& _actor, PotionType _potion)
 		{
 		case PotionType::HP:
 		{
-			int prevHp = _actor.getHp();
-			_actor.setHp(prevHp + _actor.getPotion(PotionType::HP).potion.get()->amount);
+			int prevHp = _actor.getTmpHp();
+			_actor.setTmpHp(prevHp + _actor.getPotion(PotionType::HP).potion.get()->amount);
 			_actor.addPotion(PotionType::HP, -1);
 			break;
 		}
 		case PotionType::MP:
 		{
-			int prevMp = _actor.getMp();
-			_actor.setMp(prevMp + _actor.getPotion(PotionType::MP).potion.get()->amount);
+			int prevMp = _actor.getTmpMp();
+			_actor.setTmpMp(prevMp + _actor.getPotion(PotionType::MP).potion.get()->amount);
 			_actor.addPotion(PotionType::MP, -1);
 			break;
 		}
