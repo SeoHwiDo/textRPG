@@ -12,23 +12,24 @@ bool Player::levelUpCheck() {
 		//unsigned int prevLv = lv,prevExp= exp;
 		//Player::setLv(prevLv + prevExp / EXP_MAX);//현재 경험치를 경험치의 최대값으로 나눈 몫을 레벨에 추가
 		//Player::setExp(prevExp % EXP_MAX);
+		initStatus();
 		return true;
 	}
 	return false;
 }
 
-void Player::calculateStatusEffect()
-{
-	this->hp += status.getStatusCon() * 10;
-	this->power += status.getStatusStr() * 2;
-	this->critical += status.getStatusDex();
-
-	//int prevHp = Player::getHp();
-	//int prevPower = Player::getPower();
-	//int prevCritical = Player::getCritical();
-
-	//Player::setHp(prevHp + status.getStatusCon() * 10);
-	//Player::setPower(prevPower+ status.getStatusStr() * 2);
-	//Player::setCritical(prevCritical+ status.getStatusDex());
-}
+//void Player::calculateStatusEffect()
+//{
+//	this->hp += status.getStatusCon() * 10;
+//	this->power += status.getStatusStr() * 2;
+//	this->critical += status.getStatusDex();
+//
+//	//int prevHp = Player::getHp();
+//	//int prevPower = Player::getPower();
+//	//int prevCritical = Player::getCritical();
+//
+//	//Player::setHp(prevHp + status.getStatusCon() * 10);
+//	//Player::setPower(prevPower+ status.getStatusStr() * 2);
+//	//Player::setCritical(prevCritical+ status.getStatusDex());
+//}
 

@@ -8,15 +8,29 @@ Monster::Monster(std::string _name) :Actor(_name) {
 
 std::map<int, MonsterData> Monster::monsterDB;
 
+//struct MonsterData {
+//	int id;
+//	std::string name;
+//	int hp;
+//	int mp;
+//	int power;
+//	int defend;
+//	int critical;
+//	int level;
+//	int skill;
+//	int exp;
+//	int gold;
+//};
+
 void Monster::initDB()
 {
 	monsterDB = {
-		{ static_cast<int>(MonsterId::HungryWolf), { static_cast<int>(MonsterId::HungryWolf), "굶주린 늑대", 450, 100, 80, 20, 50, 10 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK, 0),50,100} },
-		{ static_cast<int>(MonsterId::Goblin), { static_cast<int>(MonsterId::Goblin), "고블린", 350, 100, 70, 10, 30, 10 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK, 0),80,120} },
-		{ static_cast<int>(MonsterId::CursedArmor), { static_cast<int>(MonsterId::CursedArmor), "저주받은 갑옷", 700, 200, 120, 50, 80, 20 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK,0), 100,200} },
-		{ static_cast<int>(MonsterId::ForestGuardian), { static_cast<int>(MonsterId::ForestGuardian), "숲의 수호자", 1300, 300, 180, 80, 100, 40 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK,0), 120,500} },
-		{ static_cast<int>(MonsterId::RedMoonKnight), { static_cast<int>(MonsterId::RedMoonKnight), "붉은 달의 기사", 1600, 400, 220, 100, 120, 50 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK,0),150,800} },
-		{ static_cast<int>(MonsterId::AbyssLord), { static_cast<int>(MonsterId::AbyssLord), "심연의 군주", 2200, 600, 280, 140, 150, 70 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK,0), 200,1000} }
+		{ static_cast<int>(MonsterId::HungryWolf), { static_cast<int>(MonsterId::HungryWolf), "굶주린 늑대", 45, 10, 40, 10, 5, 10 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK, 0),50,100} },
+		{ static_cast<int>(MonsterId::Goblin), { static_cast<int>(MonsterId::Goblin), "고블린", 35, 10, 5, 10, 3, 10 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK, 0),80,120} },
+		{ static_cast<int>(MonsterId::CursedArmor), { static_cast<int>(MonsterId::CursedArmor), "저주받은 갑옷", 70, 20, 6, 5, 8, 20 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK,0), 100,200} },
+		{ static_cast<int>(MonsterId::ForestGuardian), { static_cast<int>(MonsterId::ForestGuardian), "숲의 수호자", 130, 70, 18, 8, 100, 40 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK,0), 120,500} },
+		{ static_cast<int>(MonsterId::RedMoonKnight), { static_cast<int>(MonsterId::RedMoonKnight), "붉은 달의 기사", 160, 40, 20, 10, 120, 50 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK,0),150,800} },
+		{ static_cast<int>(MonsterId::AbyssLord), { static_cast<int>(MonsterId::AbyssLord), "심연의 군주", 220, 60, 10, 140, 15, 70 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK,0), 200,1000} }
 	};
 }
 
