@@ -43,7 +43,13 @@ void GameManager::clearMidArea()
 		std::cout << std::string(WIDTH - 2, ' ');
 	}
 }
-
+void GameManager::clearBotArea()
+{
+	for (int y = 16; y <= 18; ++y) {
+		gotoXY(1, y);
+		std::cout << std::string(WIDTH - 2, ' ');
+	}
+}
 void GameManager::clearChoiceArea()
 {
 	for (int y = 11; y <= 14; ++y) {
@@ -130,6 +136,7 @@ void GameManager::topInfo()
 
 EventResult GameManager::showEventMid(const std::shared_ptr<EventData>& event)
 {
+	clearMidArea();
 	int y = 5;
 	gotoXY(2, y++);
 	std::cout << "["<<event.get()->title<<"]";
@@ -165,18 +172,54 @@ void GameManager::showBattleMid(const Monster& monster)
 	std::cout << "[ 전투 ]";
 
 	gotoXY(2, y++);
-	std::cout << "적: " << monster.getName();
+	std::cout << "적: " << monster.getName()<< " / HP: " << monster.getHp();
 
-	gotoXY(2, y++);
-	std::cout << "HP: " << monster.getHp();
-
-	gotoXY(2, y += 2);
+	gotoXY(2, y ++);
 	std::cout << "내 HP: " << player.getHp()
-		<< " / MP: " << player.getMp();
+		<< " / MP: " << player.getMp()
+		<< " / 공격력: " << player.getPower();
 }
 void GameManager::botInfo()
 {
+	clearMidArea();
+
+	int y = 16;
+
+	gotoXY(2, y++);
+	std::cout << "체력: " << player.getHp() << " | 무기 : " 
+		<< (player.isEquipmentEmpty(EquipType::SWORD) ? " " : player.getEquipment(EquipType::SWORD).equip->name)
+		<< " +" << player.getEquipment(EquipType::SWORD).lv;
+	gotoXY(2, y++);
+	std::cout << "마나: " << player.getMp() << " | 방패 : " 
+		<< (player.isEquipmentEmpty(EquipType::SHIELD) ? " " : player.getEquipment(EquipType::SHIELD).equip->name)
+		<< " +" << player.getEquipment(EquipType::SHIELD).lv;
+	gotoXY(2, y++);
+	std::cout << "골드: " << player.getGold() 
+		<< " | 체력포션 : " << player.getPotion(PotionType::HP).num 
+		<< " | 마나포션" << player.getPotion(PotionType::MP).num;
 }
+
+bool GameManager::runBattles(const std::vector<int>& monsterIds)
+{
+	for (int monsterId : monsterIds) {
+		auto monster = Monster::create(monsterId);
+		if (!monster) {
+			std::cout << "존재하지 않는 몬스터 ID입니다: " << monsterId << "\n";
+			continue;
+		}
+
+		Battle battle(player, *monster);
+		BattleResult battleResult = battle.inBattle(
+			[this](const Monster& currentMonster) { showBattleMid(currentMonster); }, [this]() {botInfo(); });
+
+		if (battleResult != BattleResult::PlayerWin) {
+			return false;
+		}
+		// monster는 이 반복이 끝날 때 unique_ptr 소멸과 함께 제거된다.
+	}
+	return true;
+}
+
 void GameManager::applyEventResult(const EventResult& result)
 {
 	player.setHp(player.getHp() + result.hp);
@@ -188,7 +231,7 @@ void GameManager::applyEventResult(const EventResult& result)
 
 	switch (result.thisAction) {
 	case EventAction::Battle:
-		//showBattleMid();
+		runBattles(result.monsterIds);
 		break;
 	case EventAction::Shop:
 		// 상점 UI 열기
@@ -208,8 +251,8 @@ void GameManager::applyEventResult(const EventResult& result)
 int GameManager::selectBattleActionUI() {
 
 	clearChoiceArea();
-	int y = 11;
-	gotoXY(2, y++);std::cout << "1. 기본공격\n";
+	int y = 10;
+	std::cout << "1. 기본공격\n";
 	gotoXY(2, y++);std::cout << "2. 스킬\n";
 	gotoXY(2, y++); std::cout << "3. 포션\n";
 	gotoXY(2, y++); std::cout << "4. 도망\n";
@@ -230,24 +273,23 @@ int GameManager::selectBattleActionUI() {
 
 // 2. 스킬 선택 UI
 int GameManager::selectSkillUI(const std::vector<Actor::SkillSlot>& skills) {
+	clearChoiceArea();
 	if (skills.empty()) {
 		std::cout << "\n사용 가능한 스킬이 없습니다.\n";
 		return -1;
 	}
-
-	std::cout << "\n========== [ 스킬 목록 ] ==========\n";
+	int y = 10;
 	for (size_t i = 0; i < skills.size(); ++i) {
 		if (skills[i].skill != nullptr) {
 			std::cout << i + 1 << ". " << skills[i].skill->name
 				<< " (MP: " << skills[i].skill->mp << ")";
 			if (skills[i].remainCoolTime > 0) {
-				std::cout << " [쿨타임: " << skills[i].remainCoolTime << "턴]";
+				gotoXY(2, y++); std::cout << " [쿨타임: " << skills[i].remainCoolTime << "턴]";
 			}
-			std::cout << "\n";
 		}
 	}
 	std::cout << "0. 취소\n";
-	std::cout << "===================================\n";
+
 
 	int choice;
 	while (true) {
@@ -272,11 +314,12 @@ int GameManager::selectSkillUI(const std::vector<Actor::SkillSlot>& skills) {
 
 // 3. 포션 선택 UI
 PotionType GameManager::selectPotionUI(const std::map<PotionType, Actor::PotionSlot>& potions) {
-	std::cout << "\n========== [ 포션 목록 ] ==========\n";
-	std::cout << "1. 체력 포션 (남은 개수: " << (potions.count(PotionType::HP) ? potions.at(PotionType::HP).num : 0) << "개)\n";
-	std::cout << "2. 마나 포션 (남은 개수: " << (potions.count(PotionType::MP) ? potions.at(PotionType::MP).num : 0) << "개)\n";
-	std::cout << "0. 취소\n";
-	std::cout << "===================================\n";
+	clearChoiceArea();
+	int y = 10;
+	gotoXY(2, y++);std::cout << "========== [ 포션 목록 ] ==========";
+	gotoXY(2, y++);std::cout << "1. 체력 포션 (남은 개수: " << (potions.count(PotionType::HP) ? potions.at(PotionType::HP).num : 0) << "개)\n";
+	gotoXY(2, y++);std::cout << "2. 마나 포션 (남은 개수: " << (potions.count(PotionType::MP) ? potions.at(PotionType::MP).num : 0) << "개)\n";
+	gotoXY(2, y++);std::cout << "0. 취소\n";
 
 	int choice;
 	while (true) {
@@ -304,6 +347,7 @@ void GameManager::runGame(){
 	Equipment equip;
 	Potion potion;
 	event.initDB();
+	Monster::initDB();
 	equip.initDB();
 	potion.initDB();
 
@@ -313,6 +357,7 @@ void GameManager::runGame(){
 	drawFrame();
 	//최초 튜토리얼
 	topInfo();
+	botInfo();
 	auto result=showEventMid(event.getEventData(Util::makeEventID(EventType::Story, 0)));
 	//장비 및 포션 지급
 	player.setEquipment(Util::makeEquipID(EquipType::SWORD, EquipGrade::LOW));
@@ -321,6 +366,7 @@ void GameManager::runGame(){
 	player.addPotion(PotionType::HP, 5);
 	player.setPotion(Util::makePotionID(PotionType::MP, PotionGrade::LOW));
 	player.addPotion(PotionType::MP, 5);
+	player.addSkill(Util::makeSkillID(SkillOwner::PLAYER, SkillType::ATTACK, 0));
 	applyEventResult(result);
 	while (1) {
 		std::shared_ptr<EventData> eventData=std::make_shared<EventData>();
@@ -330,20 +376,20 @@ void GameManager::runGame(){
 			switch (result.thisAction) {
 			case EventAction::Battle:
 				//직전 전투시 휴식 또는 스토리
-				eventData=event.getRandomEventData({ EventType::Rest,EventType::Story ,EventType::Shop});
+				eventData=event.getRandomEventData(eventData->id,{ EventType::Rest,EventType::Story ,EventType::Shop});
 				break;
 			case EventAction::Shop:
-				eventData = event.getRandomEventData({ EventType::Battle,EventType::Story,EventType::Treasure });
+				eventData = event.getRandomEventData(eventData->id, { EventType::Battle,EventType::Story,EventType::Treasure });
 				break;
 			case EventAction::Rest:
-				eventData = event.getRandomEventData({ EventType::Boss,EventType::Story,EventType::Treasure,EventType::Battle });
+				eventData = event.getRandomEventData(eventData->id, { EventType::Boss,EventType::Story,EventType::Treasure,EventType::Battle });
 				// 휴식 처리 또는 안내 출력
 				break;
 			case EventAction::GameOver:
 				// 게임 종료 처리
 				break;
 			case EventAction::None:
-				eventData = event.getRandomEventData();
+				eventData = event.getRandomEventData(eventData->id);
 				break;
 			}
 		}

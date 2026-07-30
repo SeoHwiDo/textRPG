@@ -22,11 +22,11 @@
 #  이벤트 설명은공백포함 40*3           # 7
 #                                       # 8
 #                                       # 9
-#                                       # 10
 # 1.선택지                              # 11
 # 2.선택지                              # 12
 # 3.선택지                              # 13
 # 4.선택지                              # 14
+#                                       # 10
 ######################################### 15
 # 체력: 000 | 무기: 이름이름이름    000 # 16
 # 마나: 000 | 방패: 이름이름이름    000 # 17
@@ -41,6 +41,7 @@ private:
     Player player;
 
     Event event;
+    bool runBattles(const std::vector<int>& monsterIds);
 public:
     static const int WIDTH = 42;
     static const int HEIGHT = 20;
@@ -54,6 +55,8 @@ public:
     void clearScreen();
 
     void clearMidArea();
+
+    void clearBotArea();
 
 
 
