@@ -55,6 +55,6 @@ public:
 	//보상지급
 	void battleReward(std::function<int(Actor::EquipSlot)> askChoiceCallback);
 
-	BattleResult inBattle(const std::function<void(const Monster&)>& drawBattle);
+	BattleResult inBattle(const std::function<void(const Monster&)>& drawBattle, const std::function<void()>& drawBotInfo);
 };
 

@@ -1,6 +1,9 @@
 ﻿#include "Battle.h"
 #include"Util.h"
+#include "GameManager.h"
 #include<iostream>
+#include <stack>
+#include<algorithm>
 //치명타 작동 여부
 Battle::Battle(Player& player, Monster& monster)
 	: _player(player), _monster(monster) {
@@ -169,18 +172,19 @@ void Battle::doMonsterTurn()
 		break;
 	case Monster::Potion:
 		doPotion(_monster, _monster.selectPotion(_player));
+		break;
 	case Monster::Skill:
 		doMonsterSkill();
+		break;
 	case Monster::RunOut:
 		doRunOut(_monster, _player);
+		break;
 	default:
 		break;
 	}
 }
 
-#include <stack>
-#include "Battle.h"
-#include "GameManager.h"
+
 
 void Battle::doPlayerTurn()
 {
@@ -279,22 +283,21 @@ void Battle::battleReward(std::function<int(Actor::EquipSlot)> askChoiceCallback
 	}
 }
 
-BattleResult Battle::inBattle(const std::function<void(const Monster&)>& drawBattle)
+BattleResult Battle::inBattle(const std::function<void(const Monster&)>& drawBattle, const std::function<void()>& drawBotInfo)
 {
 	while (_player.isAlive() && _monster.isAlive()) {
 		drawBattle(_monster);  // GameManager의 showBattleMid 호출
-
+		drawBotInfo();
 		doPlayerTurn();
-
 		if (!_monster.isAlive()) {
 			return BattleResult::PlayerWin;
 		}
 
 		doMonsterTurn();
-
 		if (!_player.isAlive()) {
 			return BattleResult::PlayerLose;
 		}
+		
 	}
 
 	return _player.isAlive()
