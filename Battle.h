@@ -4,6 +4,7 @@
 #include"Actor.h"
 #include<memory>
 #include<functional>
+
 enum class BattleUIState {
 	MAIN_MENU,   // 1. 공격 / 2. 스킬 / 3. 포션 / 4. 도망
 	SKILL_MENU,  // 스킬 목록 선택

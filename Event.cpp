@@ -31,7 +31,7 @@ void Event::initDB() {
 	std::shared_ptr<EventData> story1 = std::make_shared<EventData>();
 	*story1 = {
 		EventType::Story, "안개 속의 갈림길",
-		{ "짙은 안개가 길을 삼키고 있다.", "왼쪽에서는 검은 연기가,"," 오른쪽에서는 희미한 종소리가 들린다." },
+		{ "짙은 안개가 길을 삼키고 있다.", "왼쪽에서는 검은 연기가,","오른쪽에서는 희미한 종소리가 들린다." },
 		{ { "연기를 따라간다", { -5, 0, 15, 0, EventAction::Battle, -1, { static_cast<int>(MonsterId::Goblin) } } },
 		  { "종소리를 따라간다", { 0, 0, 10, 5, EventAction::None } } },
 		 makeEventID(EventType::Story, 1)
@@ -98,7 +98,7 @@ void Event::initDB() {
 
 	std::shared_ptr<EventData> shop2 = std::make_shared<EventData>();
 	*shop2 = {
-		EventType::Shop, "대장장이의 천막", { "대장장이는 낡은 장비를 보더니 고개를 젓는다." },
+		EventType::Shop, "대장장이의 천막", { "대장장이는 낡은 장비를 보더니","고개를 젓는다." },
 		{ { "장비를 손질한다", { 0, 0, 10, -25, EventAction::Shop } },
 		  { "인사를 하고 떠난다", { 0, 0, 0, 0, EventAction::None } } },
 		makeEventID(EventType::Shop, 2)
@@ -135,7 +135,7 @@ void Event::initDB() {
 
 	std::shared_ptr<EventData> rest3 = std::make_shared<EventData>();
 	*rest3 = {
-		EventType::Rest, "버려진 오두막", { "낡은 오두막 안에는 먼지 쌓인 침대가 남아 있다." },
+		EventType::Rest, "버려진 오두막", { "낡은 오두막 안에는","먼지 쌓인 침대가 남아 있다." },
 		{ { "하룻밤 묵는다", { 35, 25, 0, 0, EventAction::Rest } },
 		  { "주변을 경계하며 쉰다", { 15, 10, 0, 0, EventAction::Rest } } },
 		makeEventID(EventType::Rest, 3)
@@ -145,7 +145,7 @@ void Event::initDB() {
 	// ===== Treasure =====
 	std::shared_ptr<EventData> treasure1 = std::make_shared<EventData>();
 	*treasure1 = {
-		EventType::Treasure, "이끼 낀 상자", { "돌무더기 사이에서 작은 나무 상자를 발견했다." },
+		EventType::Treasure, "이끼 낀 상자", { "돌무더기 사이에서","작은 나무 상자를 발견했다." },
 		{ { "조심스럽게 연다", { 0, 0, 10, 35, EventAction::None } },
 		  { "함정을 확인한다", { 0, -5, 20, 20, EventAction::None } } },
 		makeEventID(EventType::Treasure, 1)

@@ -234,7 +234,8 @@ void GameManager::applyEventResult(const EventResult& result)
 	player.setGold(player.getGold() + result.gold);
 
 	player.levelUpCheck();
-
+	
+	botInfo();
 	switch (result.thisAction) {
 	case EventAction::Battle:
 		runBattles(result.monsterIds);

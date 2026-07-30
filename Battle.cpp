@@ -4,6 +4,7 @@
 #include<iostream>
 #include <stack>
 #include<algorithm>
+
 //치명타 작동 여부
 Battle::Battle(Player& player, Monster& monster)
 	: _player(player), _monster(monster) {
