@@ -1,5 +1,5 @@
 ﻿#include"GameManager.h"
-
+#include <conio.h>
 
 void gotoXY(short x, short y)
 {
@@ -21,7 +21,24 @@ void GameManager::inOutput(std::string _message, T& _inoutVar) {
 GameManager::GameManager(Player _player) :player(_player) {}
 
 GameManager::~GameManager() {}
+void GameManager::waitAnyKey()
+{
+	gotoXY(2, 14); // 선택지 영역의 하단 빈 공간에 출력
+	std::cout << "[ 아무 키나 눌러 진행하세요 ]";
+	std::cout << std::flush;
 
+	// 버퍼에 남아있는 이전 키 입력(엔터 등)을 깔끔하게 비움
+	while (_kbhit()) {
+		_getch();
+	}
+
+	// 사용자가 새 키를 누를 때까지 프로그램 실행 대기
+	_getch();
+
+	// 키를 누른 뒤에는 잔상이 남지 않도록 해당 줄을 지워줌
+	gotoXY(2, 14);
+	std::cout << "                             ";
+}
 bool GameManager::clear_input(bool check) {//입력 허용범위 검사
 	if (!std::cin.fail() && check) return true;
 	std::cin.clear();//오류상태 해제
@@ -137,6 +154,7 @@ void GameManager::topInfo()
 EventResult GameManager::showEventMid(const std::shared_ptr<EventData>& event)
 {
 	clearMidArea();
+	
 	int y = 5;
 	gotoXY(2, y++);
 	std::cout << "[" << event.get()->title << "]";
@@ -156,10 +174,10 @@ EventResult GameManager::showEventMid(const std::shared_ptr<EventData>& event)
 	int choice;
 	do {
 		gotoXY(2, 14);
-		std::cout << "선택: ";
-		std::cin >> choice;
-	} while (!clear_input(choice >= 1 &&
-		choice <= static_cast<int>(event->choices.size())));
+		std::cout << "선택:          ";
+		gotoXY(8, 14); char ch = _getch();
+		choice = ch - '0';
+	} while (!clear_input(choice >= 1 && choice <= static_cast<int>(event->choices.size())));
 	return event->choices[choice - 1].result;
 }
 void GameManager::showBattleMid(const Monster& monster, const std::vector<std::string>& logs)
@@ -177,7 +195,7 @@ void GameManager::showBattleMid(const Monster& monster, const std::vector<std::s
 	gotoXY(2, y++);
 	std::cout << "내 HP: " << player.getHp()
 		<< " / MP: " << player.getMp()
-		<< " / 공격력: " << player.getPower();
+		<< " / 공격력: " << (player.getPower() + player.getEquipment(EquipType::SWORD).stat);
 	y = 8;
 	for (const auto& log : logs) {
 		gotoXY(2, y++);
@@ -259,54 +277,59 @@ int GameManager::selectBattleActionUI() {
 
 	clearChoiceArea();
 	int y = 10;
-	gotoXY(2, y++); std::cout << "1. 기본공격\n";
-	gotoXY(2, y++); std::cout << "2. 스킬\n";
-	gotoXY(2, y++); std::cout << "3. 포션\n";
-	gotoXY(2, y++); std::cout << "4. 도망\n";
+	gotoXY(2, y++); std::cout << "1. 기본공격";
+	gotoXY(2, y++); std::cout << "2. 스킬";
+	gotoXY(2, y++); std::cout << "3. 포션";
+	gotoXY(2, y++); std::cout << "4. 도망";
 
 	int choice;
 	while (true) {
-		std::cout << "행동을 선택하세요: ";
-		std::cin >> choice;
+		gotoXY(2, 14);
+		std::cout << "선택:          ";
+		gotoXY(8, 14); char ch = _getch();
+		choice = ch - '0';
 
-		if (!std::cin.fail() && choice >= 1 && choice <= 4) {
+		if (clear_input(choice >= 1 && choice <= 4)) {
 			return choice;
 		}
 		std::cin.clear();
 		std::cin.ignore(1000, '\n');
-		std::cout << "올바른 번호를 입력하세요 (1~4).\n";
+		gotoXY(2, y); std::cout << "올바른 번호를 입력하세요 (1~4).";
 	}
 }
 
 // 2. 스킬 선택 UI
 int GameManager::selectSkillUI(const std::vector<Actor::SkillSlot>& skills) {
 	clearChoiceArea();
+	int y = 10;
+
 	if (skills.empty()) {
-		std::cout << "\n사용 가능한 스킬이 없습니다.\n";
+		gotoXY(2, y++); std::cout << "사용 가능한 스킬이 없습니다.";
 		return -1;
 	}
-	int y = 10;
+	
 	for (size_t i = 0; i < skills.size(); ++i) {
 		if (skills[i].skill != nullptr) {
-			std::cout << i + 1 << ". " << skills[i].skill->name
+			gotoXY(2, y++); std::cout << i + 1 << ". " << skills[i].skill->name
 				<< " (MP: " << skills[i].skill->mp << ")";
 			if (skills[i].remainCoolTime > 0) {
-				gotoXY(2, y++); std::cout << " [쿨타임: " << skills[i].remainCoolTime << "턴]";
+				 std::cout << " [쿨타임: " << skills[i].remainCoolTime << "턴]";
 			}
 		}
 	}
-	std::cout << "0. 취소\n";
+	std::cout << "0. 취소";
 
 
 	int choice;
 	while (true) {
-		std::cout << "사용할 스킬 번호를 입력하세요: ";
-		std::cin >> choice;
+		gotoXY(2, 14); std::cout << "사용할 스킬 번호를 입력하세요: ";
+		gotoXY(8, 14); char ch = _getch();
+		choice = ch - '0';
 
 		if (std::cin.fail()) {
 			std::cin.clear();
 			std::cin.ignore(1000, '\n');
-			std::cout << "숫자로 올바르게 입력해주세요.\n";
+			gotoXY(2, 14); std::cout << "숫자로 올바르게 입력해주세요.";
 			continue;
 		}
 
@@ -315,7 +338,7 @@ int GameManager::selectSkillUI(const std::vector<Actor::SkillSlot>& skills) {
 		if (choice > 0 && choice <= static_cast<int>(skills.size())) {
 			return choice - 1; // 0-based 인덱스로 변환
 		}
-		std::cout << "잘못된 번호입니다. 다시 선택해주세요.\n";
+		gotoXY(2, 14); std::cout << "잘못된 번호입니다. 다시 선택해주세요.";
 	}
 }
 
@@ -324,19 +347,20 @@ PotionType GameManager::selectPotionUI(const std::map<PotionType, Actor::PotionS
 	clearChoiceArea();
 	int y = 10;
 	gotoXY(2, y++); std::cout << "========== [ 포션 목록 ] ==========";
-	gotoXY(2, y++); std::cout << "1. 체력 포션 (남은 개수: " << (potions.count(PotionType::HP) ? potions.at(PotionType::HP).num : 0) << "개)\n";
-	gotoXY(2, y++); std::cout << "2. 마나 포션 (남은 개수: " << (potions.count(PotionType::MP) ? potions.at(PotionType::MP).num : 0) << "개)\n";
-	gotoXY(2, y++); std::cout << "0. 취소\n";
+	gotoXY(2, y++); std::cout << "1. 체력 포션";
+	gotoXY(2, y++); std::cout << "2. 마나 포션";
+	gotoXY(2, y++); std::cout << "0. 취소";
 
 	int choice;
 	while (true) {
-		std::cout << "사용할 포션을 선택하세요: ";
-		std::cin >> choice;
+		gotoXY(2, 14); std::cout << "선택:      ";
+		gotoXY(8, 14); char ch = _getch();
+		choice = ch - '0';
 
 		if (std::cin.fail()) {
 			std::cin.clear();
 			std::cin.ignore(1000, '\n');
-			std::cout << "숫자로 올바르게 입력해주세요.\n";
+			gotoXY(2, 14); std::cout << "숫자로 올바르게 입력해주세요.";
 			continue;
 		}
 
@@ -344,20 +368,17 @@ PotionType GameManager::selectPotionUI(const std::map<PotionType, Actor::PotionS
 		if (choice == 1) return PotionType::HP;
 		if (choice == 2) return PotionType::MP;
 
-		std::cout << "잘못된 번호입니다. 다시 선택해주세요.\n";
 	}
 }
 
 void GameManager::runGame() {
 	//DB초기화
 	Event event;
-	Equipment equip;
-	Potion potion;
 	event.initDB();
 	Monster::initDB();
-	equip.initDB();
-	potion.initDB();
-
+	Equipment::initDB();
+	Potion::initDB();
+	Skill::initDB();
 	//플레이어 설정
 	initPlayer();
 	//UI 프레임
@@ -370,9 +391,9 @@ void GameManager::runGame() {
 	player.setEquipment(Util::makeEquipID(EquipType::SWORD, EquipGrade::LOW));
 	player.setEquipment(Util::makeEquipID(EquipType::SHIELD, EquipGrade::LOW));
 	player.setPotion(Util::makePotionID(PotionType::HP, PotionGrade::LOW));
-	player.addPotion(PotionType::HP, 5);
+	player.addPotion(PotionType::HP, 2);
 	player.setPotion(Util::makePotionID(PotionType::MP, PotionGrade::LOW));
-	player.addPotion(PotionType::MP, 5);
+	player.addPotion(PotionType::MP, 2);
 	player.addSkill(Util::makeSkillID(SkillOwner::PLAYER, SkillType::ATTACK, 0));
 	applyEventResult(result);
 	while (1) {
@@ -401,11 +422,48 @@ void GameManager::runGame() {
 				break;
 			}
 		}
+		if (!player.isAlive() || eventData->id == Util::makeEventID(EventType::Empty, 0)) break;
 		result = showEventMid(eventData);
+		event.setVisited(eventData->id);
 		applyEventResult(result);
+		
 	}
 
 
-
 }
+
+void GameManager::resultGame()
+{
+	clearScreen();
+	std::cout << "####################################################################\n";
+	std::cout << "#                                                                  #\n";
+	std::cout << "#                                                                  #\n";
+	std::cout << "#                                                                  #\n";
+	std::cout << "#                                                                  #\n";
+	std::cout << "#                                                                  #\n";
+	std::cout << "####################################################################\n";
+	if (!player.isAlive()) {
+		
+		gotoXY(2, 2);
+		std::cout << "패배...";
+		gotoXY(2, 3);
+		std::cout << "이름: " << player.getName() << " / 레벨: " << player.getLv();
+		gotoXY(2, 4);
+		std::cout << "다시 도전하십시오";
+		gotoXY(2, 10);
+		
+
+
+	}
+	else {
+		gotoXY(2, 2);
+		std::cout << "게임 클리어!!";
+		gotoXY(2, 3);
+		std::cout << "이름: " << player.getName() << " / 레벨: " << player.getLv();
+		gotoXY(2, 4);
+		std::cout << "축하합니다!!";
+		gotoXY(2, 10);
+	}
+}
+
 

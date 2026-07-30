@@ -22,6 +22,8 @@ struct MonsterData {
 	int critical;
 	int level;
 	int skill;
+	int exp;
+	int gold;
 };
 
 class Monster :public Actor {

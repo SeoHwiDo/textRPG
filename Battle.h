@@ -32,18 +32,18 @@ private:
 	std::function<void()> _drawBotInfoUI;
 public:
 
-	static int DamageCalculation(Actor& _attacker, Actor& _defender);
+	static int DamageCalculation(Actor& _attacker, Actor& _defender, bool isCri);
 
 	static bool missCheck(Actor& _attacker, Actor& _defender);
 	void addLog(const std::string& logMsg);
 	Battle(Player& player, Monster& monster);
 
-	static bool crticalCheck(Actor& _actor);
+	static bool criticalCheck(Actor& _actor);
 
 	//도망치기 사용
 	bool doRunOut(Actor& _attacker, Actor& _defender);
 	//공격 사용
-	static int doAttack(Actor& _attacker, Actor& _defender);
+	static int doAttack(Actor& _attacker, Actor& _defender, bool isCri);
 	//스킬 사용
 	bool executeSkill(Actor& _attacker, Actor& _defender, int idx);
 	bool doPlayerSkill(std::function<int(std::vector<Actor::SkillSlot>)> askChoiceCallback);

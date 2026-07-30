@@ -7,5 +7,6 @@ int main() {
 	Player player = Player();
 	GameManager gm = GameManager(player);
 	gm.runGame();
-	
+	gm.resultGame();
+	return 0;
 }
