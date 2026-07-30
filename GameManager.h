@@ -59,7 +59,7 @@ public:
 
 
     void topInfo();//플레이어 이름,레벨, 경험치, 스테이터스
-    int  showEventMid(const std::shared_ptr<EventData>& event);
+    EventResult  showEventMid(const std::shared_ptr<EventData>& event);
     void showBattleMid(const Monster& monster);
     //현재 발생중인 이벤트 및 선택지
     void applyEventResult(const EventResult& result);
@@ -77,6 +77,8 @@ public:
     static int selectBattleActionUI(); // 1.공격 2.스킬 3.포션 4.도망
     static int selectSkillUI(const std::vector<Actor::SkillSlot>& skills);
     static PotionType selectPotionUI(const std::map<PotionType, Actor::PotionSlot>& potions);
+
+    void runGame();
 };
 
 

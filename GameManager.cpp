@@ -72,12 +72,13 @@ void GameManager::drawFrame()
 		gotoXY(0, i); DrowBlankLine();
 	}
 	gotoXY(0, 15); DrowFillLine();
-	for (int i = 15; i <= 18; ++i) {
+	for (int i = 16; i <= 18; ++i) {
 		gotoXY(0, i); DrowBlankLine();
 	}
 	gotoXY(0, 19); DrowFillLine();
 
 }
+
 void GameManager::initPlayer() {
 	std::string name;
 	while (1) {
@@ -127,7 +128,7 @@ void GameManager::topInfo()
 	gotoXY(WIDTH-1, HEIGHT-1);
 }
 
-int GameManager::showEventMid(const std::shared_ptr<EventData>& event)
+EventResult GameManager::showEventMid(const std::shared_ptr<EventData>& event)
 {
 	int y = 5;
 	gotoXY(2, y++);
@@ -138,19 +139,21 @@ int GameManager::showEventMid(const std::shared_ptr<EventData>& event)
 		std::cout<< des;
 	}
 	if (event->choices.empty()) {
-		return -1;  // 선택지가 없는 이벤트
+		return EventResult{ 0,0,0,0,EventAction::None };  // 선택지가 없는 이벤트
 	}
-	for (int i = 0; i <= event->choices.size(); ++i) {
+	y = 10;
+	for (int i = 0; i < event->choices.size(); ++i) {
 		gotoXY(2, y++);
 		std::cout <<"["<<i+1<<"]"<< event->choices[i].text;
 	}
 	int choice;
 	do {
-		gotoXY(2, y + 1);
+		gotoXY(2, 14);
 		std::cout << "선택: ";
 		std::cin >> choice;
 	} while (!clear_input(choice >= 1 &&
 		choice <= static_cast<int>(event->choices.size())));
+	return event->choices[choice - 1].result;
 }
 void GameManager::showBattleMid(const Monster& monster)
 {
@@ -171,6 +174,9 @@ void GameManager::showBattleMid(const Monster& monster)
 	std::cout << "내 HP: " << player.getHp()
 		<< " / MP: " << player.getMp();
 }
+void GameManager::botInfo()
+{
+}
 void GameManager::applyEventResult(const EventResult& result)
 {
 	player.setHp(player.getHp() + result.hp);
@@ -180,9 +186,9 @@ void GameManager::applyEventResult(const EventResult& result)
 
 	player.levelUpCheck();
 
-	switch (result.action) {
+	switch (result.thisAction) {
 	case EventAction::Battle:
-		// Battle 객체를 생성하거나 전투 시작
+		//showBattleMid();
 		break;
 	case EventAction::Shop:
 		// 상점 UI 열기
@@ -292,21 +298,60 @@ PotionType GameManager::selectPotionUI(const std::map<PotionType, Actor::PotionS
 	}
 }
 
+void GameManager::runGame(){
+	//DB초기화
+	Event event;
+	Equipment equip;
+	Potion potion;
+	event.initDB();
+	equip.initDB();
+	potion.initDB();
 
+	//플레이어 설정
+	initPlayer();
+	//UI 프레임
+	drawFrame();
+	//최초 튜토리얼
+	topInfo();
+	auto result=showEventMid(event.getEventData(Util::makeEventID(EventType::Story, 0)));
+	//장비 및 포션 지급
+	player.setEquipment(Util::makeEquipID(EquipType::SWORD, EquipGrade::LOW));
+	player.setEquipment(Util::makeEquipID(EquipType::SHIELD, EquipGrade::LOW));
+	player.setPotion(Util::makePotionID(PotionType::HP, PotionGrade::LOW));
+	player.addPotion(PotionType::HP, 5);
+	player.setPotion(Util::makePotionID(PotionType::MP, PotionGrade::LOW));
+	player.addPotion(PotionType::MP, 5);
+	applyEventResult(result);
+	while (1) {
+		std::shared_ptr<EventData> eventData=std::make_shared<EventData>();
+		if (result.nextEvent != -1) {
+			eventData = event.getEventData(result.nextEvent);
+		}else{
+			switch (result.thisAction) {
+			case EventAction::Battle:
+				//직전 전투시 휴식 또는 스토리
+				eventData=event.getRandomEventData({ EventType::Rest,EventType::Story ,EventType::Shop});
+				break;
+			case EventAction::Shop:
+				eventData = event.getRandomEventData({ EventType::Battle,EventType::Story,EventType::Treasure });
+				break;
+			case EventAction::Rest:
+				eventData = event.getRandomEventData({ EventType::Boss,EventType::Story,EventType::Treasure,EventType::Battle });
+				// 휴식 처리 또는 안내 출력
+				break;
+			case EventAction::GameOver:
+				// 게임 종료 처리
+				break;
+			case EventAction::None:
+				eventData = event.getRandomEventData();
+				break;
+			}
+		}
+		result=showEventMid(eventData);
+		applyEventResult(result);
+	}
+	
 
-//std::string Screen::midInfo(Event _event, Choice _choice);
-//std::string Screen::botInfo(const Actor& _actor);
-//int main() {
-//    // std::left를 적용하여 왼쪽 정렬
-//    std::cout << std::left;
-//
-//    // 10칸 너비로 이름 출력, 5칸 너비로 나이 출력
-//    std::cout << std::setw(10) << "Name" << std::setw(5) << "Age" << std::endl;
-//    std::cout << std::setw(10) << "Alice" << std::setw(5) << 25 << std::endl;
-//    std::cout << std::setw(10) << "Bob" << std::setw(5) << 30 << std::endl;
-//
-//    // 빈 공간을 '-' 기호로 채워보기
-//    std::cout << std::setfill('-') << std::setw(15) << "End" << std::endl;
-//
-//    return 0;
-//}
+	
+}
+
