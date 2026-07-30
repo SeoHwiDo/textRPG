@@ -1,7 +1,7 @@
 ﻿#include"Monster.h"
 
 Monster::Monster(std::string _name) :Actor(_name) {
-	for (Status::statusType s: status.stat) {
+	for (Status::statusType s : status.stat) {
 		status.setStatus(s, status.STAT_MIN);
 	}
 }
@@ -24,14 +24,30 @@ std::map<int, MonsterData> Monster::monsterDB;
 
 void Monster::initDB()
 {
+
 	monsterDB = {
-		{ static_cast<int>(MonsterId::HungryWolf), { static_cast<int>(MonsterId::HungryWolf), "굶주린 늑대", 50, 10, 10, 10, 5, 10 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK, 0),50,100} },
-		{ static_cast<int>(MonsterId::Goblin), { static_cast<int>(MonsterId::Goblin), "고블린", 40, 10, 15, 10, 3, 10 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK, 0),80,120} },
-		{ static_cast<int>(MonsterId::CursedArmor), { static_cast<int>(MonsterId::CursedArmor), "저주받은 갑옷", 70, 20, 30, 5, 8, 20 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK,0), 100,200} },
-		{ static_cast<int>(MonsterId::ForestGuardian), { static_cast<int>(MonsterId::ForestGuardian), "숲의 수호자", 130, 70, 40, 8, 100, 40 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK,0), 120,500} },
-		{ static_cast<int>(MonsterId::RedMoonKnight), { static_cast<int>(MonsterId::RedMoonKnight), "붉은 달의 기사", 160, 40, 60, 10, 120, 50 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK,0),150,800} },
-		{ static_cast<int>(MonsterId::AbyssLord), { static_cast<int>(MonsterId::AbyssLord), "심연의 군주", 220, 60, 100, 140, 15, 70 ,Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK,0), 200,1000} }
+		// [초반 몬스터] 플레이어 기본 무기 공격력(10)을 고려하여 방어력을 대폭 낮춤
+		{ static_cast<int>(MonsterId::HungryWolf), { static_cast<int>(MonsterId::HungryWolf), "굶주린 늑대",
+			30, 10, 12, 2, 5, 1, Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK, 0), 30, 50} },
+
+		{ static_cast<int>(MonsterId::Goblin), { static_cast<int>(MonsterId::Goblin), "고블린",
+			45, 10, 18, 5, 5, 2, Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK, 0), 45, 80} },
+
+			// [중반 몬스터] 플레이어가 스탯과 장비를 어느정도 갖춘 시점을 감안
+			{ static_cast<int>(MonsterId::CursedArmor), { static_cast<int>(MonsterId::CursedArmor), "저주받은 갑옷",
+				80, 20, 25, 12, 8, 4, Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK,0), 70, 150} },
+
+				// [보스급 몬스터] 체력을 늘리고 방어력을 현실적으로 조정 (기존 심연의 군주 방어력 140은 뚫기 불가능에 가까움)
+				{ static_cast<int>(MonsterId::ForestGuardian), { static_cast<int>(MonsterId::ForestGuardian), "숲의 수호자",
+					150, 50, 40, 20, 10, 7, Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK,0), 120, 300} },
+
+				{ static_cast<int>(MonsterId::RedMoonKnight), { static_cast<int>(MonsterId::RedMoonKnight), "붉은 달의 기사",
+					250, 60, 60, 30, 15, 10, Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK,0), 200, 500} },
+
+				{ static_cast<int>(MonsterId::AbyssLord), { static_cast<int>(MonsterId::AbyssLord), "심연의 군주",
+					400, 100, 90, 45, 20, 15, Util::makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK,0), 500, 1000} }
 	};
+
 }
 
 std::unique_ptr<Monster> Monster::create(int monsterId)
@@ -83,14 +99,14 @@ PotionType Monster::selectPotion(Player& _player)
 
 }
 
-Monster::AIState Monster::getMonsterFSM(Player& _player){
+Monster::AIState Monster::getMonsterFSM(Player& _player) {
 	if (_player.getDefend() >= this->power * 2) {//치명타로 때려도 데미지 0 -> 도망 시도(장비 제외)
 		return RunOut;
 	}
 	else if (this->tmpHp < _player.getPower() && (this->getPotionNum(PotionType::HP) > 0 || this->getPotionNum(PotionType::MP) > 0)) {//한대만 맞아도 죽을때&&포션이 있을때
 		return Potion;
 	}
-	else if (!skillSlot.empty()&&canUseSkill()) {//스킬 사용 가능할때
+	else if (!skillSlot.empty() && canUseSkill()) {//스킬 사용 가능할때
 		return Skill;
 	}
 	else //일반공격

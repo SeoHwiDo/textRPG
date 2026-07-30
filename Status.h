@@ -4,7 +4,7 @@
 class Status {
 public:
 	const static int STATS = 6;//status 종류 수
-	const static int STAT_MIN = 0;//status의 최소값
+	const static int STAT_MIN = 1;//status의 최소값
 	const static int STAT_MAX = 25;//status의 최대값
 	const static int DSTAT = 10;//최초 스탯포인트 디폴트값
 	enum statusType { STR, DEX, CON, WIS, CHAM, REMAIN };//status 종류
