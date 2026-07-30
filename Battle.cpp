@@ -49,20 +49,23 @@ bool Battle::doRunOut(Actor& _attacker, Actor& _defender)
 	return isRun;
 }
 //기본공격
-int Battle::doAttack(Actor& _attacker, Actor& _defender, bool isCri)
-{
+int Battle::doAttack(Actor& _attacker, Actor& _defender, bool isCri, std::function<void(const std::string&)> logger){
 	int defenderPrevHp = _defender.getTmpHp();
 	//최종데미지=계산된 공격데미지-객체 방어력-객체 방어구 능력치
 	int totalDamage = (std::max)(0, DamageCalculation(_attacker, _defender, isCri) - _defender.getDefend() - _defender.getEquipment(EquipType::SHIELD).stat);
-	std::string log = _attacker.getName() + "의 공격! ";
+	std::string log = "[" + _attacker.getName() + "]의 공격! ";
 	if (missCheck(_attacker, _defender)) {
 		totalDamage = 0;
-		log += "회피성공!" + _defender.getName() + "에게 공격 빗나감!";
+		log += "빗나감! " + _defender.getName() + "이(가) 회피했습니다.";
 	}
 	else {
-		log += _defender.getName() + "에게 " + std::to_string(totalDamage) + (isCri ? "치명타 피해!" : " 피해!");
+		log += _defender.getName() + "에게 " + std::to_string(totalDamage) + (isCri ? "의 치명타 피해!!" : " 피해!");
 	}
 	_defender.setTmpHp(defenderPrevHp - totalDamage);
+	if (logger != nullptr) {
+		logger(log);
+	}
+	
 	return totalDamage;
 }
 //스킬실제실행여부
@@ -84,7 +87,7 @@ bool Battle::executeSkill(Actor& _attacker, Actor& _defender, int idx)
 
 	// 자원 소모 및 텍스트 출력
 	_attacker.setTmpMp(_attacker.getTmpMp() - selectedSlot.skill->mp);
-	//std::cout << "\n[" << _attacker.getName() << "] " << selectedSlot.skill->name << " 사용!\n";
+	addLog("[" + _attacker.getName() + "] 스킬 <" + selectedSlot.skill->name + "> 사용!");
 
 	// 스킬 Effect 실행
 	std::vector<Actor*> targets;
@@ -136,8 +139,9 @@ void Battle::doMonsterSkill()
 	}
 
 	// 만약 모든 스킬이 쿨타임이거나 마나가 부족하다면 일반 공격으로 대체
-	std::cout << _monster.getName() << "은(는) 마나가 부족해 스킬 대신 공격을 시도했다!\n";
-	doAttack(_monster, _player, criticalCheck(_monster));
+	//std::cout << _monster.getName() << "은(는) 마나가 부족해 스킬 대신 공격을 시도했다!\n";
+	addLog("[" + _monster.getName() + "] 마나가 부족해 일반 공격을 시도합니다!");
+	doAttack(_monster, _player, criticalCheck(_monster), [this](const std::string& msg) {addLog(msg); });
 }
 //포션 사용 여부, 콜백함수를 통해 포션 선택
 bool Battle::doPlayerPotion(std::function<PotionType(const std::map<PotionType, Actor::PotionSlot>&)> askChoiceCallback)
@@ -161,30 +165,22 @@ bool Battle::doPlayerPotion(std::function<PotionType(const std::map<PotionType, 
 }
 void Battle::doPotion(Actor& _actor, PotionType _potion)
 {
-	if (_actor.isPotionEmpty(_potion)) {
-		return;
+	if (_actor.isPotionEmpty(_potion)) return;
+
+	std::string potionName = (_potion == PotionType::HP) ? "체력 포션" : "마나 포션";
+	int amount = _actor.getPotion(_potion).potion.get()->amount;
+
+	if (_potion == PotionType::HP) {
+		int prevHp = _actor.getTmpHp();
+		_actor.setTmpHp(prevHp + amount);
+		_actor.addPotion(PotionType::HP, -1);
 	}
-	else {
-		switch (_potion)
-		{
-		case PotionType::HP:
-		{
-			int prevHp = _actor.getTmpHp();
-			_actor.setTmpHp(prevHp + _actor.getPotion(PotionType::HP).potion.get()->amount);
-			_actor.addPotion(PotionType::HP, -1);
-			break;
-		}
-		case PotionType::MP:
-		{
-			int prevMp = _actor.getTmpMp();
-			_actor.setTmpMp(prevMp + _actor.getPotion(PotionType::MP).potion.get()->amount);
-			_actor.addPotion(PotionType::MP, -1);
-			break;
-		}
-		default:
-			break;
-		}
+	else if (_potion == PotionType::MP) {
+		int prevMp = _actor.getTmpMp();
+		_actor.setTmpMp(prevMp + amount);
+		_actor.addPotion(PotionType::MP, -1);
 	}
+	addLog("[" + _actor.getName() + "] " + potionName + " 사용! (" + std::to_string(amount) + " 회복)");
 }
 
 bool Battle::doMonsterTurn()
@@ -193,25 +189,24 @@ bool Battle::doMonsterTurn()
 	{
 	case Monster::Attack:
 	{
-		int dmg = doAttack(_monster, _player, criticalCheck(_monster));
-		addLog(_monster.getName() + "의 공격! " + std::to_string(dmg) + " 피해를 입었습니다!");
+		int dmg = doAttack(_monster, _player, criticalCheck(_monster), [this](const std::string& msg) {addLog(msg); });
+		//addLog(_monster.getName() + "의 공격! " + std::to_string(dmg) + " 피해를 입었습니다!");
 		break;
 	}
 	case Monster::Potion:
 		doPotion(_monster, _monster.selectPotion(_player));
-		addLog(_monster.getName() + "이(가) 포션을 사용했습니다!");
+		//addLog(_monster.getName() + "이(가) 포션을 사용했습니다!");
 		break;
 	case Monster::Skill:
 		doMonsterSkill();
-		addLog(_monster.getName() + "이(가) 스킬을 사용했습니다!");
 		break;
 	case Monster::RunOut:
 		if (doRunOut(_monster, _player)) {
-			addLog(_monster.getName() + "이(가) 도망쳤습니다!");
+			addLog("[" + _monster.getName() + "] 도망쳤습니다!");
 			return true;
 		}
 		else {
-			addLog(_monster.getName() + "이(가) 도망에 실패했습니다!");
+			addLog("[" + _player.getName() + "] 도망치는데 실패했습니다!");
 		}
 		break;
 	}
@@ -243,8 +238,8 @@ bool Battle::doPlayerTurn()
 
 			if (choice == 1) {
 				// 1. 기본 공격 -> 행동 완수 후 턴 종료
-				int dmg=doAttack(_player, _monster,criticalCheck(_monster));
-				addLog(_player.getName() + "의 공격! " + std::to_string(dmg) + " 데미지!");
+				int dmg=doAttack(_player, _monster,criticalCheck(_player),[this](const std::string& msg) {addLog(msg);});
+				//addLog(_player.getName() + "의 공격! " + std::to_string(dmg) + " 데미지!");
 				isTurnEnded = true;
 			}
 			else if (choice == 2) {
@@ -258,11 +253,11 @@ bool Battle::doPlayerTurn()
 			else if (choice == 4) {
 				// 수정된 플레이어 도망 로직 반영
 				if (doRunOut(_player, _monster)) {
-					addLog(_player.getName() + "이(가) 무사히 도망쳤습니다!");
+					addLog("[" + _player.getName() + "] 무사히 도망쳤습니다!");
 					return true; // 도망 성공 시 true 반환
 				}
 				else {
-					addLog(_player.getName() + "이(가) 도망치는데 실패했습니다!");
+					addLog("[" + _player.getName() + "] 도망치는데 실패했습니다!");
 					isTurnEnded = true; // 도망에 실패하면 턴만 소모됨
 				}
 			}
@@ -276,13 +271,12 @@ bool Battle::doPlayerTurn()
 
 			if (isSuccess) {
 				// 스킬 사용 성공 -> 턴 종료
-				addLog(_player.getName() + "이(가) 스킬을 사용했습니다!");
 				isTurnEnded = true;
 			}
 			else {
 				// 취소(0번) 또는 마나/쿨타임 부족으로 실패 시
-				// Pop을 호출하여 스택에서 제거 -> 자연스럽게 이전 상태(MAIN_MENU)로 복귀!
-				std::cout << "스킬 사용이 취소되었습니다.\n";
+				// Pop을 호출하여 스택에서 제거 ->  이전 상태(MAIN_MENU)로 복귀
+				//std::cout << "스킬 사용이 취소되었습니다.\n";
 				uiStack.pop();
 			}
 			break;
@@ -295,13 +289,13 @@ bool Battle::doPlayerTurn()
 
 			if (isSuccess) {
 				// 포션 사용 성공 -> 턴 종료
-				addLog(_player.getName() + "이(가) 포션을 사용했습니다!");
+				//addLog(_player.getName() + "이(가) 포션을 사용했습니다!");
 				isTurnEnded = true;
 			}
 			else {
 				// 취소(0번) 또는 수량 부족으로 실패 시
-				// Pop을 호출하여 스택에서 제거 -> 자연스럽게 이전 상태(MAIN_MENU)로 복귀!
-				std::cout << "포션 사용이 취소되었습니다.\n";
+				// Pop을 호출하여 스택에서 제거 -> 이전 상태(MAIN_MENU)로 복귀
+				//std::cout << "포션 사용이 취소되었습니다.\n";
 				uiStack.pop();
 			}
 			break;
@@ -332,7 +326,7 @@ BattleResult Battle::inBattle(const std::function<void(const Monster&, const std
 	_drawBattleUI = drawBattle;
 	_drawBotInfoUI = drawBotInfo;
 	_logs.clear();
-	addLog("전투가 시작되었습니다!");
+	addLog("=== 전투가 시작되었습니다! ===");
 
 	while (_player.isAlive() && _monster.isAlive()) {
 		
@@ -342,7 +336,7 @@ BattleResult Battle::inBattle(const std::function<void(const Monster&, const std
 		}
 
 		if (!_monster.isAlive()) {
-			addLog(_monster.getName() + "을(를) 처치했습니다!");
+			addLog("승리! [" + _monster.getName() + "]을(를) 처치했습니다!");
 			return BattleResult::PlayerWin;
 		}
 
@@ -352,7 +346,7 @@ BattleResult Battle::inBattle(const std::function<void(const Monster&, const std
 		}
 
 		if (!_player.isAlive()) {
-			addLog(_player.getName() + "이(가) 쓰러졌습니다...");
+			addLog("패배... [" + _player.getName() + "]이(가) 쓰러졌습니다.");
 			return BattleResult::PlayerLose;
 		}
 

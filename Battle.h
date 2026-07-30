@@ -43,7 +43,7 @@ public:
 	//도망치기 사용
 	bool doRunOut(Actor& _attacker, Actor& _defender);
 	//공격 사용
-	static int doAttack(Actor& _attacker, Actor& _defender, bool isCri);
+	static int doAttack(Actor& _attacker, Actor& _defender, bool isCri,std::function<void(const std::string&)> logger=nullptr);
 	//스킬 사용
 	bool executeSkill(Actor& _attacker, Actor& _defender, int idx);
 	bool doPlayerSkill(std::function<int(std::vector<Actor::SkillSlot>)> askChoiceCallback);
