@@ -43,7 +43,7 @@ private:
     bool runBattles(const std::vector<int>& monsterIds);
     bool isRunning;
 public:
-    static const int WIDTH = 50;
+    static const int WIDTH = 60;
     static const int HEIGHT = 20;
 
     static const int INNER_X_START = 2;
@@ -72,8 +72,7 @@ public:
     
     static bool clear_input(bool check);
     static void clearScreen();
-    static void clearMidArea();
-    static void clearBotArea();
+    static void clearArea(int start, int end);
     void endGame();
 
 
@@ -94,7 +93,7 @@ public:
     void useStatusPoint();
 
     // [전투 UI 콜백 함수]
-    static void clearChoiceArea();
+    //static void clearChoiceArea();
     static int selectBattleActionUI(); // 1.공격 2.스킬 3.포션 4.도망
     static int selectSkillUI(const std::vector<Actor::SkillSlot>& skills);
     static PotionType selectPotionUI(const std::map<PotionType, Actor::PotionSlot>& potions);
