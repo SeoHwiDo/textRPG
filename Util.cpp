@@ -12,7 +12,7 @@ bool Util::check_versus_success(const int _myPercent, const int _enemyPercent) {
     double success_rate;
     if (_enemyPercent <= 0.0) success_rate = 1.0; // 상대방의 stat이 0 이하이면 무조건 성공
     else if (_myPercent <= 0.0) success_rate = 0.0;  // 내 stat이 0 이하이면 무조건 실패
-    else success_rate = static_cast<double>(_myPercent / (_myPercent + _enemyPercent));
+    else success_rate = static_cast<double>(_myPercent) / (_myPercent + _enemyPercent);
 
 	success_rate = std::max(0.0, std::min(1.0, success_rate)); // 성공률을 0과 1 사이로 제한
 
@@ -25,7 +25,7 @@ bool Util::check_versus_success(const int _myPercent, const int _enemyPercent) {
 bool Util::check_success(const int _myPercent) {
 
     double myRegulaizedPercent = std::max(0.0, std::min(1.0, static_cast<double>(_myPercent) / 100.0));
-    double success_rate = std::max(0.0, std::min(1.0, success_rate)); // 성공률을 0과 1 사이로 제한
+    double success_rate = std::max(0.0, std::min(1.0, myRegulaizedPercent)); // 성공률을 0과 1 사이로 제한
 
     thread_local static std::mt19937 gen(std::random_device{}());
     std::bernoulli_distribution dist(success_rate);

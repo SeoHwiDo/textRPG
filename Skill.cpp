@@ -39,5 +39,5 @@ void Skill::initDB() {
 
 		}
 	};
-	skillDB[makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK, 0)] = powerShot;
+	skillDB[makeSkillID(SkillOwner::MONSTER, SkillType::ATTACK, 0)] = clowSwipeing;
 }
