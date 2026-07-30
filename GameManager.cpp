@@ -110,7 +110,10 @@ void GameManager::initPlayer() {
 		std::cout << "\n6글자를 초과하였습니다!";
 	}
 	player.setName(name);
-
+	player.setHp(100);
+	player.setMp(50);
+	player.setGold(10);
+	player.setLv(1);
 	int point;
 	for (Status::statusType s : Status::stat) {
 		if (s == Status::REMAIN) break;
@@ -124,8 +127,8 @@ void GameManager::initPlayer() {
 		}
 		player.status.setStatus(s, player.status.getStatus(s) + point);
 		player.status.setStatusRemain(remainPoint - point);
-		player.initStatus();
 	}
+	player.initStatus();
 }
 
 void GameManager::topInfo()
@@ -396,37 +399,52 @@ void GameManager::runGame() {
 	player.addPotion(PotionType::MP, 2);
 	player.addSkill(Util::makeSkillID(SkillOwner::PLAYER, SkillType::ATTACK, 0));
 	applyEventResult(result);
+	std::shared_ptr<EventData> eventData = std::make_shared<EventData>();
+	int currentEventId = -1;
+
 	while (1) {
-		std::shared_ptr<EventData> eventData = std::make_shared<EventData>();
+		std::shared_ptr<EventData> eventData = nullptr; // 빈 포인터로 초기화
+
 		if (result.nextEvent != -1) {
 			eventData = event.getEventData(result.nextEvent);
 		}
 		else {
 			switch (result.thisAction) {
 			case EventAction::Battle:
-				//직전 전투시 휴식 또는 스토리
-				eventData = event.getRandomEventData(eventData->id, { EventType::Rest,EventType::Story ,EventType::Shop });
+				eventData = event.getRandomEventData(currentEventId, { EventType::Rest, EventType::Story, EventType::Shop });
 				break;
 			case EventAction::Shop:
-				eventData = event.getRandomEventData(eventData->id, { EventType::Battle,EventType::Story,EventType::Treasure });
+				eventData = event.getRandomEventData(currentEventId, { EventType::Battle, EventType::Story, EventType::Treasure });
 				break;
 			case EventAction::Rest:
-				eventData = event.getRandomEventData(eventData->id, { EventType::Boss,EventType::Story,EventType::Treasure,EventType::Battle });
-				// 휴식 처리 또는 안내 출력
+				eventData = event.getRandomEventData(currentEventId, { EventType::Boss, EventType::Story, EventType::Treasure, EventType::Battle });
 				break;
 			case EventAction::GameOver:
-				// 게임 종료 처리
+				
 				break;
 			case EventAction::None:
-				eventData = event.getRandomEventData(eventData->id);
+				eventData = event.getRandomEventData(currentEventId);
 				break;
 			}
 		}
-		if (!player.isAlive() || eventData->id == Util::makeEventID(EventType::Empty, 0)) break;
+
+		// 1. 플레이어 사망 
+		// 2. 이벤트 액션이 강제 GameOver인 경우
+		// 3. 잘못된 Empty 이벤트가 튀어나온 경우
+		// 위 세 가지 중 하나라도 해당하면 메인 루프를 즉시 탈출(게임 셋).
+		if (!player.isAlive() || result.thisAction == EventAction::GameOver || eventData->id == Util::makeEventID(EventType::Empty, 0)) {
+			break;
+		}
+
 		result = showEventMid(eventData);
-		event.setVisited(eventData->id);
-		applyEventResult(result);
+
+		// 다음 루프에서 중복 방지에 사용할 수 있도록 현재 뽑힌 이벤트 ID를 기록
+		currentEventId = eventData->id;
+
 		
+		event.setVisited(eventData->id);
+
+		applyEventResult(result);
 	}
 
 
