@@ -327,35 +327,35 @@ int GameManager::selectBattleActionUI() {
 // 2. 스킬 선택 UI
 int GameManager::selectSkillUI(const std::vector<Actor::SkillSlot>& skills) {
 	clearChoiceArea();
-	int y = 10;
+	int y = CHOICE_Y_START-1;
 
 	if (skills.empty()) {
-		gotoXY(2, y++); std::cout << "사용 가능한 스킬이 없습니다.";
+		gotoXY(INNER_X_START, y++); std::cout << "사용 가능한 스킬이 없습니다.";
 		return -1;
 	}
 	
 	for (size_t i = 0; i < skills.size(); ++i) {
 		if (skills[i].skill != nullptr) {
-			gotoXY(2, y++); std::cout << i + 1 << ". " << skills[i].skill->name
+			gotoXY(INNER_X_START, y++); std::cout << i + 1 << ". " << skills[i].skill->name
 				<< " (MP: " << skills[i].skill->mp << ")";
 			if (skills[i].remainCoolTime > 0) {
 				 std::cout << " [쿨타임: " << skills[i].remainCoolTime << "턴]";
 			}
 		}
 	}
-	std::cout << "0. 취소";
+	gotoXY(2, y++); std::cout << "0. 취소";
 
 
 	int choice;
 	while (true) {
-		gotoXY(2, 14); std::cout << "사용할 스킬 번호를 입력하세요: ";
+		gotoXY(INNER_X_START, CHOICE_Y_END); std::cout << "사용할 스킬 번호를 입력하세요: ";
 		gotoXY(8, 14); char ch = _getch();
 		choice = ch - '0';
 
 		if (std::cin.fail()) {
 			std::cin.clear();
 			std::cin.ignore(1000, '\n');
-			gotoXY(2, 14); std::cout << "숫자로 올바르게 입력해주세요.";
+			gotoXY(INNER_X_START, CHOICE_Y_END); std::cout << "숫자로 올바르게 입력해주세요.";
 			continue;
 		}
 
@@ -364,29 +364,29 @@ int GameManager::selectSkillUI(const std::vector<Actor::SkillSlot>& skills) {
 		if (choice > 0 && choice <= static_cast<int>(skills.size())) {
 			return choice - 1; // 0-based 인덱스로 변환
 		}
-		gotoXY(2, 14); std::cout << "잘못된 번호입니다. 다시 선택해주세요.";
+		gotoXY(INNER_X_START, CHOICE_Y_END); std::cout << "잘못된 번호입니다. 다시 선택해주세요.";
 	}
 }
 
 // 3. 포션 선택 UI
 PotionType GameManager::selectPotionUI(const std::map<PotionType, Actor::PotionSlot>& potions) {
 	clearChoiceArea();
-	int y = 10;
-	gotoXY(2, y++); std::cout << "========== [ 포션 목록 ] ==========";
-	gotoXY(2, y++); std::cout << "1. 체력 포션";
-	gotoXY(2, y++); std::cout << "2. 마나 포션";
-	gotoXY(2, y++); std::cout << "0. 취소";
+	int y = CHOICE_Y_START;
+	gotoXY(INNER_X_START, y); std::cout << "========== [ 포션 목록 ] ==========";
+	gotoXY(INNER_X_START, y++); std::cout << "1. 체력 포션";
+	gotoXY(INNER_X_START, y++); std::cout << "2. 마나 포션";
+	gotoXY(INNER_X_START, y++); std::cout << "0. 취소";
 
 	int choice;
 	while (true) {
-		gotoXY(2, 14); std::cout << "선택:      ";
-		gotoXY(8, 14); char ch = _getch();
+		gotoXY(INNER_X_START, CHOICE_Y_END); std::cout << "선택:      ";
+		gotoXY(8, CHOICE_Y_END); char ch = _getch();
 		choice = ch - '0';
 
 		if (std::cin.fail()) {
 			std::cin.clear();
 			std::cin.ignore(1000, '\n');
-			gotoXY(2, 14); std::cout << "숫자로 올바르게 입력해주세요.";
+			gotoXY(INNER_X_START, CHOICE_Y_END);  std::cout << "숫자로 올바르게 입력해주세요.";
 			continue;
 		}
 
