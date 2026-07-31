@@ -15,11 +15,7 @@ void gotoXY(short x, short y)
 
 	SetConsoleCursorPosition(hOut, pos);
 }
-template<typename T>
-void GameManager::inOutput(std::string _message, T& _inoutVar) {
-	std::cout << _message;
-	std::cin >> _inoutVar;
-}
+
 void GameManager::waitAnyKey()
 {
 	gotoXY(INNER_X_START, CHOICE_Y_END); // 선택지 영역의 하단 빈 공간에 출력
@@ -111,7 +107,7 @@ EventResult GameManager::showEventMid(const std::shared_ptr<EventData>& event)
 
 
 	int y = MID_Y_START;
-	gotoXY(INNER_X_START, y);
+	gotoXY(INNER_X_START, y++);
 	std::cout << "[" << event.get()->title << "]";
 
 	for (auto des : event->description) {
@@ -142,7 +138,7 @@ void GameManager::showBattleMid(const Monster& monster, const std::vector<std::s
 
 	int y = MID_Y_START;
 
-	gotoXY(2, y);
+	gotoXY(2, y++);
 	std::cout << "[ 전투 ]";
 
 	gotoXY(2, y++);
@@ -185,20 +181,22 @@ void GameManager::botInfo()
 
 }
 void GameManager::useStatusPoint() {
-	clearArea(CHOICE_Y_START, CHOICE_Y_END);
 	int point=-1;
 	for (Status::statusType s : Status::stat) {
 		if (s == Status::REMAIN) break;
 		int remainPoint = player.status.getStatusRemain();
+		if (remainPoint <= 0) break;
 		while (1) {
+			clearArea(CHOICE_Y_START, CHOICE_Y_END);
 			gotoXY(INNER_X_START, CHOICE_Y_START);
 			std::cout << "잔여포인트: " << remainPoint;
 			gotoXY(INNER_X_START, CHOICE_Y_START+1);
-			std::cout << Status::statName[s];
-			inOutput("스탯을 강화할 포인트를 입력하세요 : ",point);
+			std::cout << Status::statName[s]+"스탯을 강화할 포인트를 입력하세요 : ";
+			gotoXY(INNER_X_START + 40, CHOICE_Y_START +1);
+			std::cin >> point;
 			gotoXY(INNER_X_START, CHOICE_Y_START + 1);
 			if (clear_input(point <= remainPoint && point >= 0)) break;
-			std::cout << "\n입력값 및 잔여 포인트를 확인하세요";
+			std::cout << "입력값 및 잔여 포인트를 확인하세요";
 		}
 		player.status.setStatus(s, player.status.getStatus(s) + point);
 		player.status.setStatusRemain(remainPoint - point);
@@ -210,9 +208,10 @@ void GameManager::initPlayer() {
 	std::string name;
 	while (1) {
 		gotoXY(INNER_X_START,MID_Y_START);
-		inOutput("이름을 입력하세요(6글자 이내):", name);
+		std::cout << "이름을 입력하세요(6글자 이내):";
+		gotoXY(INNER_X_START + 30, MID_Y_START);
+		std::cin >> name;
 		if (clear_input(name.size() <= 6)) break;
-		std::cout << "\n6글자를 초과하였습니다!";
 	}
 	player.setName(name);
 	player.setFullHp(100);
@@ -249,6 +248,16 @@ bool GameManager::runBattles(const std::vector<int>& monsterIds)
 			return false;
 		}
 		player.setExp(player.getExp() + monster->getExp());
+
+		// 몬스터 처치로 인한 레벨업 판정
+		if (player.levelUpCheck()) {
+			clearArea(CHOICE_Y_START, CHOICE_Y_END);
+			gotoXY(INNER_X_START, CHOICE_Y_START);
+			useStatusPoint();
+			player.initStatus();
+		}
+
+		topInfo();
 		botInfo();
 		// monster는 이 반복이 끝날 때 unique_ptr 소멸과 함께 제거된다.
 	}
@@ -267,6 +276,7 @@ void GameManager::applyEventResult(const EventResult& result)
 		gotoXY(INNER_X_START, CHOICE_Y_START);
 		useStatusPoint();
 		player.initStatus();
+		topInfo();
 	}
 	
 	botInfo();
@@ -325,7 +335,7 @@ int GameManager::selectBattleActionUI() {
 int GameManager::selectSkillUI(const std::vector<Actor::SkillSlot>& skills) {
 	clearArea(CHOICE_Y_START, CHOICE_Y_END);
 
-	int y = CHOICE_Y_START-1;
+	int y = CHOICE_Y_START;
 
 	if (skills.empty()) {
 		gotoXY(INNER_X_START, y++); std::cout << "사용 가능한 스킬이 없습니다.";
@@ -371,7 +381,7 @@ PotionType GameManager::selectPotionUI(const std::map<PotionType, Actor::PotionS
 	clearArea(CHOICE_Y_START, CHOICE_Y_END);
 
 	int y = CHOICE_Y_START;
-	gotoXY(INNER_X_START, y); std::cout << "========== [ 포션 목록 ] ==========";
+	gotoXY(INNER_X_START, y++); std::cout << "========== [ 포션 목록 ] ==========";
 	gotoXY(INNER_X_START, y++); std::cout << "1. 체력 포션";
 	gotoXY(INNER_X_START, y++); std::cout << "2. 마나 포션";
 	gotoXY(INNER_X_START, y++); std::cout << "0. 취소";
@@ -427,13 +437,30 @@ void GameManager::runGame() {
 	std::shared_ptr<EventData> eventData = std::make_shared<EventData>();
 	int currentEventId = -1;
 	isRunning = true; 
+
 	while (isRunning) {
-		std::shared_ptr<EventData> eventData = nullptr; // 빈 포인터로 초기화
+
+		// 1. 플레이어 사망 
+		// 2. 이벤트 액션이 강제 GameOver인 경우
+		// 3. 잘못된 Empty 이벤트가 튀어나온 경우
+		// 4. 보스전 시행시 게임종료
+		if (!player.isAlive() || result.thisAction == EventAction::GameOver || eventData->id == Util::makeEventID(EventType::Empty, 0)) {
+			endGame();
+			break;
+		}
+	
 
 		if (result.nextEvent != -1) {
+			
 			eventData = event.getEventData(result.nextEvent);
+			event.setVisited(eventData->id);
+			result = showEventMid(eventData);
 		}
 		else {
+			if (eventData != nullptr && eventData->type == EventType::Boss) {
+				endGame();
+				break;
+			}
 			switch (result.thisAction) {
 			case EventAction::Battle:
 				eventData = event.getRandomEventData(currentEventId, { EventType::Rest, EventType::Story, EventType::Shop });
@@ -451,23 +478,16 @@ void GameManager::runGame() {
 				break;
 			}
 		}
-
-		// 1. 플레이어 사망 
-		// 2. 이벤트 액션이 강제 GameOver인 경우
-		// 3. 잘못된 Empty 이벤트가 튀어나온 경우
-		// 위 세 가지 중 하나라도 해당하면 메인 루프를 즉시 탈출(게임 셋).
 		if (!player.isAlive() || result.thisAction == EventAction::GameOver || eventData->id == Util::makeEventID(EventType::Empty, 0)) {
 			endGame();
 			break;
-		}
-
+		}	
+		currentEventId = eventData->id;
+		event.setVisited(eventData->id);
 		result = showEventMid(eventData);
 
 		// 다음 루프에서 중복 방지에 사용할 수 있도록 현재 뽑힌 이벤트 ID를 기록
-		currentEventId = eventData->id;
 
-		
-		event.setVisited(eventData->id);
 
 		applyEventResult(result);
 	}

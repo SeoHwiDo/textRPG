@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <vector>
 #include <windows.h>
-
+#include <sstream>
 #include "Util.h"
 #include"Event.h"
 #include"Player.h"
@@ -43,7 +43,7 @@ private:
     bool runBattles(const std::vector<int>& monsterIds);
     bool isRunning;
 public:
-    static const int WIDTH = 80;
+    static const int WIDTH = 100;
     static const int HEIGHT = 20;
 
     static const int INNER_X_START = 2;
@@ -67,8 +67,7 @@ public:
 
     static void waitAnyKey();
 
-    template<typename T>
-    void inOutput(std::string _message, T& _inoutVar);
+
     
     static bool clear_input(bool check);
     static void clearScreen();
