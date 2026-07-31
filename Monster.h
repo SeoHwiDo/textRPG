@@ -20,7 +20,7 @@ struct MonsterData {
 	int power;
 	int defend;
 	int critical;
-	int level;
+	int dex;
 	int skill;
 	int exp;
 	int gold;

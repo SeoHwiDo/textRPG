@@ -1,5 +1,5 @@
 ﻿#include "Event.h"
-
+#include<iostream>
 using namespace Util;
 #include "Monster.h"
 
@@ -218,7 +218,7 @@ std::shared_ptr<EventData> Event::getRandomEventData(int tmpId)
 	std::vector<std::shared_ptr<EventData>> candidates;
 	for (const auto& entry : eventDB) {
 		const auto& eventData = entry.second;
-		if (eventData && eventData->type != EventType::Empty && entry.first != tmpId&&!entry.second->isVIsited) {
+		if (eventData && eventData->type != EventType::Empty && entry.first != tmpId&&!entry.second->isVIsited&&entry.first!= makeEventID(EventType::Story, 0)) {
 			candidates.push_back(eventData);
 		}
 	}
@@ -230,7 +230,7 @@ std::shared_ptr<EventData> Event::getRandomEventData(int tmpId,EventType type)
 	std::vector<std::shared_ptr<EventData>> candidates;
 	for (const auto& entry : eventDB) {
 		const auto& eventData = entry.second;
-		if (eventData && eventData->type == type && entry.first != tmpId && !entry.second->isVIsited) {
+		if (eventData && eventData->type == type && entry.first != tmpId && !entry.second->isVIsited && entry.first != makeEventID(EventType::Story, 0)) {
 			candidates.push_back(eventData);
 		}
 	}
@@ -244,17 +244,20 @@ std::shared_ptr<EventData> Event::getRandomEventData(int tmpId,std::initializer_
 	for (auto type : types) {
 		for (const auto& entry : eventDB) {
 			const auto& eventData = entry.second;
-			if (eventData && eventData->type == type&&entry.first!=tmpId && !entry.second->isVIsited) {
+			if (eventData && eventData->type == type&&entry.first!=tmpId && !entry.second->isVIsited && entry.first != makeEventID(EventType::Story, 0)) {
 				candidates.push_back(eventData);
 			}
 		}
 	}
 	return selectRandomEvent(candidates, getEventData(makeEventID(EventType::Empty, 0)));
 }
-
-void Event::setVisited(int tmpId){
-	if (eventDB[tmpId] != nullptr) {
-		eventDB[tmpId]->isVIsited = true;
+void Event::setVisited(int tmpId) {
+	auto it = eventDB.find(tmpId);
+	if (it != eventDB.end() && it->second != nullptr) {
+		it->second->isVIsited = true;
+	}
+	else {
+		
+		std::cout << "[오류] 맵에 존재하지 않는 이벤트 ID 방문 시도: " << tmpId << "   ";
 	}
 }
-

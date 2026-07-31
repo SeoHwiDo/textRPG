@@ -31,7 +31,7 @@ namespace Util {
 	std::pair<bool,double> check_versus_success(const int _myPercent, const int _enemyPercent);
 	//내 스탯을 기반으로 성공률을 계산하고, 그 성공률에 따라 true/false를 반환하는 함수
 	std::pair<bool, double> check_success(int _percent);
-	std::string dobleToStr(int value, int size);
+	std::string doubleToStr(double value, int size);
 	std::size_t getRandomIdx(std::size_t idxSize);
 	//ID 생성 함수
 	int makeSkillID(SkillOwner owner, SkillType type, int uniqueNum);

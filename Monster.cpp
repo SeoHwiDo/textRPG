@@ -16,7 +16,7 @@ std::map<int, MonsterData> Monster::monsterDB;
 //	int power;
 //	int defend;
 //	int critical;
-//	int level;
+//	int dex;
 //	int skill;
 //	int exp;
 //	int gold;
@@ -66,7 +66,7 @@ std::unique_ptr<Monster> Monster::create(int monsterId)
 	monster->setPower(data.power);
 	monster->setDefend(data.defend);
 	monster->setCritical(data.critical);
-	monster->setLv(data.level);
+	monster->status.setStatusDex(data.dex);
 	monster->addSkill(data.skill);
 	monster->setExp(data.exp);
 	return monster;

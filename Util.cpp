@@ -33,7 +33,7 @@ std::pair<bool,double> Util::check_success(const int _myPercent) {
 
 }
 
-std::string Util::dobleToStr(int value,int size)
+std::string Util::doubleToStr(double value,int size)
 {
     std::ostringstream oss;
     oss << std::fixed << std::setprecision(size) << value;
