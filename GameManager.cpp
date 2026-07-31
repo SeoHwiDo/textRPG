@@ -150,7 +150,7 @@ void GameManager::showBattleMid(const Monster& monster, const std::vector<std::s
 	gotoXY(2, y++);
 	std::cout << "HP: " << monster.getTmpHp() << " / 공격력: " << monster.getPower() << " / 방어력: " << monster.getDefend();
 	gotoXY(2, y++);
-	std::cout << " 공격력: " << (player.getPower() + player.getEquipment(EquipType::SWORD).stat);
+	std::cout << " 공격력: " << (player.getPower() + player.getEquipment(EquipType::SWORD).stat) << " / 방어력: " << (player.getDefend() + player.getEquipment(EquipType::SHIELD).stat);
 	y = 8;
 	for (const auto& log : logs) {
 		gotoXY(INNER_X_START, y++);
@@ -185,14 +185,18 @@ void GameManager::botInfo()
 
 }
 void GameManager::useStatusPoint() {
-	int point;
+	clearArea(CHOICE_Y_START, CHOICE_Y_END);
+	int point=-1;
 	for (Status::statusType s : Status::stat) {
 		if (s == Status::REMAIN) break;
 		int remainPoint = player.status.getStatusRemain();
 		while (1) {
-			std::cout << "\n잔여포인트: " << remainPoint << "\n " << Status::statName[s];
-			inOutput("\n스탯을 강화할 포인트를 입력하세요:", point);
-			clearScreen();
+			gotoXY(INNER_X_START, CHOICE_Y_START);
+			std::cout << "잔여포인트: " << remainPoint;
+			gotoXY(INNER_X_START, CHOICE_Y_START+1);
+			std::cout << Status::statName[s];
+			inOutput("스탯을 강화할 포인트를 입력하세요 : ",point);
+			gotoXY(INNER_X_START, CHOICE_Y_START + 1);
 			if (clear_input(point <= remainPoint && point >= 0)) break;
 			std::cout << "\n입력값 및 잔여 포인트를 확인하세요";
 		}
@@ -202,8 +206,10 @@ void GameManager::useStatusPoint() {
 	player.initStatus();
 }
 void GameManager::initPlayer() {
+	clearArea(MID_Y_START, MID_Y_END);
 	std::string name;
 	while (1) {
+		gotoXY(INNER_X_START,MID_Y_START);
 		inOutput("이름을 입력하세요(6글자 이내):", name);
 		if (clear_input(name.size() <= 6)) break;
 		std::cout << "\n6글자를 초과하였습니다!";
@@ -398,10 +404,11 @@ void GameManager::runGame() {
 	Equipment::initDB();
 	Potion::initDB();
 	Skill::initDB();
-	//플레이어 설정
-	initPlayer();
 	//UI 프레임
 	drawFrame();
+	//플레이어 설정
+	initPlayer();
+
 	// 장비 및 포션 지급
 	player.setEquipment(Util::makeEquipID(EquipType::SWORD, EquipGrade::LOW));
 	player.setEquipment(Util::makeEquipID(EquipType::SHIELD, EquipGrade::LOW));

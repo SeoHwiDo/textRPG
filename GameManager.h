@@ -43,11 +43,11 @@ private:
     bool runBattles(const std::vector<int>& monsterIds);
     bool isRunning;
 public:
-    static const int WIDTH = 60;
+    static const int WIDTH = 80;
     static const int HEIGHT = 20;
 
     static const int INNER_X_START = 2;
-    static const int INNER_X_END = 48;
+    static const int INNER_X_END = WIDTH-2;
 
     static const int TOP_Y_START = 1;
     static const int TOP_Y_END = 3;
