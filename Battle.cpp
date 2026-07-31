@@ -23,18 +23,18 @@ void Battle::addLog(const std::string& logMsg)
 	// 전투 실황을 눈으로 확인할 수 있도록 짧은 대기시간 부여
 	GameManager::waitAnyKey();
 }
-bool Battle::criticalCheck(Actor& _actor)
-{
-	bool isCritical = Util::check_success(_actor.getCritical());
-	return isCritical;
-
-}
+//bool Battle::criticalCheck(Actor& _actor)
+//{
+//	bool isCritical = 
+//	return isCritical;
+//
+//}
 //회피 작동 여부
-bool Battle::missCheck(Actor& _attacker, Actor& _defender)
-{
-	bool isMiss = Util::check_versus_success(_attacker.status.getStatusDex(), _defender.status.getStatusDex());
-	return isMiss;
-}
+//bool Battle::missCheck(Actor& _attacker, Actor& _defender)
+//{
+//	bool isMiss = Util::check_versus_success(_attacker.status.getStatusDex(), _defender.status.getStatusDex()).first;
+//	return isMiss;
+//}
 //공격자 데미지 계산
 int Battle::DamageCalculation(Actor& _attacker, Actor& _defender,bool isCri)
 {
@@ -45,21 +45,24 @@ int Battle::DamageCalculation(Actor& _attacker, Actor& _defender,bool isCri)
 //도망 성공 여부
 bool Battle::doRunOut(Actor& _attacker, Actor& _defender)
 {
-	bool isRun = Util::check_versus_success(_attacker.status.getStatusDex(), _defender.status.getStatusDex());
+	bool isRun = Util::check_versus_success(_attacker.status.getStatusDex(), _defender.status.getStatusDex()).first;
 	return isRun;
 }
 //기본공격
-int Battle::doAttack(Actor& _attacker, Actor& _defender, bool isCri, std::function<void(const std::string&)> logger){
+int Battle::doAttack(Actor& _attacker, Actor& _defender, std::function<void(const std::string&)> logger){
 	int defenderPrevHp = _defender.getTmpHp();
+	auto isCri = Util::check_success(_attacker.status.getStatusDex());
 	//최종데미지=계산된 공격데미지-객체 방어력-객체 방어구 능력치
-	int totalDamage = (std::max)(0, DamageCalculation(_attacker, _defender, isCri) - _defender.getDefend() - _defender.getEquipment(EquipType::SHIELD).stat);
+	int totalDamage = (std::max)(0, DamageCalculation(_attacker, _defender, isCri.first) - _defender.getDefend() - _defender.getEquipment(EquipType::SHIELD).stat);
 	std::string log = "[" + _attacker.getName() + "]의 공격! ";
-	if (missCheck(_attacker, _defender)) {
+	auto isMiss = Util::check_versus_success(_attacker.status.getStatusDex(), _defender.status.getStatusDex());
+	if (isMiss.first) {
 		totalDamage = 0;
-		log += "빗나감! " + _defender.getName() + "이(가) 회피했습니다.";
+		log += Util::dobleToStr(isMiss.second*10.0,2)+"% 확률로 빗나감! " + _defender.getName() + "이(가) 회피했습니다.";
 	}
 	else {
-		log += _defender.getName() + "에게 " + std::to_string(totalDamage) + (isCri ? "의 치명타 피해!!" : " 피해!");
+		log += (isCri.first ? Util::dobleToStr(isCri.second * 10.0, 2) +"확률로 치명타 성공!" : "");
+		log += _defender.getName() + "에게 " + std::to_string(totalDamage) + (isCri.first ? "의 치명타 피해!!" : " 피해!");
 	}
 	_defender.setTmpHp(defenderPrevHp - totalDamage);
 	if (logger != nullptr) {
@@ -118,7 +121,7 @@ void Battle::doMonsterSkill()
 {
 	auto skillList = _monster.getSkillList();
 	if (skillList.empty()) {
-		doAttack(_monster, _player, criticalCheck(_monster)); // 스킬이 아예 없으면 일반 공격으로 대체
+		doAttack(_monster, _player, [this](const std::string& msg) {addLog(msg); }); // 스킬이 아예 없으면 일반 공격으로 대체
 		return;
 	}
 	//몬스터가 보유한 스킬을 랜덤순서로 섞어서 순서대로 실행하여 가능한 스킬 작동
@@ -141,7 +144,7 @@ void Battle::doMonsterSkill()
 	// 만약 모든 스킬이 쿨타임이거나 마나가 부족하다면 일반 공격으로 대체
 	//std::cout << _monster.getName() << "은(는) 마나가 부족해 스킬 대신 공격을 시도했다!\n";
 	addLog("[" + _monster.getName() + "] 마나가 부족해 일반 공격을 시도합니다!");
-	doAttack(_monster, _player, criticalCheck(_monster), [this](const std::string& msg) {addLog(msg); });
+	doAttack(_monster, _player, [this](const std::string& msg) {addLog(msg); });
 }
 //포션 사용 여부, 콜백함수를 통해 포션 선택
 bool Battle::doPlayerPotion(std::function<PotionType(const std::map<PotionType, Actor::PotionSlot>&)> askChoiceCallback)
@@ -189,7 +192,7 @@ bool Battle::doMonsterTurn()
 	{
 	case Monster::Attack:
 	{
-		int dmg = doAttack(_monster, _player, criticalCheck(_monster), [this](const std::string& msg) {addLog(msg); });
+		int dmg = doAttack(_monster, _player, [this](const std::string& msg) {addLog(msg); });
 		//addLog(_monster.getName() + "의 공격! " + std::to_string(dmg) + " 피해를 입었습니다!");
 		break;
 	}
@@ -238,7 +241,7 @@ bool Battle::doPlayerTurn()
 
 			if (choice == 1) {
 				// 1. 기본 공격 -> 행동 완수 후 턴 종료
-				int dmg=doAttack(_player, _monster,criticalCheck(_player),[this](const std::string& msg) {addLog(msg);});
+				int dmg=doAttack(_player, _monster,[this](const std::string& msg) {addLog(msg);});
 				//addLog(_player.getName() + "의 공격! " + std::to_string(dmg) + " 데미지!");
 				isTurnEnded = true;
 			}
