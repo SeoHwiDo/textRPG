@@ -2,12 +2,12 @@
 
 
 
-bool Util::check_versus_success(const int attacker, const int defender) {
+std::pair<bool,double> Util::check_versus_success(const int attacker, const int defender) {
 	/*double myRegulaizedPercent = std::max(0.0, std::min(1.0, static_cast<double>(_myPercent) / 100.0));
     double enemyRegulaizedPercent = std::max(0.0, std::min(1.0, static_cast<double>(_enemyPercent) / 100.0));*/
 
 	// 두 stat이 모두 0 이하이면 성공률을 계산할 수 없으므로 false 반환
-        if (attacker <= 0.0 && defender <= 0.0) return false;
+    if (attacker <= 0.0 && defender <= 0.0) return { false,0.0 };
 
     double success_rate;
     if (defender <= 0.0) success_rate = 1.0; // 상대방의 stat이 0 이하이면 무조건 성공
@@ -18,18 +18,26 @@ bool Util::check_versus_success(const int attacker, const int defender) {
 
     thread_local static std::mt19937 gen(std::random_device{}());
 	std::bernoulli_distribution dist(success_rate);//베르누이 분포를 이용하여 성공률에 따라 true/false 반환
-    return dist(gen);
+    return { dist(gen),success_rate };
 }
 
 //성공 여부 판단
-bool Util::check_success(const int _myPercent) {
+std::pair<bool,double> Util::check_success(const int _myPercent) {
 
     double myRegulaizedPercent = std::max(0.0, std::min(1.0, static_cast<double>(_myPercent) / 100.0));
     double success_rate = std::max(0.0, std::min(1.0, myRegulaizedPercent)); // 성공률을 0과 1 사이로 제한
 
     thread_local static std::mt19937 gen(std::random_device{}());
     std::bernoulli_distribution dist(success_rate);
-    return dist(gen);
+    return { dist(gen),success_rate };
+
+}
+
+std::string Util::dobleToStr(int value,int size)
+{
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision(size) << value;
+    return oss.str();
 }
 
 std::size_t Util::getRandomIdx(std::size_t idxSize)

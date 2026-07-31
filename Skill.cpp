@@ -18,8 +18,9 @@ void Skill::initDB() {
 	powerShot->effect = [](Actor& caster, std::vector<Actor*>& targets) {
 		if (targets.empty())return;
 		for (auto t : targets) {
-			int damage = Battle::DamageCalculation(caster, *t,Battle::criticalCheck(caster));
-			std::cout << t->getName() << "에게 " << damage << "의 강력한 피해!\n";
+			auto isCri = Util::check_success(caster.status.getStatusDex());
+			int damage = Battle::DamageCalculation(caster, *t,isCri.first);
+			std::cout << t->getName() << "에게 " << damage << "의 관통 피해!\n";
 			int prevHp = t->getTmpHp();
 			t->setTmpHp(prevHp - damage);
 		}	
@@ -34,7 +35,8 @@ void Skill::initDB() {
 		if (targets.empty())return;
 		auto target = targets[0];
 		for (int i = 1; i <= 3; ++i) {
-			int damage = Battle::doAttack(caster, *target,Battle::criticalCheck(caster));
+			auto isCri = Util::check_success(caster.status.getStatusDex());
+			int damage = Battle::doAttack(caster, *target);
 			std::cout << target->getName() << "에게 " << i << "번째" << damage << "피해!\n";
 
 		}

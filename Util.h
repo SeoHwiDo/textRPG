@@ -2,6 +2,8 @@
 #include <random>
 #include<vector>
 #include<algorithm>
+#include< sstream >
+#include <iomanip>
 enum class SkillOwner : int { PLAYER = 0, MONSTER = 100 };
 enum class SkillType : int { ATTACK = 0, HEAL = 10, DEBUFF = 20, BUFF = 30 };
 
@@ -26,9 +28,10 @@ enum class EventType :int {
 namespace Util {
 
 	//내 스탯과 상대 스탯을 비교하여 성공률을 계산하고, 그 성공률에 따라 true/false를 반환하는 함수
-	bool check_versus_success(const int _myPercent, const int _enemyPercent);
+	std::pair<bool,double> check_versus_success(const int _myPercent, const int _enemyPercent);
 	//내 스탯을 기반으로 성공률을 계산하고, 그 성공률에 따라 true/false를 반환하는 함수
-	bool check_success(int _percent);
+	std::pair<bool, double> check_success(int _percent);
+	std::string dobleToStr(int value, int size);
 	std::size_t getRandomIdx(std::size_t idxSize);
 	//ID 생성 함수
 	int makeSkillID(SkillOwner owner, SkillType type, int uniqueNum);
