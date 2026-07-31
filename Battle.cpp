@@ -49,26 +49,46 @@ bool Battle::doRunOut(Actor& _attacker, Actor& _defender)
 	return isRun;
 }
 //기본공격
-int Battle::doAttack(Actor& _attacker, Actor& _defender, std::function<void(const std::string&)> logger){
-	int defenderPrevHp = _defender.getTmpHp();
-	auto isCri = Util::check_success(_attacker.status.getStatusDex());
-	//최종데미지=계산된 공격데미지-객체 방어력-객체 방어구 능력치
-	int totalDamage = (std::max)(0, DamageCalculation(_attacker, _defender, isCri.first) - _defender.getDefend() - _defender.getEquipment(EquipType::SHIELD).stat);
+
+int Battle::doAttack(Actor& _attacker, Actor& _defender, std::function<void(const std::string&)> logger) {
 	std::string log = "[" + _attacker.getName() + "]의 공격! ";
-	auto isMiss = Util::check_versus_success(_attacker.status.getStatusDex(), _defender.status.getStatusDex());
-	if (isMiss.first) {
-		totalDamage = 0;
-		log += Util::dobleToStr(isMiss.second*10.0,2)+"% 확률로 빗나감! " + _defender.getName() + "이(가) 회피했습니다.";
+
+	// 1. [가장 먼저] 회피(Miss) 판정 수행
+	auto isHit = Util::check_success(_defender.status.getStatusDex());
+	if (isHit.first) {
+		log += Util::doubleToStr(isHit.second * 100.0, 2) + "% 확률로 빗나감! " + _defender.getName() + "이(가) 회피했습니다.";
+
+		if (logger != nullptr) {
+			logger(log);
+		}
+		return 0; // 빗나갔으므로 피해량 0 반환 및 종료
+	}
+
+	// 2. 적중했을 경우에만 치명타 및 데미지 계산 진행
+	auto isCri = Util::check_success(_attacker.status.getStatusDex());
+
+	int totalDamage = (std::max)(0, DamageCalculation(_attacker, _defender, isCri.first)
+		- _defender.getDefend()
+		- _defender.getEquipment(EquipType::SHIELD).stat);
+
+	// 3. 로그 작성
+	if (isCri.first) {
+		// 치명타 확률이 0~1 범위라면 * 100.0이 맞는지 확인 필요 (기존 코드는 * 10.0)
+		log += Util::doubleToStr(isCri.second * 100.0, 2) + "% 확률로 치명타 성공! ";
+		log += _defender.getName() + "에게 " + std::to_string(totalDamage) + "의 치명타 피해!!";
 	}
 	else {
-		log += (isCri.first ? Util::dobleToStr(isCri.second * 10.0, 2) +"확률로 치명타 성공!" : "");
-		log += _defender.getName() + "에게 " + std::to_string(totalDamage) + (isCri.first ? "의 치명타 피해!!" : " 피해!");
+		log += _defender.getName() + "에게 " + std::to_string(totalDamage) + " 피해!";
 	}
+
+	// 4. 체력 반영
+	int defenderPrevHp = _defender.getTmpHp();
 	_defender.setTmpHp(defenderPrevHp - totalDamage);
+
 	if (logger != nullptr) {
 		logger(log);
 	}
-	
+
 	return totalDamage;
 }
 //스킬실제실행여부
